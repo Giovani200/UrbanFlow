@@ -24,13 +24,22 @@
 .DS_Store
 *.pem
 
+
+# Notes et config locales
+PROGRESS.md
+urbanflow_structure.md
+*.local.md
+*.iml
+
+# Prisma — seed uniquement (peut contenir des identifiants de test)
+prisma/seed.ts
+
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
 .env*
 
 # vercel
