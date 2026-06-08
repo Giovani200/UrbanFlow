@@ -31,6 +31,9 @@ urbanflow_structure.md
 *.local.md
 *.iml
 
+# IDE
+.idea/
+
 # Prisma — seed uniquement (peut contenir des identifiants de test)
 prisma/seed.ts
 

@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/backend/lib/prisma";
 import { z } from "zod";
@@ -12,11 +12,11 @@ declare module "next-auth" {
       name: string | null;
     };
   }
-}
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
+  interface User {
+    id: string;
+    email: string;
+    name: string | null;
   }
 }
 
@@ -28,8 +28,7 @@ const credentialsSchema = z.object({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   providers: [
-    CredentialsProvider({
-      name: "credentials",
+    Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -58,7 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     session({ session, token }) {
-      if (token.id) session.user.id = token.id;
+      if (token.id) session.user.id = token.id as string;
       return session;
     },
   },
