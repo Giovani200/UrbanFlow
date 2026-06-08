@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 
 interface Options {
   onDismiss: () => void;
@@ -8,21 +8,21 @@ interface Options {
 }
 
 export function useBottomSheetDrag({ onDismiss, threshold = 120 }: Options) {
-  const [dragY, setDragY]     = useState(0);
+  const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const touchStartY             = useRef(0);
+  const startY = useRef(0);
 
-  function onTouchStart(e: React.TouchEvent) {
-    touchStartY.current = e.touches[0].clientY;
+  const handleStart = useCallback((clientY: number) => {
+    startY.current = clientY;
     setDragging(true);
-  }
+  }, []);
 
-  function onTouchMove(e: React.TouchEvent) {
-    const delta = e.touches[0].clientY - touchStartY.current;
+  const handleMove = useCallback((clientY: number) => {
+    const delta = clientY - startY.current;
     if (delta > 0) setDragY(delta);
-  }
+  }, []);
 
-  function onTouchEnd() {
+  const handleEnd = useCallback(() => {
     setDragging(false);
     if (dragY > threshold) {
       setDragY(0);
@@ -30,7 +30,35 @@ export function useBottomSheetDrag({ onDismiss, threshold = 120 }: Options) {
     } else {
       setDragY(0);
     }
-  }
+  }, [dragY, threshold, onDismiss]);
 
-  return { dragY, dragging, onTouchStart, onTouchMove, onTouchEnd };
+  const onTouchStart = useCallback((e: React.TouchEvent) => handleStart(e.touches[0].clientY), [handleStart]);
+  const onTouchMove = useCallback((e: React.TouchEvent) => handleMove(e.touches[0].clientY), [handleMove]);
+  const onTouchEnd = useCallback(() => handleEnd(), [handleEnd]);
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientY);
+  }, [handleStart]);
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    if (dragging) handleMove(e.clientY);
+  }, [dragging, handleMove]);
+  const onMouseUp = useCallback(() => {
+    if (dragging) handleEnd();
+  }, [dragging, handleEnd]);
+  const onMouseLeave = useCallback(() => {
+    if (dragging) handleEnd();
+  }, [dragging, handleEnd]);
+
+  return {
+    dragY,
+    dragging,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    onMouseLeave,
+  };
 }
