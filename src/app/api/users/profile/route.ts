@@ -1,7 +1,7 @@
 import { auth } from "@/backend/lib/auth";
-import { getUserProfileUseCase,
-    updateMobilityProfileUseCase } from "@/backend/users";
-import { UpdateMobilityProfileDtoInSchema } from "@/backend/users/update-mobility-profile/update-mobility-profile.dto";
+import { getUserProfileUseCase } from "@/backend/users/use-cases/get-user-profile.use-case";
+import { updateMobilityProfileUseCase } from "@/backend/users/use-cases/update-user-profile.use-case";
+import { UpdateMobilityProfileDtoInSchema } from "@/shared/dtos/users/update-user-profile.dto";
 import { NextResponse } from "next/server";
 
 export async function GET() {

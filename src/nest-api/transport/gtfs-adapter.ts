@@ -1,4 +1,20 @@
+import { z } from "zod";
 import type { Stop } from "./types";
+
+const GtfsStopSchema = z.object({
+  id: z.union([z.string(), z.number()]).transform(String).optional(),
+  stop_id: z.union([z.string(), z.number()]).transform(String).optional(),
+  name: z.string().optional(),
+  stop_name: z.string().optional(),
+  lat: z.number().optional(),
+  stop_lat: z.number().optional(),
+  lon: z.number().optional(),
+  lng: z.number().optional(),
+  stop_lon: z.number().optional(),
+  wheelchair_boarding: z.union([z.number(), z.string()]).optional(),
+});
+
+const GtfsResponseSchema = z.array(GtfsStopSchema);
 
 let stopsCache: Stop[] | null = null;
 let lastFetch = 0;
@@ -52,11 +68,12 @@ export async function loadStops(): Promise<Stop[]> {
   const data = await res.json();
 
   if (Array.isArray(data)) {
-    stopsCache = data.map((s: Record<string, unknown>) => ({
-      id: String(s.id ?? s.stop_id ?? ""),
-      name: String(s.name ?? s.stop_name ?? ""),
-      lat: Number(s.lat ?? s.stop_lat ?? 0),
-      lng: Number(s.lon ?? s.lng ?? s.stop_lon ?? 0),
+    const parsed = GtfsResponseSchema.parse(data);
+    stopsCache = parsed.map((s) => ({
+      id: s.id ?? s.stop_id ?? "",
+      name: s.name ?? s.stop_name ?? "",
+      lat: s.lat ?? s.stop_lat ?? 0,
+      lng: s.lon ?? s.lng ?? s.stop_lon ?? 0,
       wheelchairBoarding: s.wheelchair_boarding === 1 || s.wheelchair_boarding === "1",
     }));
   } else if (typeof data === "string") {

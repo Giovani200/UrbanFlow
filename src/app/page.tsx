@@ -10,7 +10,7 @@ import { ResultsDrawer } from "@/app/components/planner/ResultsDrawer";
 import { NavScreen } from "@/app/components/planner/NavScreen";
 import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
 import { routingService } from "@/app/services/routing.service";
-import type { Route } from "@/backend/transport/types";
+import type { Route } from "@/app/services/routing.service";
 
 type View = "search" | "results" | "navigation";
 
@@ -74,6 +74,14 @@ export default function PlannerPage() {
     setView("search");
   }
 
+  function handleLocateMe() {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => mapRef.current?.showUserLocation(pos.coords.latitude, pos.coords.longitude),
+      () => { /* geolocation denied */ },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans">
       <div className="absolute inset-0">
@@ -114,25 +122,28 @@ export default function PlannerPage() {
       )}
 
       {view !== "navigation" && (
-        <>
-          <button
-            title="Ma position"
-            className="absolute right-4 bottom-72 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
-          >
-            <Navigation size={20} className="text-uf-text" />
-          </button>
-          <button
-            title="Couches carte"
-            className="absolute right-4 bottom-56 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
-          >
-            <Layers size={20} className="text-uf-text" />
-          </button>
-        </>
+        <button
+          title="Ma position"
+          onClick={handleLocateMe}
+          className="absolute right-4 bottom-72 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
+        >
+          <Navigation size={20} className="text-uf-text" />
+        </button>
       )}
+
+      {/*{view !== "navigation" && (*/}
+      {/*  <button*/}
+      {/*    title="Couches carte"*/}
+      {/*    className="absolute right-4 bottom-56 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"*/}
+      {/*  >*/}
+      {/*    <Layers size={20} className="text-uf-text" />*/}
+      {/*  </button>*/}
+      {/*)}*/}
 
       {view === "search" && (
         <SearchDrawer
           onSearch={handleSearch}
+          onLocateMe={(position) => mapRef.current?.showUserLocation(position.lat, position.lng)}
         />
       )}
 

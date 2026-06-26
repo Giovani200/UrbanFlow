@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/backend/lib/prisma";
-import type { CreateUserDtoIn, CreateUserDtoOut } from "./create-user.dto";
+import type { CreateUserDtoIn, CreateUserDtoOut } from "@/shared/dtos/users/create-user.dto";
 
 export async function createUserUseCase(
     data: CreateUserDtoIn

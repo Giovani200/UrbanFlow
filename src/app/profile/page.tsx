@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ArrowLeft, ChevronRight, Navigation, Leaf, Home, Target, Loader2 } from "lucide-react";
 import { usersService } from "@/app/services/users.service";
-import type { GetUserProfileDtoOut } from "@/backend/users/get-user-profile/get-user-profile.dto";
-import type { UpdateMobilityProfileDtoIn } from "@/backend/users/update-mobility-profile/update-mobility-profile.dto";
+import type { GetUserProfileDtoOut, UpdateMobilityProfileDtoIn } from "@/app/services/users.service";
 
 const MODE_LABELS: Record<string, string> = {
   bike: "Vélo", scooter: "Trottinette", tram: "Tram",

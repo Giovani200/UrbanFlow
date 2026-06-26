@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronRight, Bike, Bus, Footprints, Train, Leaf, Navigation, Car, Loader2 } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
-import type { Route } from "@/backend/transport/types";
+import type { Route } from "@/app/services/routing.service";
 
 const MODE_ICONS: Record<string, React.ElementType> = {
   walk: Footprints,

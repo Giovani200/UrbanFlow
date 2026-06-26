@@ -1,15 +1,8 @@
-import type { Route, BikeStation, Stop } from "@/backend/transport/types";
+import type { Route, Segment, BikeStation, Stop } from "@/backend/transport/types";
 
-type Result<T> = { isOk: true; data: T } | { isOk: false; error: string };
+export type { Route, Segment, BikeStation, Stop };
 
-async function handleResponse<T>(res: Response): Promise<Result<T>> {
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    return { isOk: false, error: body?.error ?? "Erreur serveur" };
-  }
-  const data = (await res.json()) as T;
-  return { isOk: true, data };
-}
+import { handleResponse } from "@/app/services/lib/http";
 
 export const routingService = {
   async planRoute(input: {

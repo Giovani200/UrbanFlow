@@ -21,4 +21,5 @@ export function Logo({ size = "md" }: LogoProps) {
             <span className={`font-bold ${s.text} text-uf-red tracking-tight font-sans`}> UrbanFlow</span>
         </Link>
     );
+
 }

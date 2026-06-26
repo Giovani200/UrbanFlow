@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ArrowUpDown, Search, Clock, ArrowRight, Bike, Bus, Footprints, Train } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { ArrowUpDown, Search, Clock, ArrowRight, Bike, Bus, Footprints, Train, Navigation } from "lucide-react";
 
 const MODE_ICONS: Record<string, React.ReactNode> = {
   walk: <Footprints size={12} className="text-uf-text-secondary" />,
@@ -32,6 +33,7 @@ export type GeocodingResult = {
 
 interface Props {
   onSearch: (origin: GeocodingResult, destination: GeocodingResult) => void;
+  onLocateMe?: (position: GeocodingResult) => void;
 }
 
 function useGeocoding(query: string) {
@@ -51,7 +53,7 @@ function useGeocoding(query: string) {
 
       try {
         const res = await fetch(
-          `https://api.maptiler.com/geocoding/${encodeURIComponent(query)}.json?key=${key}&bbox=5.65,45.1,5.78,45.25&language=fr&limit=5`
+          `https://api.maptiler.com/geocoding/${encodeURIComponent(query)}.json?key=${key}&bbox=1.45,48.12,3.56,49.25&language=fr&limit=5`
         );
         if (!res.ok) return;
         const data = await res.json();
@@ -74,19 +76,22 @@ function useGeocoding(query: string) {
   return results;
 }
 
-export function SearchDrawer({ onSearch }: Props) {
+export function SearchDrawer({ onSearch, onLocateMe }: Props) {
   const [when, setWhen]       = useState<WhenId>("now");
-  const [fromText, setFromText]   = useState("Ma position actuelle");
+  const [fromText, setFromText]   = useState("");
   const [toText, setToText]       = useState("");
   const [fromGeo, setFromGeo]     = useState<GeocodingResult | null>(null);
   const [toGeo, setToGeo]         = useState<GeocodingResult | null>(null);
   const [activeField, setActiveField] = useState<"from" | "to" | null>(null);
-  const [useGeoLocation, setUseGeoLocation] = useState(true);
+  const [useGeoLocation, setUseGeoLocation] = useState(false);
+  const [showLocationDialog, setShowLocationDialog] = useState(false);
 
   const fromResults = useGeocoding(activeField === "from" && !useGeoLocation ? fromText : "");
   const toResults   = useGeocoding(activeField === "to" ? toText : "");
 
   const currentResults = activeField === "from" ? fromResults : activeField === "to" ? toResults : [];
+  const showSuggestions = activeField === "from" || currentResults.length > 0;
+  const showRecents = !activeField;
 
   function swapInputs() {
     setFromText(toText);
@@ -109,27 +114,45 @@ export function SearchDrawer({ onSearch }: Props) {
   }, [activeField]);
 
   function handleSearch() {
-    if (useGeoLocation && !fromGeo) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const origin: GeocodingResult = {
-            label: "Ma position",
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          };
-          if (toGeo) onSearch(origin, toGeo);
-        },
-        () => { /* geolocation denied */ }
-      );
-      return;
-    }
-
     if (fromGeo && toGeo) {
       onSearch(fromGeo, toGeo);
     }
   }
 
-  const canSearch = toGeo && (fromGeo || useGeoLocation);
+  function selectCurrentLocation() {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        let label = "Ma position actuelle";
+
+        const key = process.env.NEXT_PUBLIC_MAPTILER_KEY;
+        if (key) {
+          try {
+            const res = await fetch(
+              `https://api.maptiler.com/geocoding/${lng},${lat}.json?key=${key}&language=fr&limit=1`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              const placeName = data.features?.[0]?.place_name;
+              if (placeName) label = placeName;
+            }
+          } catch {
+            /* reverse geocoding fail silently, keep default label */
+          }
+        }
+
+        setFromGeo({ label, lat, lng });
+        setFromText(label);
+        setUseGeoLocation(true);
+        setActiveField(null);
+        onLocateMe?.({ label, lat, lng });
+      },
+      () => setShowLocationDialog(true),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+
+  const canSearch = !!(fromGeo && toGeo);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white rounded-t-2xl shadow-2xl max-h-[75%]">
@@ -174,21 +197,38 @@ export function SearchDrawer({ onSearch }: Props) {
           </div>
         </div>
 
-        {currentResults.length > 0 && (
-          <div className="bg-white border border-uf-border rounded-xl overflow-hidden">
-            {currentResults.map((r, i) => (
-              <button
-                key={i}
-                onClick={() => selectResult(r)}
-                className={`w-full text-left px-3.5 py-2.5 hover:bg-uf-bg transition-colors ${
-                  i < currentResults.length - 1 ? "border-b border-uf-border" : ""
-                }`}
-              >
-                <p className="text-sm text-uf-text truncate">{r.label}</p>
-              </button>
-            ))}
+        <div
+          className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            showSuggestions ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
+        >
+          <div className="min-h-0 overflow-hidden">
+            <div className="bg-white border border-uf-border rounded-xl overflow-hidden">
+              {activeField === "from" && (
+                <button
+                  onClick={selectCurrentLocation}
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-uf-bg transition-colors ${
+                    currentResults.length > 0 ? "border-b border-uf-border" : ""
+                  }`}
+                >
+                  <Navigation size={14} className="text-uf-red shrink-0" />
+                  <span className="text-sm font-medium text-uf-text">Utiliser ma position actuelle</span>
+                </button>
+              )}
+              {currentResults.map((r, i) => (
+                <button
+                  key={i}
+                  onClick={() => selectResult(r)}
+                  className={`w-full text-left px-3.5 py-2.5 hover:bg-uf-bg transition-colors ${
+                    i < currentResults.length - 1 ? "border-b border-uf-border" : ""
+                  }`}
+                >
+                  <p className="text-sm text-uf-text truncate">{r.label}</p>
+                </button>
+              ))}
+            </div>
           </div>
-        )}
+        </div>
 
         <div className="flex gap-2">
           {WHEN_OPTIONS.map((w) => (
@@ -219,8 +259,12 @@ export function SearchDrawer({ onSearch }: Props) {
           Rechercher
         </button>
 
-        {!activeField && (
-          <div>
+        <div
+          className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            showRecents ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
+        >
+          <div className="min-h-0 overflow-hidden">
             <p className="text-[11px] font-semibold text-uf-text-secondary tracking-widest uppercase mb-2.5">
               Trajets récents
             </p>
@@ -241,7 +285,7 @@ export function SearchDrawer({ onSearch }: Props) {
                       <span className="font-medium">{r.to}</span>
                     </p>
                     <div className="flex gap-1 mt-1">
-                      {r.modes.map((m) => MODE_ICONS[m])}
+                      {r.modes.map((m) => <span key={m}>{MODE_ICONS[m]}</span>)}
                     </div>
                   </div>
                   <ArrowRight size={14} className="text-uf-text-secondary shrink-0" />
@@ -249,8 +293,27 @@ export function SearchDrawer({ onSearch }: Props) {
               ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
+
+      <Dialog.Root open={showLocationDialog} onOpenChange={setShowLocationDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/40 z-40" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90%] max-w-sm bg-white rounded-2xl p-5 shadow-2xl">
+            <Dialog.Title className="text-base font-bold text-uf-text mb-1.5">
+              Localisation désactivée
+            </Dialog.Title>
+            <Dialog.Description className="text-sm text-uf-text-secondary mb-4">
+              Activez la géolocalisation dans les paramètres de votre navigateur pour utiliser votre position actuelle comme point de départ.
+            </Dialog.Description>
+            <Dialog.Close asChild>
+              <button className="w-full rounded-lg py-2.5 font-semibold text-sm bg-uf-red text-white">
+                Compris
+              </button>
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

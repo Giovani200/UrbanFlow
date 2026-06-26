@@ -3,7 +3,7 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { Segment } from "@/backend/transport/types";
+import type { Segment } from "@/app/services/routing.service";
 
 const MODE_COLORS: Record<string, string> = {
   walk:    "#6B7280",
@@ -17,6 +17,7 @@ export type MapViewHandle = {
   drawSegments: (segments: Segment[]) => void;
   clearSegments: () => void;
   fitToSegments: (segments: Segment[]) => void;
+  showUserLocation: (lat: number, lng: number) => void;
 };
 
 interface MapViewProps {
@@ -25,10 +26,11 @@ interface MapViewProps {
 }
 
 const MapView = forwardRef<MapViewHandle, MapViewProps>(
-  function MapView({ center = [5.7245, 45.1885], zoom = 13 }, ref) {
+  function MapView({ center = [2.3522, 48.8566], zoom = 12 }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
     const layerIdsRef = useRef<string[]>([]);
+    const userMarkerRef = useRef<maplibregl.Marker | null>(null);
 
     useImperativeHandle(ref, () => ({
       drawSegments(segments: Segment[]) {
@@ -94,6 +96,23 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
         });
 
         map.fitBounds(bounds, { padding: 80, maxZoom: 16 });
+      },
+
+      showUserLocation(lat: number, lng: number) {
+        const map = mapRef.current;
+        if (!map) return;
+
+        if (!userMarkerRef.current) {
+          const el = document.createElement("div");
+          el.className = "w-4 h-4 rounded-full bg-uf-red border-2 border-white shadow-md";
+          userMarkerRef.current = new maplibregl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .addTo(map);
+        } else {
+          userMarkerRef.current.setLngLat([lng, lat]);
+        }
+
+        map.flyTo({ center: [lng, lat], zoom: 15 });
       },
     }));
 

@@ -1,5 +1,5 @@
-import { createUserUseCase } from "@/backend/users";
-import { CreateUserDtoInSchema } from "@/backend/users/create-user/create-user.dto";
+import { createUserUseCase } from "@/backend/users/use-cases/create-user.use-case";
+import { CreateUserDtoInSchema } from "@/shared/dtos/users/create-user.dto";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

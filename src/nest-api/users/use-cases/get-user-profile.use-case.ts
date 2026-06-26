@@ -1,5 +1,5 @@
 import { prisma } from "@/backend/lib/prisma";
-import type { GetUserProfileDtoOut } from "./get-user-profile.dto";
+import type { GetUserProfileDtoOut } from "@/shared/dtos/users/get-user-profile.dto";
 
 export async function getUserProfileUseCase(
     userId: string

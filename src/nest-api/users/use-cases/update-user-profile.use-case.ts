@@ -2,7 +2,7 @@ import { prisma } from "@/backend/lib/prisma";
 import type {
     UpdateMobilityProfileDtoIn,
     UpdateMobilityProfileDtoOut,
-} from "./update-mobility-profile.dto";
+} from "@/shared/dtos/users/update-user-profile.dto";
 
 export async function updateMobilityProfileUseCase(
     userId: string,

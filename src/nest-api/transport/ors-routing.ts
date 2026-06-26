@@ -41,7 +41,8 @@ export async function fetchOrsRoute(
   if (!res.ok) throw new Error(`ORS_ERROR_${res.status}`);
 
   const data = await res.json();
-  const feature = data.features[0];
+  const feature = data?.features?.[0];
+  if (!feature?.properties?.summary) throw new Error("ORS_MALFORMED_RESPONSE");
   const props = feature.properties.summary;
 
   const distanceMeters = Math.round(props.distance);
