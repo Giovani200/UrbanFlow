@@ -6,12 +6,12 @@ export declare const UpdateMobilityProfileDtoInSchema: zod.ZodObject<{
     wheelchairAccess: zod.ZodOptional<zod.ZodBoolean>;
     avoidStairs: zod.ZodOptional<zod.ZodBoolean>;
     preferredModes: zod.ZodOptional<zod.ZodArray<zod.ZodEnum<{
+        walk: "walk";
         bike: "bike";
-        scooter: "scooter";
         tram: "tram";
         bus: "bus";
         carpool: "carpool";
-        walk: "walk";
+        scooter: "scooter";
     }>>>;
 }, zod.core.$strip>;
 export type UpdateMobilityProfileDtoIn = zod.output<typeof UpdateMobilityProfileDtoInSchema>;

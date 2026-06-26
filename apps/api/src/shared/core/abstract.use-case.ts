@@ -1,10 +1,8 @@
 import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { z as zod } from "zod";
-import { PrismaService } from "../database/prisma.service";
 
 export abstract class AbstractUseCase<DataIn, DataOut> {
     protected constructor(
-        protected readonly prisma: PrismaService,
         private readonly dataInSchema: zod.ZodType<DataIn>,
         private readonly dataOutSchema: zod.ZodType<DataOut>,
     ) {}

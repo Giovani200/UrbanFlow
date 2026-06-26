@@ -11,8 +11,8 @@ import { PrismaService } from "../../shared/database/prisma.service";
 
 @Injectable()
 export class CreateUserUseCase extends AbstractUseCase<CreateUserDtoIn, CreateUserDtoOut> {
-    constructor(prisma: PrismaService) {
-        super(prisma, CreateUserDtoInSchema, CreateUserDtoOutSchema);
+    constructor(private readonly prisma: PrismaService) {
+        super(CreateUserDtoInSchema, CreateUserDtoOutSchema);
     }
 
     protected async executeUseCase(dataIn: CreateUserDtoIn): Promise<CreateUserDtoOut> {
