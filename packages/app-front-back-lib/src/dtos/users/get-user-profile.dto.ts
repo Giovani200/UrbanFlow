@@ -3,7 +3,7 @@ import { z as zod } from "zod";
 export const GetUserProfileDtoInSchema = zod.object({});
 export type GetUserProfileDtoIn = zod.output<typeof GetUserProfileDtoInSchema>;
 
-export const GetUserProfileDtoOutSchema = z.object({
+export const GetUserProfileDtoOutSchema = zod.object({
     id: zod.string(),
     email: zod.string(),
     name: zod.string().nullable(),
