@@ -1,13 +1,16 @@
-// Facteurs d'émission ADEME (gCO2e/km/passager)
-// ⚠️ Valeurs reprises du code existant — à recouper avec ADEME Base Carbone v23.6 (cf CLAUDE.md §8) lors de la réécriture carbone.
+// Facteurs d'émission carbone — source unique : impactco2.fr (outil officiel ADEME).
+// Unité : gCO2e/passager·km, fabrication incluse. Relevé le 29/06/2026.
+//   bus thermique : https://impactco2.fr/outils/transport/busthermique (122)
+//   métro         : https://impactco2.fr/outils/transport/metro (4,44 — proxy tram, pas d'entrée "tramway")
+//   voiture / covoiturage / trottinette : https://impactco2.fr/outils/transport
 export const CARBON_FACTORS = {
-    bike: 0,
-    scooter: 0,
     walk: 0,
-    tram: 4.1,
-    bus: 113,
-    carpool: 75,
-    car: 218,
+    bike: 0,
+    scooter: 25,
+    tram: 4.44,
+    bus: 122,
+    carpool: 71,
+    car: 142,
 } as const;
 
 export type TransportMode = keyof typeof CARBON_FACTORS;

@@ -9,7 +9,7 @@ const TransportModeSchema = zod.enum([
     "walk",
 ]);
 
-export const UpdateMobilityProfileDtoInSchema = zod.object({
+export const UpdatePreferencesDtoInSchema = zod.object({
     weightCarbon: zod.number().int().min(0).max(100).optional(),
     weightTime: zod.number().int().min(0).max(100).optional(),
     weightCost: zod.number().int().min(0).max(100).optional(),
@@ -18,9 +18,9 @@ export const UpdateMobilityProfileDtoInSchema = zod.object({
     preferredModes: zod.array(TransportModeSchema).optional(),
 });
 
-export type UpdateMobilityProfileDtoIn = zod.output<typeof UpdateMobilityProfileDtoInSchema>;
+export type UpdatePreferencesDtoIn = zod.output<typeof UpdatePreferencesDtoInSchema>;
 
-export const UpdateMobilityProfileDtoOutSchema = zod.object({
+export const UpdatePreferencesDtoOutSchema = zod.object({
     weightCarbon: zod.number(),
     weightTime: zod.number(),
     weightCost: zod.number(),
@@ -29,4 +29,4 @@ export const UpdateMobilityProfileDtoOutSchema = zod.object({
     preferredModes: zod.array(zod.string()),
 });
 
-export type UpdateMobilityProfileDtoOut = zod.output<typeof UpdateMobilityProfileDtoOutSchema>;
+export type UpdatePreferencesDtoOut = zod.output<typeof UpdatePreferencesDtoOutSchema>;

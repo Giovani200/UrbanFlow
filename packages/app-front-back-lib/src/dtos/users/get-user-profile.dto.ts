@@ -7,7 +7,7 @@ export const GetUserProfileDtoOutSchema = zod.object({
     id: zod.string(),
     email: zod.string(),
     name: zod.string().nullable(),
-    mobilityProfile: zod
+    preferences: zod
         .object({
             weightCarbon: zod.number(),
             weightTime: zod.number(),

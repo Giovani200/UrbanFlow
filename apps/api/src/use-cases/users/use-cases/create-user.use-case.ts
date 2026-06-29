@@ -27,7 +27,7 @@ export class CreateUserUseCase extends AbstractUseCase<CreateUserDtoIn, CreateUs
         const passwordHash = await bcrypt.hash(dataIn.password, 12);
 
         return this.prisma.user.create({
-            data: { email: dataIn.email, name: dataIn.name, passwordHash },
+            data: { email: dataIn.email, name: dataIn.name, passwordHash, acceptedTermsAt: new Date() },
             select: { id: true, email: true, name: true },
         });
     }

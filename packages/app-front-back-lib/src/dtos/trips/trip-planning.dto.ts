@@ -52,6 +52,8 @@ export const TripPlanningDtoInSchema = zod.object({
 export type TripPlanningDtoIn = zod.output<typeof TripPlanningDtoInSchema>;
 
 export const TripPlanningDtoOutSchema = zod.object({
-    routes: zod.array(TripRouteSchema),
+    walk: TripRouteSchema.nullable(),
+    bike: TripRouteSchema.nullable(),
+    transit: zod.array(TripRouteSchema),
 });
 export type TripPlanningDtoOut = zod.output<typeof TripPlanningDtoOutSchema>;
