@@ -12,20 +12,20 @@ export const CARBON_FACTORS = {
 
 export type TransportMode = keyof typeof CARBON_FACTORS;
 
-// Zone géographique — Île-de-France
+// Zone géographique — Grenoble-Alpes Métropole
 export const GEO_CONFIG = {
-    center: { lat: 48.8566, lng: 2.3522 },
+    center: { latitude: 45.1885, longitude: 5.7245 },
     bbox: {
-        north: 49.25,
-        south: 48.12,
-        east: 3.56,
-        west: 1.45,
+        north: 45.32,
+        south: 45.05,
+        east: 5.96,
+        west: 5.58,
     },
-    defaultZoom: 12,
+    defaultZoom: 13,
 } as const;
 
-// APIs transport
-// ⚠️ URLs encore Grenoble (Métrovélo / TAG) — à remplacer par les sources Île-de-France (Vélib' / IDFM) lors de la réécriture transport.
+// APIs transport — Grenoble-Alpes Métropole
+// GBFS Métrovélo + API Métromobilité (GTFS TAG). Endpoint OTP /routers/default/plan à ajouter lors du slice routing (D1).
 export const TRANSPORT_API = {
     gbfsBaseUrl: "https://transport.data.gouv.fr/gbfs/grenoble/gbfs.json",
     gtfsBaseUrl: "https://data.mobilites-m.fr/api",

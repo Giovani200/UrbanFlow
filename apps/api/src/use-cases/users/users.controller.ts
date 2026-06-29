@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { CreateUserDtoOut } from "@urbanflow/app-front-back-lib";
-import { CreateUserUseCase } from "./create-user.use-case";
+import { CreateUserUseCase } from "./use-cases/create-user.use-case";
 
 @Controller("users")
 export class UsersController {

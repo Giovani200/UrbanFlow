@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
-import { TransportController } from "./transport.controller";
-import { PlanRouteUseCase } from "./plan-route.use-case";
+import { OrsRoutingAdapter } from "./openRouteService-routing.adapter";
 
 @Module({
-    controllers: [TransportController],
-    providers: [PlanRouteUseCase],
+    providers: [OrsRoutingAdapter],
+    exports: [OrsRoutingAdapter],
 })
 export class TransportModule {}

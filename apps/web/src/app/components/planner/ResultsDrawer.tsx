@@ -1,24 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronRight, Bike, Bus, Footprints, Train, Leaf, Navigation, Car, Loader2 } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
-import type { Route } from "@/app/services/routing.service";
+import type { TripRoute } from "@/app/services/trips.service";
 
 const MODE_ICONS: Record<string, React.ElementType> = {
   walk: Footprints,
   tram: Train,
-  bus:  Bus,
+  bus: Bus,
   bike: Bike,
   carpool: Car,
 };
 
 function formatDuration(seconds: number): string {
-  const mins = Math.round(seconds / 60);
-  if (mins < 60) return `${mins} min`;
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  return m > 0 ? `${h}h${m}` : `${h}h`;
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return remainingMinutes > 0 ? `${hours}h${remainingMinutes}` : `${hours}h`;
 }
 
 function formatDistance(meters: number): string {
@@ -26,25 +25,25 @@ function formatDistance(meters: number): string {
   return `${(meters / 1000).toFixed(1)} km`;
 }
 
-function getUniqueModes(route: Route): string[] {
+function getUniqueModes(route: TripRoute): string[] {
   const seen = new Set<string>();
   return route.segments
-    .map((s) => s.mode)
-    .filter((m) => {
-      if (seen.has(m)) return false;
-      seen.add(m);
+    .map((segment) => segment.mode)
+    .filter((mode) => {
+      if (seen.has(mode)) return false;
+      seen.add(mode);
       return true;
     });
 }
 
-function getBadge(route: Route, index: number): { label: string; green: boolean } | null {
-  if (route.totalCarbon === 0) return { label: "Zéro carbone", green: true };
+function getBadge(route: TripRoute, index: number): { label: string; green: boolean } | null {
+  if (route.totalCarbonGrams === 0) return { label: "Zéro carbone", green: true };
   if (index === 0) return { label: "Recommandé", green: false };
   return null;
 }
 
 interface Props {
-  routes: Route[];
+  routes: TripRoute[];
   loading: boolean;
   originLabel: string;
   destLabel: string;
@@ -71,13 +70,11 @@ export function ResultsDrawer({
   } = useBottomSheetDrag({ onDismiss: onBack });
 
   const minDuration = routes.length > 0
-    ? formatDuration(Math.min(...routes.map((r) => r.totalDuration)))
+    ? formatDuration(Math.min(...routes.map((route) => route.totalDurationSeconds)))
     : "";
 
   return (
     <>
-      <div className="absolute inset-0 z-10" onClick={onBack} />
-
       <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-12 flex items-center gap-2.5">
         <button
           onClick={onBack}
@@ -131,29 +128,29 @@ export function ResultsDrawer({
               </div>
 
               <div className="flex flex-col gap-2">
-                {routes.map((route, i) => {
-                  const isSelected = selectedIndex === i;
+                {routes.map((route, index) => {
+                  const isSelected = selectedIndex === index;
                   const modes = getUniqueModes(route);
-                  const badge = getBadge(route, i);
+                  const badge = getBadge(route, index);
 
                   return (
                     <div
-                      key={i}
-                      onClick={() => onSelectRoute(i)}
+                      key={index}
+                      onClick={() => onSelectRoute(index)}
                       className={`rounded-xl border-2 p-3 cursor-pointer transition-colors ${
                         isSelected ? "border-uf-red bg-uf-red-light" : "border-uf-border bg-white"
                       }`}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-1.5">
-                          {modes.map((m, j) => {
-                            const Icon = MODE_ICONS[m] ?? Footprints;
+                          {modes.map((mode, modeIndex) => {
+                            const Icon = MODE_ICONS[mode] ?? Footprints;
                             return (
-                              <span key={j} className="flex items-center gap-1.5">
+                              <span key={modeIndex} className="flex items-center gap-1.5">
                                 <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-white" : "bg-uf-bg"}`}>
                                   <Icon size={14} className={isSelected ? "text-uf-red" : "text-uf-text-secondary"} />
                                 </span>
-                                {j < modes.length - 1 && (
+                                {modeIndex < modes.length - 1 && (
                                   <ChevronRight size={10} className="text-uf-border" />
                                 )}
                               </span>
@@ -172,16 +169,16 @@ export function ResultsDrawer({
                       <div className="flex justify-between items-center">
                         <div className="flex items-baseline gap-1.5">
                           <span className="font-mono text-[20px] font-bold text-uf-text">
-                            {formatDuration(route.totalDuration)}
+                            {formatDuration(route.totalDurationSeconds)}
                           </span>
                           <span className="text-xs text-uf-text-secondary">
-                            {formatDistance(route.totalDistance)}
+                            {formatDistance(route.totalDistanceMeters)}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Leaf size={12} className={route.totalCarbon === 0 ? "text-uf-success" : "text-uf-text-secondary"} />
-                          <span className={`text-[11px] font-mono ${route.totalCarbon === 0 ? "text-uf-success" : "text-uf-text-secondary"}`}>
-                            {Math.round(route.totalCarbon)} gCO₂
+                          <Leaf size={12} className={route.totalCarbonGrams === 0 ? "text-uf-success" : "text-uf-text-secondary"} />
+                          <span className={`text-[11px] font-mono ${route.totalCarbonGrams === 0 ? "text-uf-success" : "text-uf-text-secondary"}`}>
+                            {Math.round(route.totalCarbonGrams)} gCO₂
                           </span>
                         </div>
                       </div>
