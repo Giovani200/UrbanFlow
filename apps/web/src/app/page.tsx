@@ -1,16 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Navigation, MapPin, Settings, Home, Briefcase, Star, Layers } from "lucide-react";
 import { MapViewDynamic } from "@/app/components/map/MapViewDynamic";
 import type { MapViewHandle } from "@/app/components/map/MapView";
 import { SearchDrawer } from "@/app/components/planner/SearchDrawer";
-import type { GeocodingResult } from "@/app/components/planner/SearchDrawer";
+import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { ResultsDrawer } from "@/app/components/planner/ResultsDrawer";
 import { NavScreen } from "@/app/components/planner/NavScreen";
 import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
-import { routingService } from "@/app/services/routing.service";
-import type { Route } from "@/app/services/routing.service";
+
+import { useGeolocation } from "@/app/hooks/useGeolocation";
+import { useGeolocationConsent } from "@/app/hooks/useGeolocationConsent";
+import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsentDialog";
+import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
+
+import { tripsService } from "@/app/services/trips.service";
+import type { TripRoute } from "@/app/services/trips.service";
 
 type View = "search" | "results" | "navigation";
 
@@ -26,13 +32,35 @@ export default function PlannerPage() {
   const [search, setSearch] = useState("");
   const [showSettings, setShowSettings] = useState(false);
 
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [routes, setRoutes] = useState<TripRoute[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(0);
   const [originLabel, setOriginLabel] = useState("");
   const [destLabel, setDestLabel] = useState("");
 
   const mapRef = useRef<MapViewHandle>(null);
+
+  const { status, position, start, stop } = useGeolocation();
+  const { consent, grant, deny } = useGeolocationConsent();
+  const [showConsent, setShowConsent] = useState(false);
+  const [geoError, setGeoError] = useState<"denied" | "unavailable" | null>(null);
+  const recenterPendingRef = useRef(false);
+
+
+  useEffect(() => {
+    if (!position) return;
+    if (recenterPendingRef.current) {
+      mapRef.current?.recenterOnUser(position.latitude, position.longitude);
+      recenterPendingRef.current = false;
+    }
+  }, [position]);
+
+  // Erreurs géoloc → popup.
+  useEffect(() => {
+    if (status === "denied" || status === "unavailable") {
+      setGeoError(status);
+    }
+  }, [status]);
 
   async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
     setOriginLabel(origin.label);
@@ -42,11 +70,9 @@ export default function PlannerPage() {
     setRoutes([]);
     setSelectedRoute(0);
 
-    const result = await routingService.planRoute({
-      originLat: origin.lat,
-      originLng: origin.lng,
-      destLat: destination.lat,
-      destLng: destination.lng,
+    const result = await tripsService.planTrip({
+      origin: { latitude: origin.latitude, longitude: origin.longitude },
+      destination: { latitude: destination.latitude, longitude: destination.longitude },
     });
 
     setLoading(false);
@@ -74,13 +100,39 @@ export default function PlannerPage() {
     setView("search");
   }
 
-  function handleLocateMe() {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => mapRef.current?.showUserLocation(pos.coords.latitude, pos.coords.longitude),
-      () => { /* geolocation denied */ },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+  function startTracking() {
+    recenterPendingRef.current = true;
+    start();
   }
+
+  function handleLocateClick() {
+    if (status === "watching" && position) {
+      mapRef.current?.recenterOnUser(position.latitude, position.longitude);
+      return;
+    }
+    if (status === "denied") {
+      setGeoError("denied");
+      return;
+    }
+    if (consent === "granted") {
+      startTracking();
+      return;
+    }
+    setShowConsent(true);
+  }
+
+  function handleConsentAccept() {
+    grant();
+    setShowConsent(false);
+    startTracking();
+  }
+
+  function handleConsentRefuse() {
+    deny();
+    setShowConsent(false);
+    stop();
+  }
+
 
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans">
@@ -124,7 +176,7 @@ export default function PlannerPage() {
       {view !== "navigation" && (
         <button
           title="Ma position"
-          onClick={handleLocateMe}
+          onClick={handleLocateClick}
           className="absolute right-4 bottom-72 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
         >
           <Navigation size={20} className="text-uf-text" />
@@ -141,10 +193,11 @@ export default function PlannerPage() {
       {/*)}*/}
 
       {view === "search" && (
-        <SearchDrawer
-          onSearch={handleSearch}
-          onLocateMe={(position) => mapRef.current?.showUserLocation(position.lat, position.lng)}
-        />
+          <SearchDrawer
+              onSearch={handleSearch}
+              userPosition={position}
+              onRequestPosition={handleLocateClick}
+          />
       )}
 
       {view === "results" && (
@@ -167,6 +220,19 @@ export default function PlannerPage() {
       {showSettings && (
         <SettingsDrawer onClose={() => setShowSettings(false)} />
       )}
+
+      <GeolocationConsentDialog
+          open={showConsent}
+          onOpenChange={setShowConsent}
+          onAccept={handleConsentAccept}
+          onRefuse={handleConsentRefuse}
+      />
+
+      <GeolocationErrorDialog
+          open={geoError !== null}
+          onOpenChange={(open) => { if (!open) setGeoError(null); }}
+          variant={geoError ?? "unavailable"}
+      />
     </div>
   );
 }

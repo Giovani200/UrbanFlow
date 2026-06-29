@@ -3,7 +3,8 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { Segment } from "@/app/services/routing.service";
+import type { TripSegment } from "@/app/services/trips.service";
+import { MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM } from "@/app/config/geolocalisation";
 
 const MODE_COLORS: Record<string, string> = {
   walk:    "#6B7280",
@@ -14,10 +15,10 @@ const MODE_COLORS: Record<string, string> = {
 };
 
 export type MapViewHandle = {
-  drawSegments: (segments: Segment[]) => void;
+  drawSegments: (segments: TripSegment[]) => void;
   clearSegments: () => void;
-  fitToSegments: (segments: Segment[]) => void;
-  showUserLocation: (lat: number, lng: number) => void;
+  fitToSegments: (segments: TripSegment[]) => void;
+  recenterOnUser: (latitude: number, longitude: number) => void;
 };
 
 interface MapViewProps {
@@ -26,29 +27,30 @@ interface MapViewProps {
 }
 
 const MapView = forwardRef<MapViewHandle, MapViewProps>(
-  function MapView({ center = [2.3522, 48.8566], zoom = 12 }, ref) {
+  function MapView({ center = MAP_DEFAULT_CENTER, zoom = MAP_DEFAULT_ZOOM }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
     const layerIdsRef = useRef<string[]>([]);
-    const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+    const originMarkerRef = useRef<maplibregl.Marker | null>(null);
+    const destinationMarkerRef = useRef<maplibregl.Marker | null>(null);
 
     useImperativeHandle(ref, () => ({
-      drawSegments(segments: Segment[]) {
+      drawSegments(segments: TripSegment[]) {
         const map = mapRef.current;
         if (!map) return;
 
         this.clearSegments();
 
-        segments.forEach((seg, i) => {
-          const sourceId = `route-source-${i}`;
-          const layerId = `route-layer-${i}`;
+        segments.forEach((segment, index) => {
+          const sourceId = `route-source-${index}`;
+          const layerId = `route-layer-${index}`;
 
           map.addSource(sourceId, {
             type: "geojson",
             data: {
               type: "Feature",
               properties: {},
-              geometry: seg.geometry,
+              geometry: segment.geometry,
             },
           });
 
@@ -61,7 +63,7 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
               "line-cap": "round",
             },
             paint: {
-              "line-color": MODE_COLORS[seg.mode] ?? "#6B7280",
+              "line-color": MODE_COLORS[segment.mode] ?? "#6B7280",
               "line-width": 4,
               "line-opacity": 0.8,
             },
@@ -69,6 +71,23 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
 
           layerIdsRef.current.push(layerId);
         });
+
+        // Marqueurs départ (point vert) + arrivée (épingle rouge).
+        const allCoordinates = segments.flatMap((segment) => segment.geometry.coordinates);
+        if (allCoordinates.length > 0) {
+          const originPoint = allCoordinates[0];
+          const destinationPoint = allCoordinates[allCoordinates.length - 1];
+
+          const originElement = document.createElement("div");
+          originElement.className = "w-4 h-4 rounded-full bg-uf-success border-2 border-white shadow-md";
+          originMarkerRef.current = new maplibregl.Marker({ element: originElement })
+            .setLngLat(originPoint)
+            .addTo(map);
+
+          destinationMarkerRef.current = new maplibregl.Marker({ color: "#b91c1c", anchor: "bottom" })
+            .setLngLat(destinationPoint)
+            .addTo(map);
+        }
       },
 
       clearSegments() {
@@ -76,43 +95,35 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
         if (!map) return;
 
         layerIdsRef.current.forEach((id) => {
-          const idx = id.replace("route-layer-", "");
-          const sourceId = `route-source-${idx}`;
+          const index = id.replace("route-layer-", "");
+          const sourceId = `route-source-${index}`;
           if (map.getLayer(id)) map.removeLayer(id);
           if (map.getSource(sourceId)) map.removeSource(sourceId);
         });
         layerIdsRef.current = [];
+
+        originMarkerRef.current?.remove();
+        originMarkerRef.current = null;
+        destinationMarkerRef.current?.remove();
+        destinationMarkerRef.current = null;
       },
 
-      fitToSegments(segments: Segment[]) {
+      fitToSegments(segments: TripSegment[]) {
         const map = mapRef.current;
         if (!map || segments.length === 0) return;
 
         const bounds = new maplibregl.LngLatBounds();
-        segments.forEach((seg) => {
-          seg.geometry.coordinates.forEach(([lng, lat]) => {
-            bounds.extend([lng, lat]);
+        segments.forEach((segment) => {
+          segment.geometry.coordinates.forEach(([longitude, latitude]) => {
+            bounds.extend([longitude, latitude]);
           });
         });
 
         map.fitBounds(bounds, { padding: 80, maxZoom: 16 });
       },
 
-      showUserLocation(lat: number, lng: number) {
-        const map = mapRef.current;
-        if (!map) return;
-
-        if (!userMarkerRef.current) {
-          const el = document.createElement("div");
-          el.className = "w-4 h-4 rounded-full bg-uf-red border-2 border-white shadow-md";
-          userMarkerRef.current = new maplibregl.Marker({ element: el })
-            .setLngLat([lng, lat])
-            .addTo(map);
-        } else {
-          userMarkerRef.current.setLngLat([lng, lat]);
-        }
-
-        map.flyTo({ center: [lng, lat], zoom: 15 });
+      recenterOnUser(latitude: number, longitude: number) {
+        mapRef.current?.flyTo({ center: [longitude, latitude], zoom: 15 });
       },
     }));
 
