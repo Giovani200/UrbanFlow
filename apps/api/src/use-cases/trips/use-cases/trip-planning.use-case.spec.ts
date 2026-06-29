@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+import type { Coordinates, TripMode } from "@urbanflow/app-front-back-lib";
 import { TripPlanningUseCase } from "./trip-planning.use-case";
-import type { OrsRoute, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
+import type { OrsProfile, OrsRoute, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
+import type { OtpItinerary, OtpLeg, OtpRoutingAdapter } from "../../transport/openTripPlanner-routing.adapter";
 
 function makeOrsRoute(distanceMeters: number, durationSeconds: number): OrsRoute {
     return {
@@ -10,42 +12,106 @@ function makeOrsRoute(distanceMeters: number, durationSeconds: number): OrsRoute
     };
 }
 
-function makeUseCase(getRoute: OrsRoutingAdapter["getRoute"]): TripPlanningUseCase {
-    const adapter = { getRoute } as unknown as OrsRoutingAdapter;
-    return new TripPlanningUseCase(adapter);
+function makeOtpLeg(
+    mode: TripMode,
+    distanceMeters: number,
+    durationSeconds: number,
+    lineShortName?: string,
+): OtpLeg {
+    return {
+        mode,
+        geometry: { type: "LineString", coordinates: [[5.72, 45.18], [5.73, 45.19]] },
+        distanceMeters,
+        durationSeconds,
+        lineShortName,
+    };
+}
+
+function makeUseCase(
+    getRoute: OrsRoutingAdapter["getRoute"],
+    getItineraries: OtpRoutingAdapter["getItineraries"] = async () => [],
+): TripPlanningUseCase {
+    const orsRoutingAdapter = { getRoute } as unknown as OrsRoutingAdapter;
+    const otpRoutingAdapter = { getItineraries } as unknown as OtpRoutingAdapter;
+    return new TripPlanningUseCase(orsRoutingAdapter, otpRoutingAdapter);
 }
 
 const origin = { latitude: 45.18, longitude: 5.72 };
 const destination = { latitude: 45.19, longitude: 5.73 };
 
 describe("TripPlanningUseCase", () => {
-    it("renvoie marche + vélo, carbone zéro", async () => {
-        const useCase = makeUseCase(async (profile) =>
-            profile === "cycling-regular" ? makeOrsRoute(3000, 600) : makeOrsRoute(2500, 1800),
+    it("construit une route transit multi-segments, carbone = somme des legs", async () => {
+        const itinerary: OtpItinerary = {
+            durationSeconds: 1500,
+            legs: [
+                makeOtpLeg("walk", 300, 240),
+                makeOtpLeg("bus", 2000, 600, "C1"),
+                makeOtpLeg("tram", 4000, 480, "B"),
+                makeOtpLeg("walk", 200, 180),
+            ],
+        };
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => [itinerary],
         );
 
         const result = await useCase.execute({ origin, destination });
 
-        expect(result.routes).toHaveLength(2);
-        const modes = result.routes.flatMap((route) => route.segments.map((segment) => segment.mode));
-        expect(modes).toContain("walk");
-        expect(modes).toContain("bike");
-        expect(result.routes.every((route) => route.totalCarbonGrams === 0)).toBe(true);
+        expect(result.transit).toHaveLength(1);
+        const route = result.transit[0];
+        expect(route.segments.map((segment) => segment.mode)).toEqual(["walk", "bus", "tram", "walk"]);
+        // carbone = bus 2 km × 122 + tram 4 km × 4,44 (marche = 0)
+        const expectedCarbon = (2000 / 1000) * 122 + (4000 / 1000) * 4.44;
+        expect(route.totalCarbonGrams).toBeCloseTo(expectedCarbon, 5);
+        expect(route.totalDistanceMeters).toBe(6500);
+        expect(route.totalDurationSeconds).toBe(1500);
+        // les modes purs restent disponibles
+        expect(result.walk).not.toBeNull();
+        expect(result.bike).not.toBeNull();
     });
-    it("classe le plus rapide en premier", async () => {
-        const useCase = makeUseCase(async (profile) =>
-            profile === "cycling-regular" ? makeOrsRoute(3000, 600) : makeOrsRoute(2500, 1800),
+
+    it("écarte l'itinéraire OTP tout-marche (doublon d'ORS)", async () => {
+        const allWalk: OtpItinerary = {
+            durationSeconds: 3000,
+            legs: [makeOtpLeg("walk", 5000, 3000)],
+        };
+        const withBus: OtpItinerary = {
+            durationSeconds: 1200,
+            legs: [makeOtpLeg("walk", 200, 180), makeOtpLeg("bus", 3000, 800, "C1")],
+        };
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => [allWalk, withBus],
         );
 
         const result = await useCase.execute({ origin, destination });
 
-        expect(result.routes[0].segments[0].mode).toBe("bike"); // 600s < 1800s
-        expect(result.routes[0].score).toBeGreaterThanOrEqual(result.routes[1].score);
+        expect(result.transit).toHaveLength(1);
+        expect(result.transit[0].segments.some((segment) => segment.mode === "bus")).toBe(true);
     });
 
-    it("passe en profil wheelchair quand wheelchairAccess est vrai (C12)", async () => {
-        const getRoute = vi.fn(async () => makeOrsRoute(2000, 1500));
-        const useCase = makeUseCase(getRoute);
+    it("OTP en échec → transit vide, marche et vélo conservés (allSettled)", async () => {
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => {
+                throw new Error("OTP_REQUEST_FAILED");
+            },
+        );
+
+        const result = await useCase.execute({ origin, destination });
+
+        expect(result.transit).toEqual([]);
+        expect(result.walk).not.toBeNull();
+        expect(result.bike).not.toBeNull();
+    });
+
+    it("profil wheelchair → ORS wheelchair ET OTP wheelchair=true (C12)", async () => {
+        const getRoute = vi.fn(async (profile: OrsProfile) => makeOrsRoute(2000, 1500));
+        const getItineraries = vi.fn(
+            async (requestOrigin: Coordinates, requestDestination: Coordinates, wheelchairAccess: boolean) =>
+                [] as OtpItinerary[],
+        );
+        const useCase = makeUseCase(getRoute, getItineraries);
 
         await useCase.execute({
             origin,
@@ -53,8 +119,31 @@ describe("TripPlanningUseCase", () => {
             profile: { weightCarbon: 50, weightTime: 30, weightCost: 20, wheelchairAccess: true },
         });
 
-        const calledProfiles = getRoute.mock.calls.map((call) => call[0]);
-        expect(calledProfiles).toContain("wheelchair");
-        expect(calledProfiles).not.toContain("foot-walking");
+        const orsProfiles = getRoute.mock.calls.map((call) => call[0]);
+        expect(orsProfiles).toContain("wheelchair");
+        expect(orsProfiles).not.toContain("foot-walking");
+        expect(getItineraries).toHaveBeenCalledWith(origin, destination, true);
+    });
+
+    it("classe les options transit par score décroissant", async () => {
+        const fast: OtpItinerary = {
+            durationSeconds: 900,
+            legs: [makeOtpLeg("walk", 100, 90), makeOtpLeg("tram", 4000, 700, "B")],
+        };
+        const slow: OtpItinerary = {
+            durationSeconds: 2400,
+            legs: [makeOtpLeg("walk", 100, 90), makeOtpLeg("bus", 6000, 2200, "C1")],
+        };
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => [slow, fast],
+        );
+
+        const result = await useCase.execute({ origin, destination });
+
+        expect(result.transit).toHaveLength(2);
+        expect(result.transit[0].score).toBeGreaterThanOrEqual(result.transit[1].score);
+        // l'option tram (rapide + plus propre) doit ressortir en tête
+        expect(result.transit[0].segments.some((segment) => segment.mode === "tram")).toBe(true);
     });
 });
