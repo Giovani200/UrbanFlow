@@ -22,6 +22,7 @@ export interface OtpLeg {
     departureStopName?: string;
     arrivalStopName?: string;
     lineShortName?: string;
+    intermediateStops?: { name: string; latitude: number; longitude: number }[];
 }
 
 export interface OtpItinerary {
@@ -38,6 +39,7 @@ interface OtpRawLeg {
     from?: { name?: string };
     to?: { name?: string };
     legGeometry?: { points?: string };
+    intermediateStops?: Array<{ name?: string; lat: number; lon: number }>;
 }
 
 interface OtpRawItinerary {
@@ -63,6 +65,7 @@ export class OtpRoutingAdapter {
             mode: OTP_REQUESTED_MODES,
             numItineraries: String(OTP_MAX_ITINERARIES),
             wheelchair: String(wheelchairAccess),
+            showIntermediateStops: "true",
         });
 
         const response = await fetch(`${OTP_PLAN_URL}?${parameters.toString()}`, {
@@ -108,11 +111,23 @@ export class OtpRoutingAdapter {
                 departureStopName: leg.transitLeg ? leg.from?.name : undefined,
                 arrivalStopName: leg.transitLeg ? leg.to?.name : undefined,
                 lineShortName: leg.transitLeg ? leg.routeShortName : undefined,
+                intermediateStops: leg.transitLeg ? mapIntermediateStops(leg.intermediateStops) : undefined,
             });
         }
 
         return { legs, durationSeconds: itinerary.duration };
     }
+}
+
+// Arrêts intermédiaires d'un leg transit : on ne garde que ceux réellement nommés.
+function mapIntermediateStops(
+    stops?: Array<{ name?: string; lat: number; lon: number }>,
+): { name: string; latitude: number; longitude: number }[] | undefined {
+    if (!stops || stops.length === 0) return undefined;
+    const mapped = stops
+        .filter((stop): stop is { name: string; lat: number; lon: number } => typeof stop.name === "string")
+        .map((stop) => ({ name: stop.name, latitude: stop.lat, longitude: stop.lon }));
+    return mapped.length > 0 ? mapped : undefined;
 }
 
 // Décode une polyline encodée Google (précision 5, ordre lat,lon) en coordonnées GeoJSON [longitude, latitude].

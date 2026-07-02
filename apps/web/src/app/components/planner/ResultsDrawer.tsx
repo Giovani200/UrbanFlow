@@ -80,13 +80,13 @@ export function ResultsDrawer({
           onClick={onBack}
           className="w-[42px] h-[42px] rounded-xl bg-white shadow-lg flex items-center justify-center shrink-0"
         >
-          <ArrowLeft size={18} className="text-uf-text" />
+          <ArrowLeft size={18} className="text-ink" />
         </button>
         <div className="flex-1 bg-white rounded-xl shadow-lg px-3.5 py-2.5 flex items-center gap-2 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-uf-success shrink-0" />
-          <span className="text-[13px] text-uf-text-secondary truncate">{originLabel}</span>
-          <ArrowRight size={13} className="text-uf-text-secondary shrink-0" />
-          <span className="text-[13px] font-semibold text-uf-text truncate">{destLabel}</span>
+          <span className="w-2 h-2 rounded-full bg-eco shrink-0" />
+          <span className="text-[13px] text-text-2 truncate">{originLabel}</span>
+          <ArrowRight size={13} className="text-text-2 shrink-0" />
+          <span className="text-[13px] font-semibold text-ink truncate">{destLabel}</span>
         </div>
       </div>
 
@@ -105,26 +105,26 @@ export function ResultsDrawer({
         onMouseLeave={onMouseLeave}
       >
         <div className="flex justify-center py-3">
-          <div className="w-9 h-1 rounded-full bg-uf-border" />
+          <div className="w-9 h-1 rounded-full bg-border" />
         </div>
 
         <div className="px-4 pb-8">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-10 gap-3">
-              <Loader2 size={28} className="text-uf-red animate-spin" />
-              <p className="text-sm text-uf-text-secondary">Calcul des itinéraires…</p>
+              <Loader2 size={28} className="text-primary animate-spin" />
+              <p className="text-sm text-text-2">Calcul des itinéraires…</p>
             </div>
           ) : routes.length === 0 ? (
             <div className="text-center py-10">
-              <p className="text-sm text-uf-text-secondary">Aucun itinéraire trouvé</p>
+              <p className="text-sm text-text-2">Aucun itinéraire trouvé</p>
             </div>
           ) : (
             <>
               <div className="flex justify-between items-center mb-3">
-                <p className="text-[15px] font-bold text-uf-text">
+                <p className="text-[15px] font-bold text-ink">
                   {routes.length} itinéraire{routes.length > 1 ? "s" : ""} trouvé{routes.length > 1 ? "s" : ""}
                 </p>
-                <span className="text-xs text-uf-text-secondary">À partir de {minDuration}</span>
+                <span className="text-xs text-text-2">À partir de {minDuration}</span>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -138,7 +138,7 @@ export function ResultsDrawer({
                       key={index}
                       onClick={() => onSelectRoute(index)}
                       className={`rounded-xl border-2 p-3 cursor-pointer transition-colors ${
-                        isSelected ? "border-uf-red bg-uf-red-light" : "border-uf-border bg-white"
+                        isSelected ? "border-primary bg-primary-tint" : "border-border bg-white"
                       }`}
                     >
                       <div className="flex justify-between items-start mb-2">
@@ -147,11 +147,11 @@ export function ResultsDrawer({
                             const Icon = MODE_ICONS[mode] ?? Footprints;
                             return (
                               <span key={modeIndex} className="flex items-center gap-1.5">
-                                <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-white" : "bg-uf-bg"}`}>
-                                  <Icon size={14} className={isSelected ? "text-uf-red" : "text-uf-text-secondary"} />
+                                <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-white" : "bg-bg"}`}>
+                                  <Icon size={14} className={isSelected ? "text-primary" : "text-text-2"} />
                                 </span>
                                 {modeIndex < modes.length - 1 && (
-                                  <ChevronRight size={10} className="text-uf-border" />
+                                  <ChevronRight size={10} className="text-border" />
                                 )}
                               </span>
                             );
@@ -159,7 +159,7 @@ export function ResultsDrawer({
                         </div>
                         {badge && (
                           <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                            badge.green ? "bg-green-50 text-uf-success" : "bg-uf-red text-white"
+                            badge.green ? "bg-[#E4F3EC] text-eco" : "bg-primary text-white"
                           }`}>
                             {badge.label}
                           </span>
@@ -168,16 +168,16 @@ export function ResultsDrawer({
 
                       <div className="flex justify-between items-center">
                         <div className="flex items-baseline gap-1.5">
-                          <span className="font-mono text-[20px] font-bold text-uf-text">
+                          <span className="num text-[20px] font-bold text-ink">
                             {formatDuration(route.totalDurationSeconds)}
                           </span>
-                          <span className="text-xs text-uf-text-secondary">
+                          <span className="text-xs text-text-2">
                             {formatDistance(route.totalDistanceMeters)}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Leaf size={12} className={route.totalCarbonGrams === 0 ? "text-uf-success" : "text-uf-text-secondary"} />
-                          <span className={`text-[11px] font-mono ${route.totalCarbonGrams === 0 ? "text-uf-success" : "text-uf-text-secondary"}`}>
+                          <Leaf size={12} className={route.totalCarbonGrams === 0 ? "text-eco" : "text-text-2"} />
+                          <span className={`text-[11px] num ${route.totalCarbonGrams === 0 ? "text-eco" : "text-text-2"}`}>
                             {Math.round(route.totalCarbonGrams)} gCO₂
                           </span>
                         </div>
@@ -186,7 +186,7 @@ export function ResultsDrawer({
                       {isSelected && (
                         <button
                           onClick={onStart}
-                          className="mt-2.5 w-full bg-uf-red text-white rounded-lg py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
+                          className="mt-2.5 w-full bg-primary text-white rounded-lg py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
                         >
                           <Navigation size={15} />
                           Choisir cet itinéraire
