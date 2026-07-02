@@ -19,6 +19,17 @@ export const TransitStopSchema = zod.object({
 });
 export type TransitStop = zod.output<typeof TransitStopSchema>;
 
+export const SharedVehicleTypeSchema = zod.enum(["bike", "scooter"]);
+export type SharedVehicleType = zod.output<typeof SharedVehicleTypeSchema>;
+
+export const SharedVehicleSchema = zod.object({
+    id: zod.string(),
+    type: SharedVehicleTypeSchema,
+    location: CoordinatesSchema,
+    distanceMeters: zod.number(),
+});
+export type SharedVehicle = zod.output<typeof SharedVehicleSchema>;
+
 export const NearbyTransportDtoInSchema = zod.object({
     latitude: zod.coerce.number().min(-90).max(90),
     longitude: zod.coerce.number().min(-180).max(180),
@@ -28,5 +39,6 @@ export type NearbyTransportDtoIn = zod.output<typeof NearbyTransportDtoInSchema>
 
 export const NearbyTransportDtoOutSchema = zod.object({
     transitStops: zod.array(TransitStopSchema),
+    sharedVehicles: zod.array(SharedVehicleSchema),
 });
 export type NearbyTransportDtoOut = zod.output<typeof NearbyTransportDtoOutSchema>;
