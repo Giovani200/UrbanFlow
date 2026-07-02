@@ -2,33 +2,75 @@
 
 :root {
   color-scheme: light;
-  --uf-red: #B91C1C;
-  --uf-red-light: #FEF2F2;
-  --uf-red-mid: #FCA5A5;
-  --uf-success: #16A34A;
-  --uf-white: #FFFFFF;
-  --uf-bg: #F9FAFB;
-  --uf-text: #0A0A0A;
-  --uf-text-secondary: #6B7280;
-  --uf-border: #E5E7EB;
-  --uf-border-dark: #D1D5DB;
+
+  /* Surfaces et texte */
+  --ink: #15171C;
+  --bg: #F6F4F0;
+  --surface: #FFFFFF;
+  --border: #E4E1DA;
+  --text-2: #535A63;
+
+  /* Marque et action */
+  --primary: #CC1B36;
+  --primary-tint: #FBEAED;
+
+  /* Couleur par mode */
+  --walk: #5A6470;
+  --bike: #138A5E;
+  --tram: #2F62E6;
+  --bus: #E07A1F;
+  --car: #9A1B2F;
+  --eco: #138A5E;
+
+  /* Rayons */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
 }
 
 @theme inline {
-  --color-uf-red: var(--uf-red);
-  --color-uf-red-light: var(--uf-red-light);
-  --color-uf-bg: var(--uf-bg);
-  --color-uf-text: var(--uf-text);
-  --color-uf-text-secondary: var(--uf-text-secondary);
-  --color-uf-border: var(--uf-border);
-  --color-uf-white: var(--uf-white);
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --color-ink: var(--ink);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text-2: var(--text-2);
+  --color-primary: var(--primary);
+  --color-primary-tint: var(--primary-tint);
+  --color-walk: var(--walk);
+  --color-bike: var(--bike);
+  --color-tram: var(--tram);
+  --color-bus: var(--bus);
+  --color-car: var(--car);
+  --color-eco: var(--eco);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
 }
 
 body {
-  background: var(--uf-white);
-  color: var(--uf-text);
-  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+/* Chiffres tabulaires dans la police du texte, jamais de mono */
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

@@ -129,7 +129,7 @@ export default function ProfilePage() {
           <ChevronRight size={16} className="text-uf-text-secondary shrink-0" />
         </div>
 
-        {/* Stats — placeholder jusqu'à F4 */}
+        {/* Stats, placeholder jusqu'à F4 */}
         <div className="grid grid-cols-2 gap-2.5">
           <div className="bg-white rounded-xl p-3.5">
             <div className="flex items-center gap-1.5 mb-1.5">

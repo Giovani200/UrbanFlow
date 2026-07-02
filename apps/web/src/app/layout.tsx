@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Schibsted_Grotesk } from "next/font/google";
 import { Providers } from "@/app/components/Providers";
 import "./css/globals.css";
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-});
+const schibstedGrotesk = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "UrbanFlow — Mobilité urbaine Grenoble",
+  title: "UrbanFlow, Mobilité urbaine Grenoble",
   description: "Planificateur multimodal pour la métropole grenobloise",
 };
 
@@ -24,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-uf-white text-uf-text">
+    <html lang="fr" className={`${schibstedGrotesk.variable} ${fraunces.variable} h-full`}>
+      <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
       </body>
     </html>

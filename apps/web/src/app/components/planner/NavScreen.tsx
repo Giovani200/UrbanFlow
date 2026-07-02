@@ -12,7 +12,7 @@ const MODE_ICONS: Record<string, React.ElementType> = {
 const STEPS = [
   { icon: "walk", label: "Marche",    instruction: "Prenez la rue Championnet vers le nord", dist: "320m",  done: true,  active: false },
   { icon: "bike", label: "Métrovélo", instruction: "Prenez le vélo jusqu'à Europole",         dist: "2.1 km", done: false, active: true  },
-  { icon: "tram", label: "Tram A",    instruction: "Direction Crolles — 4 arrêts",             dist: "1.5 km", done: false, active: false },
+  { icon: "tram", label: "Tram A",    instruction: "Direction Crolles, 4 arrêts",             dist: "1.5 km", done: false, active: false },
   { icon: "walk", label: "Marche",    instruction: "Arrivée à destination",                   dist: "150m",  done: false, active: false },
 ];
 
@@ -61,7 +61,7 @@ export function NavScreen({ onStop }: Props) {
       <div className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-[20px] shadow-[0_-4px_24px_rgba(0,0,0,0.12)] px-4 pt-4 pb-8">
         <div className="w-9 h-1 rounded-full bg-uf-border mx-auto mb-3.5" />
 
-        {/* Étapes de progression — cercles centrés + lignes absolues */}
+        {/* Étapes de progression, cercles centrés + lignes absolues */}
         <div className="relative flex items-center mb-1">
           {/* Ligne grise de base */}
           <div
