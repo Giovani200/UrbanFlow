@@ -15,6 +15,13 @@ export const GeoJsonLineStringSchema = zod.object({
 });
 export type GeoJsonLineString = zod.output<typeof GeoJsonLineStringSchema>;
 
+export const TransitStopPointSchema = zod.object({
+    name: zod.string(),
+    latitude: zod.number(),
+    longitude: zod.number(),
+});
+export type TransitStopPoint = zod.output<typeof TransitStopPointSchema>;
+
 export const TripSegmentSchema = zod.object({
     mode: TripModeSchema,
     geometry: GeoJsonLineStringSchema,
@@ -24,6 +31,7 @@ export const TripSegmentSchema = zod.object({
     departureStopName: zod.string().optional(),
     arrivalStopName: zod.string().optional(),
     lineShortName: zod.string().optional(),
+    intermediateStops: zod.array(TransitStopPointSchema).optional(),
 });
 export type TripSegment = zod.output<typeof TripSegmentSchema>;
 

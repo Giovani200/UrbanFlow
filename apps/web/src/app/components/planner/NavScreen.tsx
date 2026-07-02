@@ -1,134 +1,195 @@
 "use client";
 
-import { Bike, Bus, Footprints, Train, Check, Navigation, Square } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Navigation, Square } from "lucide-react";
+import type { TripRoute, TripSegment } from "@/app/services/trips.service";
+import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
+import { haversineMeters } from "@/app/lib/geo";
 
-const MODE_ICONS: Record<string, React.ElementType> = {
-  walk: Footprints,
-  bike: Bike,
-  tram: Train,
-  bus:  Bus,
-};
+const ADVANCE_THRESHOLD_METERS = 30;
+const SWIPE_THRESHOLD_PIXELS = 50;
 
-const STEPS = [
-  { icon: "walk", label: "Marche",    instruction: "Prenez la rue Championnet vers le nord", dist: "320m",  done: true,  active: false },
-  { icon: "bike", label: "Métrovélo", instruction: "Prenez le vélo jusqu'à Europole",         dist: "2.1 km", done: false, active: true  },
-  { icon: "tram", label: "Tram A",    instruction: "Direction Crolles, 4 arrêts",             dist: "1.5 km", done: false, active: false },
-  { icon: "walk", label: "Marche",    instruction: "Arrivée à destination",                   dist: "150m",  done: false, active: false },
-];
-
-const ACTIVE = STEPS.find((s) => s.active)!;
-
-interface Props {
-  onStop: () => void;
+function formatDuration(seconds: number): string {
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest > 0 ? `${hours}h${rest}` : `${hours}h`;
 }
 
-export function NavScreen({ onStop }: Props) {
+function formatDistance(meters: number): string {
+  return meters < 1000 ? `${meters} m` : `${(meters / 1000).toFixed(1).replace(".", ",")} km`;
+}
+
+function segmentEnd(segment: TripSegment): { latitude: number; longitude: number } | null {
+  const coordinates = segment.geometry.coordinates;
+  const last = coordinates[coordinates.length - 1];
+  return last ? { longitude: last[0], latitude: last[1] } : null;
+}
+
+interface Props {
+  route: TripRoute;
+  position: { latitude: number; longitude: number } | null;
+  onFocusSegment: (segment: TripSegment) => void;
+  onRecenter: () => void;
+  onExit: () => void;
+  onArrived: () => void;
+}
+
+export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit, onArrived }: Props) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const swipeStartX = useRef<number | null>(null);
+  const segments = route.segments;
+  const active = segments[activeIndex];
+  const isLast = activeIndex >= segments.length - 1;
+  const meta = MODE_META[active.mode] ?? MODE_FALLBACK;
+  const Icon = meta.icon;
+  const isTransit = active.mode === "tram" || active.mode === "bus";
+
+  // Cadre la carte sur le segment actif à chaque changement.
+  useEffect(() => {
+    onFocusSegment(active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
+
+  // Bascule automatique au segment suivant quand la position atteint la fin du segment.
+  useEffect(() => {
+    if (!position) return;
+    const current = segments[activeIndex];
+    const currentEnd = segmentEnd(current);
+    if (!currentEnd || haversineMeters(position, currentEnd) >= ADVANCE_THRESHOLD_METERS) return;
+    if (activeIndex >= segments.length - 1) onArrived();
+    else setActiveIndex((index) => index + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, activeIndex, segments]);
+
+  function handleSwipeStart(clientX: number) {
+    swipeStartX.current = clientX;
+  }
+
+  function handleSwipeEnd(clientX: number) {
+    if (swipeStartX.current === null) return;
+    const delta = clientX - swipeStartX.current;
+    swipeStartX.current = null;
+    if (delta < -SWIPE_THRESHOLD_PIXELS && !isLast) setActiveIndex((index) => index + 1);
+    else if (delta > SWIPE_THRESHOLD_PIXELS && activeIndex > 0) setActiveIndex((index) => index - 1);
+  }
+
+  const end = segmentEnd(active);
+  const remaining = position && end ? Math.round(haversineMeters(position, end)) : active.distanceMeters;
+
   return (
     <>
-      {/* Indicateur position courante sur la carte */}
-      <div className="absolute top-[46%] left-[43%] z-10 -translate-x-1/2 -translate-y-1/2">
-        <div className="w-5 h-5 rounded-full bg-uf-red border-[3px] border-white shadow-[0_0_0_6px_rgba(185,28,28,0.2)]" />
-      </div>
-
-      {/* Bandeau instruction haut */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-12">
-        <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.18)] p-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-[52px] h-[52px] rounded-[14px] bg-uf-red-light flex items-center justify-center shrink-0">
-              {(() => { const Icon = MODE_ICONS[ACTIVE.icon]; return <Icon size={26} className="text-uf-red" strokeWidth={1.75} />; })()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-semibold text-uf-red uppercase tracking-wider mb-0.5">{ACTIVE.label}</p>
-              <p className="text-[16px] font-bold text-uf-text leading-tight">{ACTIVE.instruction}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="font-mono text-[18px] font-bold text-uf-text">2.1</p>
-              <p className="text-[11px] text-uf-text-secondary">km</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FAB recentrer */}
       <button
         title="Recentrer"
-        className="absolute right-4 bottom-[200px] z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
+        onClick={onRecenter}
+        className="absolute right-4 bottom-[300px] z-10 w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center"
       >
-        <Navigation size={18} className="text-uf-text" />
+        <Navigation size={18} className="text-ink" />
       </button>
 
-      {/* Panneau bas */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-[20px] shadow-[0_-4px_24px_rgba(0,0,0,0.12)] px-4 pt-4 pb-8">
-        <div className="w-9 h-1 rounded-full bg-uf-border mx-auto mb-3.5" />
+      <div
+        className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl px-4 pt-3 pb-8 max-h-[75%] flex flex-col"
+        onTouchStart={(event) => handleSwipeStart(event.touches[0].clientX)}
+        onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
+      >
+        <div className="w-9 h-1 rounded-full bg-border mx-auto mb-3.5 shrink-0" />
 
-        {/* Étapes de progression, cercles centrés + lignes absolues */}
-        <div className="relative flex items-center mb-1">
-          {/* Ligne grise de base */}
+        <div className="flex items-center gap-3.5 mb-3.5 shrink-0">
           <div
-            className="absolute top-1/2 -translate-y-1/2 h-0.5 bg-uf-border"
-            style={{ left: "12.5%", right: "12.5%" }}
-          />
-          {/* Segment vert pour les étapes terminées */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 h-0.5 bg-uf-success"
-            style={{ left: "12.5%", width: `${(STEPS.filter((s, i) => s.done && i < STEPS.length - 1).length / (STEPS.length - 1)) * 75}%` }}
-          />
-          {STEPS.map((s, i) => {
-            const Icon = MODE_ICONS[s.icon];
-            return (
-              <div key={i} className="flex-1 flex justify-center relative z-10">
-                <div className={`w-[30px] h-[30px] rounded-lg flex items-center justify-center ${
-                  s.done   ? "bg-uf-success" :
-                  s.active ? "bg-uf-red" :
-                             "bg-uf-bg"
-                }`}>
-                  {s.done
-                    ? <Check size={14} className="text-white" strokeWidth={3} />
-                    : <Icon size={14} className={s.active ? "text-white" : "text-uf-text-secondary"} />
-                  }
-                </div>
-              </div>
-            );
-          })}
+            className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center shrink-0"
+            style={{ background: meta.color }}
+          >
+            <Icon size={26} className="text-white" strokeWidth={1.75} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-semibold text-text-2">
+              Étape {activeIndex + 1} / {segments.length}
+            </p>
+            <p className="text-base font-bold text-ink leading-tight truncate">
+              {meta.label}
+              {isTransit && active.lineShortName ? ` ${active.lineShortName}` : ""}
+            </p>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="num text-lg font-bold text-ink">{formatDistance(remaining)}</p>
+            <p className="text-[11px] text-text-2">restant</p>
+          </div>
         </div>
-        {/* Labels distances */}
-        <div className="flex mb-3.5">
-          {STEPS.map((s, i) => (
-            <div key={i} className={`flex-1 text-center text-[9px] ${
-              s.active ? "text-uf-red font-bold" : s.done ? "text-uf-success" : "text-uf-text-secondary"
-            }`}>
-              {s.dist}
+
+        <div className="overflow-y-auto mb-3.5">
+          {isTransit && active.departureStopName ? (
+            <StopList segment={active} />
+          ) : (
+            <div className="px-3 py-2.5 bg-bg rounded-xl">
+              <p className="num text-sm text-text-2">
+                {formatDistance(active.distanceMeters)} · {formatDuration(active.durationSeconds)}
+              </p>
+              <p className="text-sm text-ink mt-0.5">Suivez le tracé {meta.label.toLowerCase()} sur la carte.</p>
             </div>
-          ))}
+          )}
         </div>
 
-        {/* Résumé */}
-        <div className="flex items-center bg-uf-bg rounded-[10px] px-3.5 py-3 mb-3">
-          <div className="flex-1 text-center">
-            <p className="font-mono text-[20px] font-bold text-uf-text">14 min</p>
-            <p className="text-[11px] text-uf-text-secondary">restantes</p>
-          </div>
-          <div className="w-px h-8 bg-uf-border" />
-          <div className="flex-1 text-center">
-            <p className="font-mono text-[20px] font-bold text-uf-text">1.8 km</p>
-            <p className="text-[11px] text-uf-text-secondary">restants</p>
-          </div>
-          <div className="w-px h-8 bg-uf-border" />
-          <div className="flex-1 flex flex-col items-center gap-0.5">
-            <Train size={18} className="text-blue-500" />
-            <p className="text-[10px] text-uf-text-secondary">prochain</p>
-          </div>
+        <div className="flex items-center gap-2.5 mb-3 shrink-0">
+          <button
+            onClick={() => setActiveIndex((index) => Math.max(0, index - 1))}
+            disabled={activeIndex === 0}
+            className="w-11 h-11 rounded-xl border border-border flex items-center justify-center disabled:opacity-40"
+          >
+            <ChevronLeft size={18} className="text-ink" />
+          </button>
+          {isLast ? (
+            <button
+              onClick={onArrived}
+              className="flex-1 h-11 rounded-xl bg-primary text-white text-sm font-bold flex items-center justify-center"
+            >
+              Je suis arrivé
+            </button>
+          ) : (
+            <button
+              onClick={() => setActiveIndex((index) => index + 1)}
+              className="flex-1 h-11 rounded-xl bg-ink text-white text-sm font-bold flex items-center justify-center gap-1.5"
+            >
+              Segment suivant <ChevronRight size={16} />
+            </button>
+          )}
         </div>
 
-        {/* Stop */}
         <button
-          onClick={onStop}
-          className="w-full border border-uf-border rounded-lg py-2.5 text-[13px] font-medium text-uf-text-secondary flex items-center justify-center gap-1.5"
+          onClick={onExit}
+          className="w-full border border-border rounded-xl py-3 text-sm font-medium text-text-2 flex items-center justify-center gap-1.5 shrink-0"
         >
-          <Square size={14} className="text-uf-text-secondary" />
+          <Square size={14} className="text-text-2" />
           Arrêter la navigation
         </button>
       </div>
     </>
+  );
+}
+
+function StopList({ segment }: { segment: TripSegment }) {
+  const stops = [
+    segment.departureStopName,
+    ...(segment.intermediateStops?.map((stop) => stop.name) ?? []),
+    segment.arrivalStopName,
+  ].filter((name): name is string => Boolean(name));
+
+  return (
+    <div className="flex flex-col">
+      {stops.map((name, index) => {
+        const isBoarding = index === 0;
+        const isTerminus = index === stops.length - 1;
+        const endpoint = isBoarding || isTerminus;
+        return (
+          <div key={index} className="grid grid-cols-[16px_1fr] items-center gap-2.5 min-h-[28px]">
+            <span
+              className="justify-self-center w-2.5 h-2.5 rounded-full border-2 border-white"
+              style={{ background: endpoint ? "#15171C" : "#2F62E6", boxShadow: "0 0 0 1.5px #E4E1DA" }}
+            />
+            <span className={`truncate text-sm ${endpoint ? "font-bold text-ink" : "text-text-2"}`}>{name}</span>
+          </div>
+        );
+      })}
+    </div>
   );
 }

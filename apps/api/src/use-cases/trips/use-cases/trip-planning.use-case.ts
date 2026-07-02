@@ -99,6 +99,7 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
             departureStopName: leg.departureStopName,
             arrivalStopName: leg.arrivalStopName,
             lineShortName: leg.lineShortName,
+            intermediateStops: leg.intermediateStops,
         }));
 
         return {

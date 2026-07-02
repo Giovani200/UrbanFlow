@@ -146,4 +146,28 @@ describe("TripPlanningUseCase", () => {
         // l'option tram (rapide + plus propre) doit ressortir en tête
         expect(result.transit[0].segments.some((segment) => segment.mode === "tram")).toBe(true);
     });
+
+    it("recopie les arrêts intermédiaires du leg transit sur le segment", async () => {
+        const busLeg: OtpLeg = {
+            mode: "bus",
+            geometry: { type: "LineString", coordinates: [[5.72, 45.18], [5.73, 45.19]] },
+            distanceMeters: 2000,
+            durationSeconds: 600,
+            lineShortName: "C1",
+            intermediateStops: [{ name: "Arrêt A", latitude: 45.185, longitude: 5.725 }],
+        };
+        const itinerary: OtpItinerary = {
+            durationSeconds: 900,
+            legs: [makeOtpLeg("walk", 200, 180), busLeg],
+        };
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => [itinerary],
+        );
+
+        const result = await useCase.execute({ origin, destination });
+
+        const busSegment = result.transit[0].segments.find((segment) => segment.mode === "bus");
+        expect(busSegment?.intermediateStops).toEqual([{ name: "Arrêt A", latitude: 45.185, longitude: 5.725 }]);
+    });
 });

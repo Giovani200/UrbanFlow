@@ -9,7 +9,6 @@ interface GbfsFeed {
     name: string;
     url: string;
 }
-type GbfsDiscoveryData = { feeds: GbfsFeed[] } | Record<string, { feeds: GbfsFeed[] }>;
 
 interface VoiVehicle {
     bike_id: string;
@@ -56,7 +55,7 @@ export class VoiGbfsAdapter {
             throw new ServiceUnavailableException("VOI_REQUEST_FAILED");
         }
 
-        const discovery = (await response.json()) as { data: GbfsDiscoveryData };
+        const discovery = (await response.json()) as { data: Record<string, unknown> };
         const feed = extractFeeds(discovery.data).find((candidate) => candidate.name === FREE_BIKE_STATUS_FEED);
         if (!feed) {
             throw new ServiceUnavailableException("VOI_FEED_MISSING");
@@ -65,10 +64,10 @@ export class VoiGbfsAdapter {
     }
 }
 
-function extractFeeds(data: GbfsDiscoveryData): GbfsFeed[] {
-    if ("feeds" in data) {
-        return data.feeds;
+function extractFeeds(data: Record<string, unknown>): GbfsFeed[] {
+    if (Array.isArray(data.feeds)) {
+        return data.feeds as GbfsFeed[];
     }
-    const firstLanguage = Object.values(data)[0];
+    const firstLanguage = Object.values(data)[0] as { feeds?: GbfsFeed[] } | undefined;
     return firstLanguage?.feeds ?? [];
 }

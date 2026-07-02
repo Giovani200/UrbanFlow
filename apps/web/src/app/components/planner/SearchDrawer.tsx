@@ -7,10 +7,10 @@ import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import type { UserPosition } from "@/app/hooks/useGeolocation";
 
 const MODE_ICONS: Record<string, React.ReactNode> = {
-  walk: <Footprints size={12} className="text-uf-text-secondary" />,
-  tram: <Train size={12} className="text-uf-text-secondary" />,
-  bus:  <Bus size={12} className="text-uf-text-secondary" />,
-  bike: <Bike size={12} className="text-uf-text-secondary" />,
+  walk: <Footprints size={12} className="text-text-2" />,
+  tram: <Train size={12} className="text-text-2" />,
+  bus:  <Bus size={12} className="text-text-2" />,
+  bike: <Bike size={12} className="text-text-2" />,
 };
 
 const RECENTS = [
@@ -99,42 +99,42 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
   return (
       <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white rounded-t-2xl shadow-2xl max-h-[75%]">
         <div className="flex justify-center py-3 shrink-0">
-          <div className="w-9 h-1 rounded-full bg-uf-border" />
+          <div className="w-9 h-1 rounded-full bg-border" />
         </div>
 
         <div className="flex flex-col gap-3.5 px-4 pb-6 overflow-y-auto flex-1">
-          <p className="text-[17px] font-bold text-uf-text">Planifier un trajet</p>
+          <p className="text-[17px] font-bold text-ink">Planifier un trajet</p>
 
-          <div className="bg-uf-bg rounded-xl">
+          <div className="bg-bg rounded-xl">
             <div className="flex items-center gap-2.5 px-3.5 py-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-uf-success shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-full bg-eco shrink-0" />
               <input
                   value={fromText}
                   onChange={(e) => setFromText(e.target.value)}
                   onFocus={() => setActiveField("from")}
                   placeholder="D'où partez-vous ?"
-                  className="flex-1 text-sm font-medium text-uf-text bg-transparent outline-none"
+                  className="flex-1 text-sm font-medium text-ink bg-transparent outline-none"
               />
             </div>
 
             <div className="flex items-center">
-              <div className="flex-1 h-px bg-uf-border ml-[34px]" />
+              <div className="flex-1 h-px bg-border ml-[34px]" />
               <button
                   onClick={swapInputs}
-                  className="w-7 h-7 rounded-lg bg-white border border-uf-border flex items-center justify-center mx-3 shrink-0"
+                  className="w-7 h-7 rounded-lg bg-white border border-border flex items-center justify-center mx-3 shrink-0"
               >
-                <ArrowUpDown size={13} className="text-uf-text-secondary" />
+                <ArrowUpDown size={13} className="text-text-2" />
               </button>
             </div>
 
             <div className="flex items-center gap-2.5 px-3.5 py-2.5">
-              <span className="w-2.5 h-2.5 rounded-sm bg-uf-red shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-primary shrink-0" />
               <input
                   value={toText}
                   onChange={(e) => setToText(e.target.value)}
                   onFocus={() => setActiveField("to")}
                   placeholder="Où allez-vous ?"
-                  className="flex-1 text-sm text-uf-text-secondary bg-transparent outline-none"
+                  className="flex-1 text-sm text-text-2 bg-transparent outline-none"
               />
             </div>
           </div>
@@ -145,27 +145,27 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
               }`}
           >
             <div className="min-h-0 overflow-hidden">
-              <div className="bg-white border border-uf-border rounded-xl overflow-hidden">
+              <div className="bg-white border border-border rounded-xl overflow-hidden">
                 {activeField === "from" && (
                     <button
                         onClick={handleUseMyPosition}
-                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-uf-bg transition-colors ${
-                            currentResults.length > 0 ? "border-b border-uf-border" : ""
+                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-bg transition-colors ${
+                            currentResults.length > 0 ? "border-b border-border" : ""
                         }`}
                     >
-                      <Navigation size={14} className="text-uf-red shrink-0" />
-                      <span className="text-sm font-medium text-uf-text">Utiliser ma position actuelle</span>
+                      <Navigation size={14} className="text-primary shrink-0" />
+                      <span className="text-sm font-medium text-ink">Utiliser ma position actuelle</span>
                     </button>
                 )}
                 {currentResults.map((result, index) => (
                     <button
                         key={index}
                         onClick={() => selectResult(result)}
-                        className={`w-full text-left px-3.5 py-2.5 hover:bg-uf-bg transition-colors ${
-                            index < currentResults.length - 1 ? "border-b border-uf-border" : ""
+                        className={`w-full text-left px-3.5 py-2.5 hover:bg-bg transition-colors ${
+                            index < currentResults.length - 1 ? "border-b border-border" : ""
                         }`}
                     >
-                      <p className="text-sm text-uf-text truncate">{result.label}</p>
+                      <p className="text-sm text-ink truncate">{result.label}</p>
                     </button>
                 ))}
               </div>
@@ -179,8 +179,8 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
                     onClick={() => setWhen(option.id)}
                     className={`flex-1 py-2 text-xs rounded-lg border-[1.5px] transition-colors ${
                         when === option.id
-                            ? "border-uf-red bg-uf-red-light font-semibold text-uf-red"
-                            : "border-uf-border bg-white text-uf-text-secondary"
+                            ? "border-primary bg-primary-tint font-semibold text-primary"
+                            : "border-border bg-white text-text-2"
                     }`}
                 >
                   {option.label}
@@ -192,7 +192,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
               onClick={handleSearch}
               disabled={!canSearch}
               className={`w-full rounded-lg py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
-                  canSearch ? "bg-uf-red text-white" : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  canSearch ? "bg-primary text-white" : "bg-[#ECEAE4] text-[#A7A39A] cursor-not-allowed"
               }`}
           >
             <Search size={16} />
@@ -204,7 +204,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
               }`}
           >
             <div className="min-h-0 overflow-hidden">
-              <p className="text-[11px] font-semibold text-uf-text-secondary tracking-widest uppercase mb-2.5">
+              <p className="text-[11px] font-semibold text-text-2 mb-2.5">
                 Trajets récents
               </p>
               <div className="flex flex-col">
@@ -212,22 +212,22 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
                     <div
                         key={index}
                         className={`flex items-center gap-3 py-2.5 cursor-pointer ${
-                            index < RECENTS.length - 1 ? "border-b border-uf-border" : ""
+                            index < RECENTS.length - 1 ? "border-b border-border" : ""
                         }`}
                     >
-                      <div className="w-8 h-8 rounded-lg bg-uf-bg flex items-center justify-center shrink-0">
-                        <Clock size={14} className="text-uf-text-secondary" />
+                      <div className="w-8 h-8 rounded-lg bg-bg flex items-center justify-center shrink-0">
+                        <Clock size={14} className="text-text-2" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] text-uf-text truncate">
-                          {recent.from} <span className="text-uf-text-secondary">→</span>{" "}
+                        <p className="text-[13px] text-ink truncate">
+                          {recent.from} <span className="text-text-2">→</span>{" "}
                           <span className="font-medium">{recent.to}</span>
                         </p>
                         <div className="flex gap-1 mt-1">
                           {recent.modes.map((mode) => <span key={mode}>{MODE_ICONS[mode]}</span>)}
                         </div>
                       </div>
-                      <ArrowRight size={14} className="text-uf-text-secondary shrink-0" />
+                      <ArrowRight size={14} className="text-text-2 shrink-0" />
                     </div>
                 ))}
               </div>

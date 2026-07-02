@@ -1,37 +1,27 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Navigation, MapPin, Settings, Home, Briefcase, Star, Layers } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, LocateFixed, Search } from "lucide-react";
 import { MapViewDynamic } from "@/app/components/map/MapViewDynamic";
 import type { MapViewHandle } from "@/app/components/map/MapView";
+import { NearbyDrawer } from "@/app/components/planner/NearbyDrawer";
 import { SearchDrawer } from "@/app/components/planner/SearchDrawer";
-import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { ResultsDrawer } from "@/app/components/planner/ResultsDrawer";
 import { NavScreen } from "@/app/components/planner/NavScreen";
-import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
-
+import { RouteDetail } from "@/app/components/planner/RouteDetail";
+import { Arrival } from "@/app/components/planner/Arrival";
+import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useGeolocation } from "@/app/hooks/useGeolocation";
 import { useGeolocationConsent } from "@/app/hooks/useGeolocationConsent";
 import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsentDialog";
 import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
-
 import { tripsService } from "@/app/services/trips.service";
 import type { TripRoute } from "@/app/services/trips.service";
 
-type View = "search" | "results" | "navigation";
-
-const sideActions = [
-  { icon: <Settings size={18} />, label: "Paramètres", action: "settings" as const },
-  { icon: <Home size={18} />, label: "Maison", action: "home" as const },
-  { icon: <Briefcase size={18} />, label: "Boulot", action: "work" as const },
-  { icon: <Star size={18} />, label: "Favoris", action: "favorites" as const },
-];
+type View = "home" | "search" | "results" | "detail" | "navigation" | "arrival";
 
 export default function PlannerPage() {
-  const [view, setView] = useState<View>("search");
-  const [search, setSearch] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
-
+  const [view, setView] = useState<View>("home");
   const [routes, setRoutes] = useState<TripRoute[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(0);
@@ -46,59 +36,19 @@ export default function PlannerPage() {
   const [geoError, setGeoError] = useState<"denied" | "unavailable" | null>(null);
   const recenterPendingRef = useRef(false);
 
-
+  // Position utilisateur → marqueur sur la carte (+ recentrage si demandé).
   useEffect(() => {
     if (!position) return;
+    mapRef.current?.setUserPosition(position.latitude, position.longitude);
     if (recenterPendingRef.current) {
       mapRef.current?.recenterOnUser(position.latitude, position.longitude);
       recenterPendingRef.current = false;
     }
   }, [position]);
 
-  // Erreurs géoloc → popup.
   useEffect(() => {
-    if (status === "denied" || status === "unavailable") {
-      setGeoError(status);
-    }
+    if (status === "denied" || status === "unavailable") setGeoError(status);
   }, [status]);
-
-  async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
-    setOriginLabel(origin.label);
-    setDestLabel(destination.label);
-    setView("results");
-    setLoading(true);
-    setRoutes([]);
-    setSelectedRoute(0);
-
-    const result = await tripsService.planTrip({
-      origin: { latitude: origin.latitude, longitude: origin.longitude },
-      destination: { latitude: destination.latitude, longitude: destination.longitude },
-    });
-
-    setLoading(false);
-
-    if (result.isOk && result.data.routes.length > 0) {
-      setRoutes(result.data.routes);
-      const first = result.data.routes[0];
-      mapRef.current?.drawSegments(first.segments);
-      mapRef.current?.fitToSegments(first.segments);
-    }
-  }
-
-  function handleSelectRoute(index: number) {
-    setSelectedRoute(index);
-    const route = routes[index];
-    if (route) {
-      mapRef.current?.drawSegments(route.segments);
-      mapRef.current?.fitToSegments(route.segments);
-    }
-  }
-
-  function handleBack() {
-    mapRef.current?.clearSegments();
-    setRoutes([]);
-    setView("search");
-  }
 
   function startTracking() {
     recenterPendingRef.current = true;
@@ -133,6 +83,49 @@ export default function PlannerPage() {
     stop();
   }
 
+  async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
+    setOriginLabel(origin.label);
+    setDestLabel(destination.label);
+    setView("results");
+    setLoading(true);
+    setRoutes([]);
+    setSelectedRoute(0);
+    mapRef.current?.setNearbyMarkers([], []);
+
+    const result = await tripsService.planTrip({
+      origin: { latitude: origin.latitude, longitude: origin.longitude },
+      destination: { latitude: destination.latitude, longitude: destination.longitude },
+    });
+
+    setLoading(false);
+    if (!result.isOk) return;
+
+    // Nouveau DTO : modes purs (walk, bike) + combinaisons transit classées.
+    const { walk, bike, transit } = result.data;
+    const combined = [...transit, ...(bike ? [bike] : []), ...(walk ? [walk] : [])];
+    setRoutes(combined);
+
+    const first = combined[0];
+    if (first) {
+      mapRef.current?.drawSegments(first.segments);
+      mapRef.current?.fitToSegments(first.segments);
+    }
+  }
+
+  function handleSelectRoute(index: number) {
+    setSelectedRoute(index);
+    const route = routes[index];
+    if (route) {
+      mapRef.current?.drawSegments(route.segments);
+      mapRef.current?.fitToSegments(route.segments);
+    }
+  }
+
+  function handleBack() {
+    mapRef.current?.clearSegments();
+    setRoutes([]);
+    setView("home");
+  }
 
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans">
@@ -140,64 +133,46 @@ export default function PlannerPage() {
         <MapViewDynamic ref={mapRef} />
       </div>
 
-      {view === "search" && (
-        <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-12">
-          <div className="flex items-start gap-2.5">
-            <div className="flex-1 flex flex-col gap-2.5">
-              <div className="bg-white rounded-xl shadow-lg flex items-center gap-2.5 px-3.5 py-3">
-                <MapPin size={16} className="text-uf-text-secondary shrink-0" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Où voulez-vous aller ?"
-                  className="flex-1 text-sm text-uf-text outline-none bg-transparent placeholder:text-uf-text-secondary"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              {sideActions.map((a) => (
-                <button
-                  key={a.label}
-                  title={a.label}
-                  onClick={() => {
-                    if (a.action === "settings") setShowSettings(true);
-                  }}
-                  className="w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center text-uf-text hover:text-uf-red transition-colors"
-                >
-                  {a.icon}
-                </button>
-              ))}
-            </div>
-          </div>
+      {view === "home" && (
+        <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-12 flex items-start gap-2.5">
+          <button
+            onClick={() => setView("search")}
+            className="flex-1 bg-surface rounded-xl shadow-lg flex items-center gap-2.5 px-3.5 py-3 text-left"
+          >
+            <Search size={16} className="text-ink shrink-0" />
+            <span className="text-sm text-text-2">Où allez-vous ?</span>
+          </button>
+          <button
+            title="Ma position"
+            onClick={handleLocateClick}
+            className="w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center shrink-0"
+          >
+            <LocateFixed size={19} className="text-ink" />
+          </button>
         </div>
       )}
 
-      {view !== "navigation" && (
+      {view === "search" && (
         <button
-          title="Ma position"
-          onClick={handleLocateClick}
-          className="absolute right-4 bottom-72 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"
+          title="Retour"
+          onClick={() => setView("home")}
+          className="absolute top-12 left-4 z-30 w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center"
         >
-          <Navigation size={20} className="text-uf-text" />
+          <ArrowLeft size={18} className="text-ink" />
         </button>
       )}
 
-      {/*{view !== "navigation" && (*/}
-      {/*  <button*/}
-      {/*    title="Couches carte"*/}
-      {/*    className="absolute right-4 bottom-56 z-10 w-11 h-11 rounded-xl bg-white shadow-lg flex items-center justify-center"*/}
-      {/*  >*/}
-      {/*    <Layers size={20} className="text-uf-text" />*/}
-      {/*  </button>*/}
-      {/*)}*/}
+      {view === "home" && (
+        <NearbyDrawer
+          position={position}
+          onPlanTrip={() => setView("search")}
+          onRequestPosition={handleLocateClick}
+          onLoaded={(stops, vehicles) => mapRef.current?.setNearbyMarkers(stops, vehicles)}
+        />
+      )}
 
       {view === "search" && (
-          <SearchDrawer
-              onSearch={handleSearch}
-              userPosition={position}
-              onRequestPosition={handleLocateClick}
-          />
+        <SearchDrawer onSearch={handleSearch} userPosition={position} onRequestPosition={handleLocateClick} />
       )}
 
       {view === "results" && (
@@ -207,31 +182,61 @@ export default function PlannerPage() {
           originLabel={originLabel}
           destLabel={destLabel}
           onBack={handleBack}
-          onStart={() => setView("navigation")}
+          onStart={() => setView("detail")}
           onSelectRoute={handleSelectRoute}
           selectedIndex={selectedRoute}
         />
       )}
 
-      {view === "navigation" && (
-        <NavScreen onStop={() => { mapRef.current?.clearSegments(); setView("search"); }} />
+      {view === "detail" && routes[selectedRoute] && (
+        <RouteDetail
+          route={routes[selectedRoute]}
+          originLabel={originLabel}
+          destLabel={destLabel}
+          onGo={() => setView("navigation")}
+          onBack={() => setView("results")}
+        />
       )}
 
-      {showSettings && (
-        <SettingsDrawer onClose={() => setShowSettings(false)} />
+      {view === "navigation" && routes[selectedRoute] && (
+        <NavScreen
+          route={routes[selectedRoute]}
+          position={position}
+          onFocusSegment={(segment) => mapRef.current?.fitToSegments([segment])}
+          onRecenter={() => {
+            if (position) mapRef.current?.recenterOnUser(position.latitude, position.longitude);
+          }}
+          onExit={() => {
+            mapRef.current?.clearSegments();
+            setView("home");
+          }}
+          onArrived={() => setView("arrival")}
+        />
+      )}
+
+      {view === "arrival" && routes[selectedRoute] && (
+        <Arrival
+          route={routes[selectedRoute]}
+          onDone={() => {
+            mapRef.current?.clearSegments();
+            setView("home");
+          }}
+        />
       )}
 
       <GeolocationConsentDialog
-          open={showConsent}
-          onOpenChange={setShowConsent}
-          onAccept={handleConsentAccept}
-          onRefuse={handleConsentRefuse}
+        open={showConsent}
+        onOpenChange={setShowConsent}
+        onAccept={handleConsentAccept}
+        onRefuse={handleConsentRefuse}
       />
 
       <GeolocationErrorDialog
-          open={geoError !== null}
-          onOpenChange={(open) => { if (!open) setGeoError(null); }}
-          variant={geoError ?? "unavailable"}
+        open={geoError !== null}
+        onOpenChange={(open) => {
+          if (!open) setGeoError(null);
+        }}
+        variant={geoError ?? "unavailable"}
       />
     </div>
   );
