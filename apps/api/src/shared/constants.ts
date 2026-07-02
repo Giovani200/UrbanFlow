@@ -1,7 +1,7 @@
-// Facteurs d'émission carbone — source unique : impactco2.fr (outil officiel ADEME).
+// Facteurs d'émission carbone, source unique : impactco2.fr (outil officiel ADEME).
 // Unité : gCO2e/passager·km, fabrication incluse. Relevé le 29/06/2026.
 //   bus thermique : https://impactco2.fr/outils/transport/busthermique (122)
-//   métro         : https://impactco2.fr/outils/transport/metro (4,44 — proxy tram, pas d'entrée "tramway")
+//   métro         : https://impactco2.fr/outils/transport/metro (4,44, proxy tram, pas d'entrée "tramway")
 //   voiture / covoiturage / trottinette : https://impactco2.fr/outils/transport
 export const CARBON_FACTORS = {
     walk: 0,
@@ -15,7 +15,7 @@ export const CARBON_FACTORS = {
 
 export type TransportMode = keyof typeof CARBON_FACTORS;
 
-// Zone géographique — Grenoble-Alpes Métropole
+// Zone géographique, Grenoble-Alpes Métropole
 export const GEO_CONFIG = {
     center: { latitude: 45.1885, longitude: 5.7245 },
     bbox: {
@@ -27,7 +27,7 @@ export const GEO_CONFIG = {
     defaultZoom: 13,
 } as const;
 
-// APIs transport — Grenoble-Alpes Métropole
+// APIs transport, Grenoble-Alpes Métropole
 // GBFS Métrovélo + API Métromobilité (GTFS TAG). Endpoint OTP /routers/default/plan à ajouter lors du slice routing (D1).
 export const TRANSPORT_API = {
     gbfsBaseUrl: "https://transport.data.gouv.fr/gbfs/grenoble/gbfs.json",

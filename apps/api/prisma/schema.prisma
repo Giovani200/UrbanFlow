@@ -1,4 +1,4 @@
-// Prisma 6 — UrbanFlow Mobility
+// Prisma 6, UrbanFlow Mobility
 
 generator client {
   provider = "prisma-client-js"

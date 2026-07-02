@@ -49,7 +49,7 @@ export function StationsDrawer({ onPlanTrip }: Props) {
 
   return (
     <>
-      {/* Tab remonter — visible seulement quand le drawer est baissé */}
+      {/* Tab remonter, visible seulement quand le drawer est baissé */}
       {collapsed && !dragging && (
         <button
           onClick={() => setCollapsed(false)}
