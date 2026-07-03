@@ -26,13 +26,13 @@ export function GeolocationConsentDialog(
             <div className="flex gap-2.5">
                 <button
                     onClick={onRefuse}
-                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm border border-uf-border text-uf-text"
+                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm border border-border text-ink"
                 >
                     Refuser
                 </button>
                 <button
                     onClick={onAccept}
-                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm bg-uf-red text-white"
+                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
                 >
                     Accepter
                 </button>

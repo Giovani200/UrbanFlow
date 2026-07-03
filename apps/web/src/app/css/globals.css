@@ -13,6 +13,7 @@
   /* Marque et action */
   --primary: #CC1B36;
   --primary-tint: #FBEAED;
+  --success: #16a34a;
 
   /* Couleur par mode */
   --walk: #5A6470;
@@ -37,6 +38,7 @@
   --color-text-2: var(--text-2);
   --color-primary: var(--primary);
   --color-primary-tint: var(--primary-tint);
+  --color-success: var(--success);
   --color-walk: var(--walk);
   --color-bike: var(--bike);
   --color-tram: var(--tram);

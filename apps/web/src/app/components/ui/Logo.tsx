@@ -15,10 +15,10 @@ export function Logo({ size = "md" }: LogoProps) {
     const s = sizeMap[size];
     return (
         <Link href="/" className="flex items-center gap-2 no-underline">
-            <div className={`${s.box} bg-uf-red flex items-center justify-center flex-shrink-0`}>
+            <div className={`${s.box} bg-primary flex items-center justify-center flex-shrink-0`}>
                 <TrendingUp size={s.icon} color="white" strokeWidth={2.2} />
             </div>
-            <span className={`font-bold ${s.text} text-uf-red tracking-tight font-sans`}> UrbanFlow</span>
+            <span className={`font-bold ${s.text} text-primary tracking-tight font-sans`}> UrbanFlow</span>
         </Link>
     );
 

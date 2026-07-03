@@ -1,14 +1,25 @@
-import type { CreateUserDtoIn, CreateUserDtoOut } from "@/shared/dtos/users/create-user.dto";
-import type { GetUserProfileDtoOut } from "@/shared/dtos/users/get-user-profile.dto";
-import type { UpdateMobilityProfileDtoIn, UpdateMobilityProfileDtoOut } from "@/shared/dtos/users/update-user-profile.dto";
-
-export type { CreateUserDtoIn, CreateUserDtoOut, GetUserProfileDtoOut, UpdateMobilityProfileDtoIn, UpdateMobilityProfileDtoOut };
-
+import type {
+  CreateUserDtoIn,
+  CreateUserDtoOut,
+  GetUserProfileDtoOut,
+  UpdatePreferencesDtoIn,
+  UpdatePreferencesDtoOut,
+} from "@urbanflow/app-front-back-lib";
 import { handleResponse } from "@/app/services/lib/http";
+
+export type {
+  CreateUserDtoIn,
+  CreateUserDtoOut,
+  GetUserProfileDtoOut,
+  UpdatePreferencesDtoIn,
+  UpdatePreferencesDtoOut,
+};
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 export const usersService = {
   async register(input: CreateUserDtoIn) {
-    const res = await fetch("/api/users/register", {
+    const res = await fetch(`${API_URL}/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
@@ -17,16 +28,17 @@ export const usersService = {
   },
 
   async getProfile() {
-    const res = await fetch("/api/users/profile");
+    const res = await fetch(`${API_URL}/users/me`, { credentials: "include" });
     return handleResponse<GetUserProfileDtoOut>(res);
   },
 
-  async updateProfile(input: UpdateMobilityProfileDtoIn) {
-    const res = await fetch("/api/users/profile", {
-      method: "PATCH",
+  async updateProfile(input: UpdatePreferencesDtoIn) {
+    const res = await fetch(`${API_URL}/users/me/preferences`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(input),
     });
-    return handleResponse<UpdateMobilityProfileDtoOut>(res);
+    return handleResponse<UpdatePreferencesDtoOut>(res);
   },
 };

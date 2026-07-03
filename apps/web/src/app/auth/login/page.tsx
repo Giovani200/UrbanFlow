@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import {signIn} from "next-auth/react";
+import {useAuth} from "@/app/components/auth/AuthProvider";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {Eye, EyeOff, Shield} from "lucide-react";
@@ -9,6 +9,7 @@ import {Logo} from "@/app/components/ui/Logo";
 
 export default function LoginPage() {
     const router = useRouter();
+    const {login} = useAuth();
     const [showPassword, setShowPassword] =
         useState(false);
     const [error, setError] = useState<string |
@@ -21,14 +22,13 @@ export default function LoginPage() {
         setLoading(true);
 
         const form = new FormData(e.currentTarget);
-        const result = await signIn("credentials", {
-            email: form.get("email"),
-            password: form.get("password"),
-            redirect: false,
+        const result = await login({
+            email: form.get("email") as string,
+            password: form.get("password") as string,
         });
 
         setLoading(false);
-        if (result?.error) {
+        if (!result.isOk) {
             setError("Email ou mot de passe incorrect");
             return;
         }
@@ -109,9 +109,9 @@ export default function LoginPage() {
                 </form>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px bg-uf-border"/>
+                    <div className="flex-1 h-px bg-border"/>
                     <span className="text-xs text-text-2 font-medium">ou</span>
-                    <div className="flex-1 h-px bg-uf-border"/>
+                    <div className="flex-1 h-px bg-border"/>
                 </div>
 
                 <p className="text-center text-sm text-text-2">
