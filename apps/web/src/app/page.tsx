@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, LocateFixed, Search } from "lucide-react";
+import { ArrowLeft, LocateFixed, Search, Settings } from "lucide-react";
 import { MapViewDynamic } from "@/app/components/map/MapViewDynamic";
 import type { MapViewHandle } from "@/app/components/map/MapView";
 import { NearbyDrawer } from "@/app/components/planner/NearbyDrawer";
@@ -10,6 +10,7 @@ import { ResultsDrawer } from "@/app/components/planner/ResultsDrawer";
 import { NavScreen } from "@/app/components/planner/NavScreen";
 import { RouteDetail } from "@/app/components/planner/RouteDetail";
 import { Arrival } from "@/app/components/planner/Arrival";
+import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useGeolocation } from "@/app/hooks/useGeolocation";
 import { useGeolocationConsent } from "@/app/hooks/useGeolocationConsent";
@@ -34,6 +35,7 @@ export default function PlannerPage() {
   const { consent, grant, deny } = useGeolocationConsent();
   const [showConsent, setShowConsent] = useState(false);
   const [geoError, setGeoError] = useState<"denied" | "unavailable" | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const recenterPendingRef = useRef(false);
 
   // Position utilisateur → marqueur sur la carte (+ recentrage si demandé).
@@ -149,6 +151,13 @@ export default function PlannerPage() {
           >
             <LocateFixed size={19} className="text-ink" />
           </button>
+          <button
+            title="Paramètres"
+            onClick={() => setShowSettings(true)}
+            className="w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center shrink-0"
+          >
+            <Settings size={19} className="text-ink" />
+          </button>
         </div>
       )}
 
@@ -238,6 +247,8 @@ export default function PlannerPage() {
         }}
         variant={geoError ?? "unavailable"}
       />
+
+      {showSettings && <SettingsDrawer onClose={() => setShowSettings(false)} />}
     </div>
   );
 }

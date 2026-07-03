@@ -36,30 +36,30 @@ export default function CarbonPage() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col h-screen bg-uf-bg font-sans">
+    <div className="flex flex-col h-screen bg-bg font-sans">
       {/* Header */}
-      <div className="bg-white border-b border-uf-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
+      <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.push("/")}
-          className="w-9 h-9 rounded-lg border border-uf-border flex items-center justify-center"
+          className="w-9 h-9 rounded-lg border border-border flex items-center justify-center"
         >
-          <ArrowLeft size={16} className="text-uf-text" />
+          <ArrowLeft size={16} className="text-ink" />
         </button>
-        <h1 className="flex-1 text-[17px] font-semibold text-uf-text">Mon empreinte</h1>
-        <Leaf size={18} className="text-uf-success" />
+        <h1 className="flex-1 text-[17px] font-semibold text-ink">Mon empreinte</h1>
+        <Leaf size={18} className="text-success" />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8 flex flex-col gap-3">
         {/* Sélecteur période */}
-        <div className="flex bg-white rounded-[10px] p-1 border border-uf-border">
+        <div className="flex bg-white rounded-[10px] p-1 border border-border">
           {PERIODS.map((p) => (
             <button
               key={p.id}
               onClick={() => setPeriod(p.id)}
               className={`flex-1 py-2 rounded-lg text-[13px] transition-colors ${
                 period === p.id
-                  ? "bg-uf-red text-white font-semibold"
-                  : "text-uf-text-secondary"
+                  ? "bg-primary text-white font-semibold"
+                  : "text-text-2"
               }`}
             >
               {p.label}
@@ -69,27 +69,27 @@ export default function CarbonPage() {
 
         {/* Chiffre principal */}
         <div className="bg-white rounded-xl px-5 py-5 text-center">
-          <p className="text-[11px] font-semibold text-uf-text-secondary tracking-widest uppercase mb-2">
+          <p className="text-[11px] font-semibold text-text-2 tracking-widest uppercase mb-2">
             CO₂ économisé ce mois
           </p>
-          <p className="font-mono text-[54px] font-bold text-uf-text leading-none tracking-tight">18.4</p>
-          <p className="text-[14px] text-uf-text-secondary mt-1 mb-3.5">kg CO₂eq</p>
+          <p className="font-mono text-[54px] font-bold text-ink leading-none tracking-tight">18.4</p>
+          <p className="text-[14px] text-text-2 mt-1 mb-3.5">kg CO₂eq</p>
           <div className="inline-flex items-center gap-1.5 bg-green-50 rounded-[10px] px-3.5 py-1.5">
-            <Leaf size={14} className="text-uf-success" />
-            <span className="text-[13px] font-semibold text-uf-success">−43% vs voiture solo</span>
+            <Leaf size={14} className="text-success" />
+            <span className="text-[13px] font-semibold text-success">−43% vs voiture solo</span>
           </div>
-          <p className="text-[12px] text-uf-text-secondary mt-2.5">
-            Équivalent à <span className="font-semibold text-uf-text">184 km</span> en voiture évités
+          <p className="text-[12px] text-text-2 mt-2.5">
+            Équivalent à <span className="font-semibold text-ink">184 km</span> en voiture évités
           </p>
         </div>
 
         {/* Graphe en barres */}
         <div className="bg-white rounded-xl p-4">
-          <p className="text-[13px] font-semibold text-uf-text mb-3">Émissions par jour (kg CO₂)</p>
+          <p className="text-[13px] font-semibold text-ink mb-3">Émissions par jour (kg CO₂)</p>
           <div className="flex items-end gap-1.5 h-20">
             {BARS.map((b, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[8px] font-mono text-uf-text-secondary">{b.val}</span>
+                <span className="text-[8px] font-mono text-text-2">{b.val}</span>
                 <div
                   className="w-full rounded-t-[3px] min-h-[4px]"
                   style={{
@@ -97,38 +97,38 @@ export default function CarbonPage() {
                     background: b.good ? "#16A34A" : "#B91C1C",
                   }}
                 />
-                <span className="text-[9px] font-medium text-uf-text-secondary">{b.day}</span>
+                <span className="text-[9px] font-medium text-text-2">{b.day}</span>
               </div>
             ))}
           </div>
           <div className="flex gap-3.5 mt-2.5">
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-[2px] bg-uf-success inline-block" />
-              <span className="text-[10px] text-uf-text-secondary">Performant</span>
+              <span className="w-2 h-2 rounded-[2px] bg-success inline-block" />
+              <span className="text-[10px] text-text-2">Performant</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-[2px] bg-uf-red inline-block" />
-              <span className="text-[10px] text-uf-text-secondary">À améliorer</span>
+              <span className="w-2 h-2 rounded-[2px] bg-primary inline-block" />
+              <span className="text-[10px] text-text-2">À améliorer</span>
             </div>
           </div>
         </div>
 
         {/* Répartition par mode */}
         <div className="bg-white rounded-xl p-4">
-          <p className="text-[13px] font-semibold text-uf-text mb-3">Répartition par mode</p>
+          <p className="text-[13px] font-semibold text-ink mb-3">Répartition par mode</p>
           <div className="flex flex-col gap-2.5">
             {MODES.map((m) => (
               <div key={m.label}>
                 <div className="flex justify-between items-center mb-1.5">
                   <div className="flex items-center gap-1.5">
                     <m.icon size={12} style={{ color: m.color }} />
-                    <span className="text-[12px] text-uf-text">{m.label}</span>
+                    <span className="text-[12px] text-ink">{m.label}</span>
                   </div>
                   <span className="text-[12px] font-mono font-semibold" style={{ color: m.color }}>
                     {m.val}%
                   </span>
                 </div>
-                <div className="h-1.5 bg-uf-bg rounded-full overflow-hidden">
+                <div className="h-1.5 bg-bg rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${m.val}%`, background: m.color }}
@@ -142,21 +142,21 @@ export default function CarbonPage() {
         {/* Objectif mensuel */}
         <div className="bg-white rounded-xl p-4">
           <div className="flex justify-between items-center mb-2.5">
-            <p className="text-[13px] font-semibold text-uf-text">Objectif mensuel</p>
+            <p className="text-[13px] font-semibold text-ink">Objectif mensuel</p>
             <div className="flex items-center gap-1">
-              <Target size={12} className="text-uf-red" />
-              <span className="text-[12px] font-semibold text-uf-red">25 kg CO₂</span>
+              <Target size={12} className="text-primary" />
+              <span className="text-[12px] font-semibold text-primary">25 kg CO₂</span>
             </div>
           </div>
-          <div className="h-2.5 bg-uf-bg rounded-full overflow-hidden mb-1.5">
+          <div className="h-2.5 bg-bg rounded-full overflow-hidden mb-1.5">
             <div
               className="h-full rounded-full"
               style={{ width: "74%", background: "linear-gradient(90deg, #16A34A, #B91C1C)" }}
             />
           </div>
           <div className="flex justify-between">
-            <span className="text-[11px] text-uf-text-secondary">18.4 kg économisés</span>
-            <span className="text-[11px] font-semibold text-uf-success">74% atteint</span>
+            <span className="text-[11px] text-text-2">18.4 kg économisés</span>
+            <span className="text-[11px] font-semibold text-success">74% atteint</span>
           </div>
         </div>
       </div>

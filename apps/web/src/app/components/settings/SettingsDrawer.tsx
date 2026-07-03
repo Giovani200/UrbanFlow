@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useAuth } from "@/app/components/auth/AuthProvider";
 import { User, Leaf, Clock, Bell, Lock, HelpCircle, LogOut, LogIn, ChevronRight } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
 
@@ -27,8 +27,8 @@ interface Props {
 export function SettingsDrawer({ onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
-  const { data: session } = useSession();
-  const isLogged = !!session?.user;
+  const { user, logout } = useAuth();
+  const isLogged = !!user;
 
   const items = isLogged ? LOGGED_ITEMS : GUEST_ITEMS;
 
@@ -59,7 +59,7 @@ export function SettingsDrawer({ onClose }: Props) {
   function handleAuthAction() {
     dismiss();
     if (isLogged) {
-      setTimeout(() => signOut({ callbackUrl: "/" }), 280);
+      setTimeout(async () => { await logout(); router.push("/"); }, 280);
     } else {
       setTimeout(() => router.push("/auth/login"), 280);
     }
@@ -88,16 +88,16 @@ export function SettingsDrawer({ onClose }: Props) {
         onMouseLeave={onMouseLeave}
       >
         <div className="flex justify-center py-3">
-          <div className="w-9 h-1 rounded-full bg-uf-border" />
+          <div className="w-9 h-1 rounded-full bg-border" />
         </div>
 
         <div className="px-4 pb-8">
-          <p className="text-[17px] font-bold text-uf-text mb-1">Paramètres</p>
+          <p className="text-[17px] font-bold text-ink mb-1">Paramètres</p>
           {isLogged && (
-            <p className="text-xs text-uf-text-secondary mb-3">{session.user.name ?? session.user.email}</p>
+            <p className="text-xs text-text-2 mb-3">{user?.email}</p>
           )}
           {!isLogged && (
-            <p className="text-xs text-uf-text-secondary mb-3">Mode invité</p>
+            <p className="text-xs text-text-2 mb-3">Mode invité</p>
           )}
 
           <div className="flex flex-col">
@@ -106,26 +106,26 @@ export function SettingsDrawer({ onClose }: Props) {
                 key={item.label}
                 onClick={() => handleItem(item.href)}
                 className={`flex items-center gap-3 py-3 w-full text-left ${
-                  i < items.length - 1 ? "border-b border-uf-border" : ""
+                  i < items.length - 1 ? "border-b border-border" : ""
                 }`}
               >
-                <div className="w-9 h-9 rounded-xl bg-uf-bg flex items-center justify-center shrink-0">
-                  <item.icon size={17} className="text-uf-text" />
+                <div className="w-9 h-9 rounded-xl bg-bg flex items-center justify-center shrink-0">
+                  <item.icon size={17} className="text-ink" />
                 </div>
-                <span className="flex-1 text-[14px] text-uf-text">{item.label}</span>
-                <ChevronRight size={15} className="text-uf-text-secondary" />
+                <span className="flex-1 text-[14px] text-ink">{item.label}</span>
+                <ChevronRight size={15} className="text-text-2" />
               </button>
             ))}
           </div>
 
           <button
             onClick={handleAuthAction}
-            className="mt-3 flex items-center gap-3 py-3 w-full text-left border-t border-uf-border"
+            className="mt-3 flex items-center gap-3 py-3 w-full text-left border-t border-border"
           >
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isLogged ? "bg-red-50" : "bg-green-50"}`}>
-              {isLogged ? <LogOut size={17} className="text-uf-red" /> : <LogIn size={17} className="text-green-600" />}
+              {isLogged ? <LogOut size={17} className="text-primary" /> : <LogIn size={17} className="text-green-600" />}
             </div>
-            <span className={`flex-1 text-[14px] font-medium ${isLogged ? "text-uf-red" : "text-green-600"}`}>
+            <span className={`flex-1 text-[14px] font-medium ${isLogged ? "text-primary" : "text-green-600"}`}>
               {isLogged ? "Déconnexion" : "Se connecter"}
             </span>
           </button>

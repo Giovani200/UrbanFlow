@@ -26,7 +26,7 @@ export function GeolocationErrorDialog({open, onOpenChange, variant }: Geolocati
     return (
         <Modal open={open} onOpenChange={onOpenChange} title={title} description={description}>
             <button
-                onClick={() => onOpenChange(false)} className="w-full rounded-lg py-2.5 font-semibold text-sm bg-uf-red text-white"
+                onClick={() => onOpenChange(false)} className="w-full rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
             >
                 Compris
             </button>

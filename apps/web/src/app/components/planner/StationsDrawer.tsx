@@ -55,8 +55,8 @@ export function StationsDrawer({ onPlanTrip }: Props) {
           onClick={() => setCollapsed(false)}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 bg-white rounded-t-xl shadow-lg px-5 py-2 flex items-center gap-1.5"
         >
-          <ChevronUp size={16} className="text-uf-text-secondary" />
-          <span className="text-xs font-medium text-uf-text-secondary">Stations proches</span>
+          <ChevronUp size={16} className="text-text-2" />
+          <span className="text-xs font-medium text-text-2">Stations proches</span>
         </button>
       )}
 
@@ -77,14 +77,14 @@ export function StationsDrawer({ onPlanTrip }: Props) {
           onMouseUp={handleEnd}
           onMouseLeave={() => { if (dragging) handleEnd(); }}
         >
-          <div className="w-9 h-1 rounded-full bg-uf-border" />
+          <div className="w-9 h-1 rounded-full bg-border" />
         </div>
 
         <div className="px-4">
           <div className="flex justify-between items-center mb-3.5">
             <div>
-              <p className="text-sm font-bold text-uf-text">Stations Métrovélo proches</p>
-              <p className="text-xs text-uf-text-secondary mt-0.5">Mis à jour il y a 30s</p>
+              <p className="text-sm font-bold text-ink">Stations Métrovélo proches</p>
+              <p className="text-xs text-text-2 mt-0.5">Mis à jour il y a 30s</p>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-green-500" />
@@ -94,24 +94,24 @@ export function StationsDrawer({ onPlanTrip }: Props) {
 
           <div className="flex flex-col gap-2 mb-3.5">
             {STATIONS.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-3 py-2.5 bg-uf-bg rounded-xl">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${s.bikes > 0 ? "bg-uf-red-light" : "bg-gray-100"}`}>
-                  <Bike size={18} className={s.bikes > 0 ? "text-uf-red" : "text-uf-text-secondary"} />
+              <div key={i} className="flex items-center gap-3 px-3 py-2.5 bg-bg rounded-xl">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${s.bikes > 0 ? "bg-primary-tint" : "bg-gray-100"}`}>
+                  <Bike size={18} className={s.bikes > 0 ? "text-primary" : "text-text-2"} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-uf-text truncate">{s.name}</p>
-                  <p className="text-xs text-uf-text-secondary mt-0.5">
+                  <p className="text-sm font-medium text-ink truncate">{s.name}</p>
+                  <p className="text-xs text-text-2 mt-0.5">
                     {s.dist} · <BikeAvailability count={s.bikes} /> · {s.docks} places
                   </p>
                 </div>
-                <ChevronRight size={14} className="text-uf-text-secondary shrink-0" />
+                <ChevronRight size={14} className="text-text-2 shrink-0" />
               </div>
             ))}
           </div>
 
           <button
             onClick={onPlanTrip}
-            className="w-full bg-uf-red text-white rounded-lg py-3.5 font-semibold text-sm flex items-center justify-center gap-2"
+            className="w-full bg-primary text-white rounded-lg py-3.5 font-semibold text-sm flex items-center justify-center gap-2"
           >
             <Navigation size={16} />
             Planifier un trajet

@@ -33,29 +33,29 @@ export default function TripsPage() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col h-screen bg-uf-bg font-sans">
+    <div className="flex flex-col h-screen bg-bg font-sans">
       {/* Header */}
-      <div className="bg-white border-b border-uf-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
+      <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.push("/")}
-          className="w-9 h-9 rounded-lg border border-uf-border flex items-center justify-center"
+          className="w-9 h-9 rounded-lg border border-border flex items-center justify-center"
         >
-          <ArrowLeft size={16} className="text-uf-text" />
+          <ArrowLeft size={16} className="text-ink" />
         </button>
-        <h1 className="flex-1 text-[17px] font-semibold text-uf-text">Mes trajets</h1>
-        <History size={18} className="text-uf-text-secondary" />
+        <h1 className="flex-1 text-[17px] font-semibold text-ink">Mes trajets</h1>
+        <History size={18} className="text-text-2" />
       </div>
 
       {/* Filtres */}
-      <div className="bg-white border-b border-uf-border px-4 py-2.5 flex gap-2 shrink-0">
+      <div className="bg-white border-b border-border px-4 py-2.5 flex gap-2 shrink-0">
         {FILTERS.map((f) => (
           <button
             key={f.id}
             onClick={() => setFilter(f.id)}
             className={`px-3.5 py-1.5 rounded-2xl border-[1.5px] text-[12px] transition-colors ${
               filter === f.id
-                ? "border-uf-red bg-uf-red-light font-semibold text-uf-red"
-                : "border-uf-border bg-white text-uf-text-secondary"
+                ? "border-primary bg-primary-tint font-semibold text-primary"
+                : "border-border bg-white text-text-2"
             }`}
           >
             {f.label}
@@ -64,20 +64,20 @@ export default function TripsPage() {
       </div>
 
       {/* Résumé */}
-      <div className="bg-white border-b border-uf-border flex shrink-0">
+      <div className="bg-white border-b border-border flex shrink-0">
         <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-uf-text">47</p>
-          <p className="text-[10px] text-uf-text-secondary">trajets</p>
+          <p className="font-mono text-[18px] font-bold text-ink">47</p>
+          <p className="text-[10px] text-text-2">trajets</p>
         </div>
-        <div className="w-px bg-uf-border" />
+        <div className="w-px bg-border" />
         <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-uf-success">18.4</p>
-          <p className="text-[10px] text-uf-text-secondary">kg CO₂ évités</p>
+          <p className="font-mono text-[18px] font-bold text-success">18.4</p>
+          <p className="text-[10px] text-text-2">kg CO₂ évités</p>
         </div>
-        <div className="w-px bg-uf-border" />
+        <div className="w-px bg-border" />
         <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-uf-text">8h</p>
-          <p className="text-[10px] text-uf-text-secondary">en déplacement</p>
+          <p className="font-mono text-[18px] font-bold text-ink">8h</p>
+          <p className="text-[10px] text-text-2">en déplacement</p>
         </div>
       </div>
 
@@ -87,20 +87,20 @@ export default function TripsPage() {
           const Icon = MODE_ICONS[t.mode];
           return (
             <div key={i} className="bg-white rounded-xl px-3.5 py-3 flex items-center gap-3">
-              <div className="w-[38px] h-[38px] rounded-[10px] bg-uf-red-light flex items-center justify-center shrink-0">
-                <Icon size={18} className="text-uf-red" />
+              <div className="w-[38px] h-[38px] rounded-[10px] bg-primary-tint flex items-center justify-center shrink-0">
+                <Icon size={18} className="text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-uf-text truncate">
-                  {t.from} <span className="text-uf-text-secondary">→</span> {t.to}
+                <p className="text-[13px] font-medium text-ink truncate">
+                  {t.from} <span className="text-text-2">→</span> {t.to}
                 </p>
-                <p className="text-[11px] text-uf-text-secondary mt-0.5">{t.date} · {t.duration}</p>
+                <p className="text-[11px] text-text-2 mt-0.5">{t.date} · {t.duration}</p>
               </div>
               <div className="text-right shrink-0">
-                <p className={`font-mono text-[12px] font-bold ${t.co2Good ? "text-uf-success" : "text-uf-red"}`}>
+                <p className={`font-mono text-[12px] font-bold ${t.co2Good ? "text-success" : "text-primary"}`}>
                   {t.co2}
                 </p>
-                <p className="text-[10px] text-uf-text-secondary mt-0.5">émissions</p>
+                <p className="text-[10px] text-text-2 mt-0.5">émissions</p>
               </div>
             </div>
           );
