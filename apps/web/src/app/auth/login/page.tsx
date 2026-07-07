@@ -6,6 +6,7 @@ import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {Eye, EyeOff, Shield} from "lucide-react";
 import {Logo} from "@/app/components/ui/Logo";
+import {GoogleButton} from "@/app/components/auth/GoogleButton";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -113,6 +114,8 @@ export default function LoginPage() {
                     <span className="text-xs text-text-2 font-medium">ou</span>
                     <div className="flex-1 h-px bg-border"/>
                 </div>
+
+                <GoogleButton label="Continuer avec Google"/>
 
                 <p className="text-center text-sm text-text-2">
                     Pas encore de compte ?{" "}

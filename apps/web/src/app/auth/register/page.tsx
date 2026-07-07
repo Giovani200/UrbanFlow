@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff, Check } from "lucide-react";
 import { Logo } from "@/app/components/ui/Logo";
 import { usersService } from "@/app/services/users.service";
+import { GoogleButton } from "@/app/components/auth/GoogleButton";
 
 function PasswordStrength({ password }: { password: string }) {
   const score = [/.{8,}/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/].filter((r) => r.test(password)).length;
@@ -121,6 +122,8 @@ export default function RegisterPage() {
           <span className="text-xs text-text-2 font-medium">ou</span>
           <div className="flex-1 h-px bg-border" />
         </div>
+
+        <GoogleButton label="S'inscrire avec Google" />
 
         <p className="text-center text-sm text-text-2">
           Déjà un compte ?{" "}
