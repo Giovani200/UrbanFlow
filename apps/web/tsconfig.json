@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@urbanflow/app-front-back-lib": ["../../packages/app-front-back-lib/src/index.ts"]
     }
   },
   "include": [
