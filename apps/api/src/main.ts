@@ -12,7 +12,7 @@ async function bootstrap(): Promise<void> {
         credentials: true,
     });
 
-    const port = process.env.API_PORT ?? 3001;
+    const port = process.env.PORT ?? process.env.API_PORT ?? 3001;
     await application.listen(port);
 }
 
