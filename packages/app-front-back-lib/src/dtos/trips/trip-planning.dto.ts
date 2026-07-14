@@ -28,6 +28,7 @@ export const TripSegmentSchema = zod.object({
     durationSeconds: zod.number(),
     distanceMeters: zod.number(),
     carbonGrams: zod.number(),
+    savedGrams: zod.number(),
     departureStopName: zod.string().optional(),
     arrivalStopName: zod.string().optional(),
     lineShortName: zod.string().optional(),
@@ -40,6 +41,7 @@ export const TripRouteSchema = zod.object({
     totalDurationSeconds: zod.number(),
     totalDistanceMeters: zod.number(),
     totalCarbonGrams: zod.number(),
+    totalSavedGrams: zod.number(),
     score: zod.number(),
 });
 export type TripRoute = zod.output<typeof TripRouteSchema>;

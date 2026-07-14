@@ -1,11 +1,13 @@
 import { Module } from "@nestjs/common";
+import { PassportModule } from "@nestjs/passport";
 import { TransportModule } from "../transport/transport.module";
 import { TripsController } from "./trips.controller";
 import { TripPlanningUseCase } from "./use-cases/trip-planning.use-case";
+import { RecordTripUseCase } from "./use-cases/record-trip.use-case";
 
 @Module({
-    imports: [TransportModule],
+    imports: [TransportModule, PassportModule],
     controllers: [TripsController],
-    providers: [TripPlanningUseCase],
+    providers: [TripPlanningUseCase, RecordTripUseCase],
 })
 export class TripsModule {}

@@ -1,4 +1,6 @@
 import type {
+  RecordTripDtoIn,
+  RecordTripDtoOut,
   TripPlanningDtoIn,
   TripPlanningDtoOut,
   TripRoute,
@@ -18,5 +20,15 @@ export const tripsService = {
       body: JSON.stringify(input),
     });
     return handleResponse<TripPlanningDtoOut>(response);
+  },
+
+  async recordTrip(input: RecordTripDtoIn) {
+    const response = await fetch(`${API_URL}/trips`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(input),
+    });
+    return handleResponse<RecordTripDtoOut>(response);
   },
 };

@@ -47,6 +47,7 @@ export default function ProfilePage() {
   const [avoidStairs, setAvoidStairs] = useState(false);
   type TransportMode = NonNullable<UpdatePreferencesDtoIn["preferredModes"]>[number];
   const [preferredModes, setPreferredModes] = useState<TransportMode[]>(["bike", "tram", "walk"]);
+  const [monthlyGoalKg, setMonthlyGoalKg] = useState<number | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -65,6 +66,7 @@ export default function ProfilePage() {
           setWheelchairAccess(mp.wheelchairAccess);
           setAvoidStairs(mp.avoidStairs);
           setPreferredModes(mp.preferredModes as TransportMode[]);
+          setMonthlyGoalKg(mp.monthlyGoalKg);
         }
       });
     }
@@ -75,6 +77,7 @@ export default function ProfilePage() {
     const res = await usersService.updateProfile({
       weightTime, weightCarbon, weightCost,
       wheelchairAccess, avoidStairs, preferredModes,
+      monthlyGoalKg,
     });
     setSaving(false);
     if (res.isOk) {
@@ -241,6 +244,29 @@ export default function ProfilePage() {
                 </button>
               );
             })}
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-border flex justify-between items-center">
+            <span className="text-[12px] text-text-2">Objectif carbone mensuel</span>
+            {editing ? (
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  min={0}
+                  value={monthlyGoalKg ?? ""}
+                  onChange={(event) =>
+                    setMonthlyGoalKg(event.target.value === "" ? null : Number(event.target.value))
+                  }
+                  placeholder="—"
+                  className="w-16 text-right text-[12px] font-mono border border-border rounded-md px-2 py-1"
+                />
+                <span className="text-[12px] text-text-2">kg</span>
+              </div>
+            ) : (
+              <span className="text-[12px] font-mono font-semibold text-ink">
+                {monthlyGoalKg != null ? `${monthlyGoalKg} kg` : "Non défini"}
+              </span>
+            )}
           </div>
         </div>
 

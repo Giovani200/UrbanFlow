@@ -55,6 +55,7 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
     ): Promise<TripRoute> {
         const route = await this.orsRoutingAdapter.getRoute(orsProfile, dataIn.origin, dataIn.destination);
         const carbonGrams = this.segmentCarbon(mode, route.distanceMeters);
+        const savedGrams = this.segmentSaved(carbonGrams, route.distanceMeters);
 
         return {
             segments: [
@@ -64,11 +65,13 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
                     durationSeconds: route.durationSeconds,
                     distanceMeters: route.distanceMeters,
                     carbonGrams,
+                    savedGrams,
                 },
             ],
             totalDurationSeconds: route.durationSeconds,
             totalDistanceMeters: route.distanceMeters,
             totalCarbonGrams: carbonGrams,
+            totalSavedGrams: savedGrams,
             score: 0, // mode pur, non classé
         };
     }
@@ -90,29 +93,40 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
     }
 
     private toTransitRoute(itinerary: OtpItinerary): TripRoute {
-        const segments: TripSegment[] = itinerary.legs.map((leg) => ({
-            mode: leg.mode,
-            geometry: leg.geometry,
-            durationSeconds: leg.durationSeconds,
-            distanceMeters: leg.distanceMeters,
-            carbonGrams: this.segmentCarbon(leg.mode, leg.distanceMeters),
-            departureStopName: leg.departureStopName,
-            arrivalStopName: leg.arrivalStopName,
-            lineShortName: leg.lineShortName,
-            intermediateStops: leg.intermediateStops,
-        }));
+        const segments: TripSegment[] = itinerary.legs.map((leg) => {
+            const carbonGrams = this.segmentCarbon(leg.mode, leg.distanceMeters);
+            return {
+                mode: leg.mode,
+                geometry: leg.geometry,
+                durationSeconds: leg.durationSeconds,
+                distanceMeters: leg.distanceMeters,
+                carbonGrams,
+                savedGrams: this.segmentSaved(carbonGrams, leg.distanceMeters),
+                departureStopName: leg.departureStopName,
+                arrivalStopName: leg.arrivalStopName,
+                lineShortName: leg.lineShortName,
+                intermediateStops: leg.intermediateStops,
+            };
+        });
 
         return {
             segments,
             totalDurationSeconds: itinerary.durationSeconds,
             totalDistanceMeters: segments.reduce((total, segment) => total + segment.distanceMeters, 0),
             totalCarbonGrams: segments.reduce((total, segment) => total + segment.carbonGrams, 0),
+            totalSavedGrams: segments.reduce((total, segment) => total + segment.savedGrams, 0),
             score: 0,
         };
     }
 
     private segmentCarbon(mode: TripMode, distanceMeters: number): number {
         return (distanceMeters / 1000) * CARBON_FACTORS[mode];
+    }
+
+    // CO₂ évité par rapport au même segment parcouru en voiture solo.
+    private segmentSaved(carbonGrams: number, distanceMeters: number): number {
+        const carReferenceGrams = (distanceMeters / 1000) * CARBON_FACTORS.car;
+        return Math.max(0, carReferenceGrams - carbonGrams);
     }
 
     private rankRoutes(routes: TripRoute[], dataIn: TripPlanningDtoIn): TripRoute[] {
