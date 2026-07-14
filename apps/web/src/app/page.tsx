@@ -18,6 +18,9 @@ import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsen
 import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
 import { tripsService } from "@/app/services/trips.service";
 import type { TripRoute } from "@/app/services/trips.service";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { addLocalTrip, toTripRecord } from "@/app/lib/localTrips";
+import type { RecordTripDtoIn } from "@urbanflow/app-front-back-lib";
 
 type View = "home" | "search" | "results" | "detail" | "navigation" | "arrival";
 
@@ -28,8 +31,12 @@ export default function PlannerPage() {
   const [selectedRoute, setSelectedRoute] = useState(0);
   const [originLabel, setOriginLabel] = useState("");
   const [destLabel, setDestLabel] = useState("");
+  const [originPoint, setOriginPoint] = useState<RecordTripDtoIn["origin"] | null>(null);
+  const [destPoint, setDestPoint] = useState<RecordTripDtoIn["destination"] | null>(null);
 
   const mapRef = useRef<MapViewHandle>(null);
+  const { status: authStatus } = useAuth();
+  const hasRecordedRef = useRef(false);
 
   const { status, position, start, stop } = useGeolocation();
   const { consent, grant, deny } = useGeolocationConsent();
@@ -88,6 +95,9 @@ export default function PlannerPage() {
   async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
     setOriginLabel(origin.label);
     setDestLabel(destination.label);
+    setOriginPoint({ latitude: origin.latitude, longitude: origin.longitude, label: origin.label });
+    setDestPoint({ latitude: destination.latitude, longitude: destination.longitude, label: destination.label });
+    hasRecordedRef.current = false;
     setView("results");
     setLoading(true);
     setRoutes([]);
@@ -127,6 +137,17 @@ export default function PlannerPage() {
     mapRef.current?.clearSegments();
     setRoutes([]);
     setView("home");
+  }
+
+  // Trajet fait (arrivée) → enregistré une fois : serveur si connecté, local (plafonné) sinon.
+  function recordCurrentTrip() {
+    if (hasRecordedRef.current) return;
+    const route = routes[selectedRoute];
+    if (!route || !originPoint || !destPoint) return;
+    hasRecordedRef.current = true;
+    const input: RecordTripDtoIn = { origin: originPoint, destination: destPoint, route };
+    if (authStatus === "authenticated") void tripsService.recordTrip(input);
+    else addLocalTrip(toTripRecord(input));
   }
 
   return (
@@ -219,7 +240,10 @@ export default function PlannerPage() {
             mapRef.current?.clearSegments();
             setView("home");
           }}
-          onArrived={() => setView("arrival")}
+          onArrived={() => {
+            recordCurrentTrip();
+            setView("arrival");
+          }}
         />
       )}
 

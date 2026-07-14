@@ -38,6 +38,7 @@ export class UpdatePreferencesUseCase extends AbstractUseCase<
                 wheelchairAccess: true,
                 avoidStairs: true,
                 preferredModes: true,
+                monthlyGoalKg: true,
             },
         });
     }

@@ -32,6 +32,7 @@ export class GetUserProfileUseCase extends AbstractUseCase<GetUserProfileCommand
                         wheelchairAccess: true,
                         avoidStairs: true,
                         preferredModes: true,
+                        monthlyGoalKg: true,
                     },
                 },
             },

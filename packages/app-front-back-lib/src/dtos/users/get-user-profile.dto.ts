@@ -15,6 +15,7 @@ export const GetUserProfileDtoOutSchema = zod.object({
             wheelchairAccess: zod.boolean(),
             avoidStairs: zod.boolean(),
             preferredModes: zod.array(zod.string()),
+            monthlyGoalKg: zod.number().nullable(),
         })
         .nullable(),
 });

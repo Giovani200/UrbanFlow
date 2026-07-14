@@ -3,5 +3,8 @@ export * from "./dtos/users/create-user.dto";
 export * from "./dtos/users/get-user-profile.dto";
 export * from "./dtos/users/update-preferences.dto";
 export * from "./dtos/trips/trip-planning.dto";
+export * from "./dtos/trips/record-trip.dto";
 export * from "./dtos/transport/get-nearby-transport.dto";
 export * from "./dtos/carbon/calculate-carbon.dto";
+export * from "./dtos/carbon/carbon-summary.dto";
+export * from "./carbon/aggregate-carbon";
