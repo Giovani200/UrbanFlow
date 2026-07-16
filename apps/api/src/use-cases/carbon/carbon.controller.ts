@@ -24,6 +24,6 @@ export class CarbonController {
         @CurrentUser() user: AuthenticatedUser,
         @Query("period") period: unknown,
     ): Promise<CarbonSummaryDtoOut> {
-        return this.getCarbonSummaryUseCase.execute({ period, userId: user.userId });
+        return this.getCarbonSummaryUseCase.execute(user, { period });
     }
 }

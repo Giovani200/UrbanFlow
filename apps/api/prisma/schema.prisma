@@ -26,6 +26,7 @@ model User {
   preferences   Preferences?
   trips           Trip[]
   carbonEntries   CarbonEntry[]
+  favoriteAddresses FavoriteAddress[]
 
   @@map("users")
 }
@@ -46,6 +47,22 @@ model Preferences {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("preferences")
+}
+
+model FavoriteAddress {
+  id     String @id @default(cuid())
+  userId String
+
+  label     String
+  address   String
+  latitude  Float
+  longitude Float
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("favorite_addresses")
 }
 
 // ─── MODULE TRIPS ───────────────────────────────────────────
@@ -136,7 +153,7 @@ model CarbonEntry {
 
   createdAt DateTime @default(now())
 
-  user User  @relation(fields: [userId], references: [id])
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   trip Trip? @relation(fields: [tripId], references: [id])
 
   @@map("carbon_entries")

@@ -1,31 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { z as zod } from "zod";
 import {
+    RecordTripDtoIn,
     RecordTripDtoInSchema,
     RecordTripDtoOut,
     RecordTripDtoOutSchema,
 } from "@urbanflow/app-front-back-lib";
-import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
+import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
+import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
 
-// Commande back-only : itinéraire choisi + userId injecté depuis le JWT.
-const RecordTripCommandSchema = RecordTripDtoInSchema.extend({
-    userId: zod.string(),
-});
-type RecordTripCommand = zod.output<typeof RecordTripCommandSchema>;
-
 @Injectable()
-export class RecordTripUseCase extends AbstractUseCase<RecordTripCommand, RecordTripDtoOut> {
+export class RecordTripUseCase extends AbstractAuthenticatedUseCase<RecordTripDtoIn, RecordTripDtoOut> {
     constructor(private readonly prisma: PrismaService) {
-        super(RecordTripCommandSchema, RecordTripDtoOutSchema);
+        super(RecordTripDtoInSchema, RecordTripDtoOutSchema);
     }
 
-    protected async executeUseCase(dataIn: RecordTripCommand): Promise<RecordTripDtoOut> {
-        const { userId, origin, destination, route } = dataIn;
+    protected async executeUseCase(
+        authenticatedUser: AuthenticatedUser,
+        dataIn: RecordTripDtoIn,
+    ): Promise<RecordTripDtoOut> {
+        const { userId } = authenticatedUser;
+        const { origin, destination, route } = dataIn;
         const modes = [...new Set(route.segments.map((segment) => segment.mode))];
 
-        // Un Trip + une CarbonEntry par segment-mode (répartition par mode réelle).
         const trip = await this.prisma.trip.create({
             data: {
                 userId,

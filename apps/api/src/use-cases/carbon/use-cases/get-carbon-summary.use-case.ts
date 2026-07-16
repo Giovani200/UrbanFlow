@@ -1,30 +1,29 @@
 import { Injectable } from "@nestjs/common";
-import { z as zod } from "zod";
 import {
     aggregateCarbon,
     CarbonEvent,
+    CarbonSummaryDtoIn,
     CarbonSummaryDtoInSchema,
     CarbonSummaryDtoOut,
     CarbonSummaryDtoOutSchema,
     TripMode,
 } from "@urbanflow/app-front-back-lib";
-import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
+import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
+import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
 
-// Commande back-only : période + userId injecté depuis le JWT.
-const GetCarbonSummaryCommandSchema = CarbonSummaryDtoInSchema.extend({
-    userId: zod.string(),
-});
-type GetCarbonSummaryCommand = zod.output<typeof GetCarbonSummaryCommandSchema>;
-
 @Injectable()
-export class GetCarbonSummaryUseCase extends AbstractUseCase<GetCarbonSummaryCommand, CarbonSummaryDtoOut> {
+export class GetCarbonSummaryUseCase extends AbstractAuthenticatedUseCase<CarbonSummaryDtoIn, CarbonSummaryDtoOut> {
     constructor(private readonly prisma: PrismaService) {
-        super(GetCarbonSummaryCommandSchema, CarbonSummaryDtoOutSchema);
+        super(CarbonSummaryDtoInSchema, CarbonSummaryDtoOutSchema);
     }
 
-    protected async executeUseCase(dataIn: GetCarbonSummaryCommand): Promise<CarbonSummaryDtoOut> {
-        const { userId, period } = dataIn;
+    protected async executeUseCase(
+        authenticatedUser: AuthenticatedUser,
+        dataIn: CarbonSummaryDtoIn,
+    ): Promise<CarbonSummaryDtoOut> {
+        const { userId } = authenticatedUser;
+        const { period } = dataIn;
 
         const entries = await this.prisma.carbonEntry.findMany({
             where: { userId },
@@ -48,7 +47,6 @@ export class GetCarbonSummaryUseCase extends AbstractUseCase<GetCarbonSummaryCom
             savedGrams: entry.savedVsCar,
         }));
 
-        // L'objectif est mensuel : on ne le renvoie que pour la période "month".
         const goalKg =
             period === "month"
                 ? (

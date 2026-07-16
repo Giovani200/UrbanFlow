@@ -21,7 +21,6 @@ export class TripsController {
     @Post()
     @UseGuards(JwtAuthGuard)
     async record(@CurrentUser() user: AuthenticatedUser, @Body() body: unknown): Promise<RecordTripDtoOut> {
-        // userId du token placé en dernier → écrase tout userId glissé dans le body.
-        return this.recordTripUseCase.execute({ ...(body as Record<string, unknown>), userId: user.userId });
+        return this.recordTripUseCase.execute(user, body);
     }
 }

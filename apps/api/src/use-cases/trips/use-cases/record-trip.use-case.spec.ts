@@ -50,7 +50,10 @@ describe("RecordTripUseCase", () => {
         const create = vi.fn(async (_arg: TripCreateArg) => ({ id: "trip-1" }));
         const prisma = { trip: { create } } as unknown as PrismaService;
 
-        const result = await new RecordTripUseCase(prisma).execute({ ...makeInput(), userId: "user-1" });
+        const result = await new RecordTripUseCase(prisma).execute(
+            { userId: "user-1", email: "user-1@test.fr" },
+            makeInput(),
+        );
 
         expect(result).toEqual({ tripId: "trip-1" });
 
@@ -71,11 +74,13 @@ describe("RecordTripUseCase", () => {
         const prisma = { trip: { create: vi.fn() } } as unknown as PrismaService;
 
         await expect(
-            new RecordTripUseCase(prisma).execute({
-                userId: "user-1",
-                origin: { latitude: 45.1, longitude: 5.7, label: "Départ" },
-                destination: { latitude: 45.2, longitude: 5.75, label: "Arrivée" },
-            }),
+            new RecordTripUseCase(prisma).execute(
+                { userId: "user-1", email: "user-1@test.fr" },
+                {
+                    origin: { latitude: 45.1, longitude: 5.7, label: "Départ" },
+                    destination: { latitude: 45.2, longitude: 5.75, label: "Arrivée" },
+                },
+            ),
         ).rejects.toThrow();
     });
 });

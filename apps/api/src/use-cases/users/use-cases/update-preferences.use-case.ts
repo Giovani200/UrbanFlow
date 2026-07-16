@@ -1,36 +1,31 @@
 import { Injectable } from "@nestjs/common";
-import { z as zod } from "zod";
 import {
+    UpdatePreferencesDtoIn,
     UpdatePreferencesDtoInSchema,
     UpdatePreferencesDtoOut,
     UpdatePreferencesDtoOutSchema,
 } from "@urbanflow/app-front-back-lib";
-import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
+import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
+import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
 
-// Commande back-only : préférences (toutes optionnelles) + userId injecté depuis le JWT.
-const UpdatePreferencesCommandSchema = UpdatePreferencesDtoInSchema.extend({
-    userId: zod.string(),
-});
-type UpdatePreferencesCommand = zod.output<typeof UpdatePreferencesCommandSchema>;
-
 @Injectable()
-export class UpdatePreferencesUseCase extends AbstractUseCase<
-    UpdatePreferencesCommand,
+export class UpdatePreferencesUseCase extends AbstractAuthenticatedUseCase<
+    UpdatePreferencesDtoIn,
     UpdatePreferencesDtoOut
 > {
     constructor(private readonly prisma: PrismaService) {
-        super(UpdatePreferencesCommandSchema, UpdatePreferencesDtoOutSchema);
+        super(UpdatePreferencesDtoInSchema, UpdatePreferencesDtoOutSchema);
     }
 
-    protected async executeUseCase(dataIn: UpdatePreferencesCommand): Promise<UpdatePreferencesDtoOut> {
-        const { userId, ...preferences } = dataIn;
-
-        // Upsert paresseux : crée les préférences au 1er enregistrement (S7 ou paramètres), sinon met à jour.
+    protected async executeUseCase(
+        authenticatedUser: AuthenticatedUser,
+        dataIn: UpdatePreferencesDtoIn,
+    ): Promise<UpdatePreferencesDtoOut> {
         return this.prisma.preferences.upsert({
-            where: { userId },
-            create: { userId, ...preferences },
-            update: preferences,
+            where: { userId: authenticatedUser.userId },
+            create: { userId: authenticatedUser.userId, ...dataIn },
+            update: dataIn,
             select: {
                 weightCarbon: true,
                 weightTime: true,
