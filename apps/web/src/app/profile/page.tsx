@@ -38,7 +38,7 @@ function getInitials(name: string | null, email: string): string {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { status, logout } = useAuth();
+  const { status } = useAuth();
   const { summary } = useCarbonSummary("month");
   const [profile, setProfile] = useState<GetUserProfileDtoOut | null>(null);
   const [editing, setEditing] = useState(false);
@@ -70,8 +70,6 @@ export default function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [savingPassword, setSavingPassword] = useState(false);
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -187,16 +185,6 @@ export default function ProfilePage() {
       setNewPassword("");
     } else {
       setPasswordError("Mot de passe actuel incorrect");
-    }
-  }
-
-  async function handleDeleteAccount() {
-    setDeleting(true);
-    const res = await usersService.deleteAccount();
-    setDeleting(false);
-    if (res.isOk) {
-      await logout();
-      router.replace("/");
     }
   }
 
@@ -501,7 +489,6 @@ export default function ProfilePage() {
             setAccountOpen(open);
             if (!open) {
               setChangingPassword(false);
-              setConfirmingDelete(false);
               setPasswordError(null);
               setCurrentPassword("");
               setNewPassword("");
@@ -589,39 +576,6 @@ export default function ProfilePage() {
                 )}
               </div>
             )}
-
-            <div className="pt-3 border-t border-border">
-              {!confirmingDelete ? (
-                <button
-                  onClick={() => setConfirmingDelete(true)}
-                  className="text-[13px] text-red-600 font-medium"
-                >
-                  Supprimer mon compte
-                </button>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-[12px] text-text-2">
-                    Action définitive : préférences, adresses favorites et historique carbone seront
-                    supprimés.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setConfirmingDelete(false)}
-                      className="flex-1 rounded-lg border border-border py-2 text-[13px] text-text-2"
-                    >
-                      Annuler
-                    </button>
-                    <button
-                      onClick={handleDeleteAccount}
-                      disabled={deleting}
-                      className="flex-1 rounded-lg bg-red-600 text-white py-2 text-[13px] font-semibold disabled:opacity-50"
-                    >
-                      {deleting ? "Suppression…" : "Supprimer"}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         </Modal>
       </div>

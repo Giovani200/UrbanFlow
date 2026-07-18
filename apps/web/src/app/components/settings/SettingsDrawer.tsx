@@ -3,21 +3,22 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/components/auth/AuthProvider";
-import { User, Leaf, Clock, Bell, Lock, HelpCircle, LogOut, LogIn, ChevronRight } from "lucide-react";
+import { User, Leaf, Clock, Bell, Database, Lock, HelpCircle, LogOut, LogIn, ChevronRight } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
 
 const LOGGED_ITEMS = [
   { icon: User,       label: "Compte",          href: "/profile" },
   { icon: Leaf,       label: "Mon empreinte",   href: "/carbon"  },
   { icon: Clock,      label: "Mes trajets",     href: "/trips"   },
-  { icon: Bell,       label: "Notifications",   href: null       },
-  { icon: Lock,       label: "Confidentialité", href: null       },
-  { icon: HelpCircle, label: "Aide",            href: null       },
+  { icon: Bell,       label: "Notifications",   href: null               },
+  { icon: Database,   label: "Mes données",     href: "/mes-donnees"     },
+  { icon: Lock,       label: "Confidentialité", href: "/confidentialite" },
+  { icon: HelpCircle, label: "Aide",            href: "/aide"            },
 ] as const;
 
 const GUEST_ITEMS = [
-  { icon: HelpCircle, label: "Aide",            href: null       },
-  { icon: Lock,       label: "Confidentialité", href: null       },
+  { icon: HelpCircle, label: "Aide",            href: "/aide"            },
+  { icon: Lock,       label: "Confidentialité", href: "/confidentialite" },
 ] as const;
 
 interface Props {

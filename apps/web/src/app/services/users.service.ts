@@ -14,6 +14,7 @@ import type {
   ChangePasswordDtoIn,
   ChangePasswordDtoOut,
   DeleteAccountDtoOut,
+  ExportUserDataDtoOut,
 } from "@urbanflow/app-front-back-lib";
 import { handleResponse } from "@/app/services/lib/http";
 
@@ -103,5 +104,10 @@ export const usersService = {
       credentials: "include",
     });
     return handleResponse<DeleteAccountDtoOut>(res);
+  },
+
+  async exportData() {
+    const res = await fetch(`${API_URL}/users/me/export`, { credentials: "include" });
+    return handleResponse<ExportUserDataDtoOut>(res);
   },
 };
