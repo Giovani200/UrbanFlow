@@ -5,6 +5,7 @@ import {
     CreateUserDtoOut,
     DeleteAccountDtoOut,
     DeleteFavoriteAddressDtoOut,
+    ExportUserDataDtoOut,
     GetUserProfileDtoOut,
     ListFavoriteAddressesDtoOut,
     UpdateAccountDtoOut,
@@ -16,6 +17,7 @@ import { UpdatePreferencesUseCase } from "./use-cases/update-preferences.use-cas
 import { UpdateAccountUseCase } from "./use-cases/update-account.use-case";
 import { ChangePasswordUseCase } from "./use-cases/change-password.use-case";
 import { DeleteAccountUseCase } from "./use-cases/delete-account.use-case";
+import { ExportUserDataUseCase } from "./use-cases/export-user-data.use-case";
 import { CreateFavoriteAddressUseCase } from "./use-cases/create-favorite-address.use-case";
 import { ListFavoriteAddressesUseCase } from "./use-cases/list-favorite-addresses.use-case";
 import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-address.use-case";
@@ -32,6 +34,7 @@ export class UsersController {
         private readonly updateAccountUseCase: UpdateAccountUseCase,
         private readonly changePasswordUseCase: ChangePasswordUseCase,
         private readonly deleteAccountUseCase: DeleteAccountUseCase,
+        private readonly exportUserDataUseCase: ExportUserDataUseCase,
         private readonly createFavoriteAddressUseCase: CreateFavoriteAddressUseCase,
         private readonly listFavoriteAddressesUseCase: ListFavoriteAddressesUseCase,
         private readonly deleteFavoriteAddressUseCase: DeleteFavoriteAddressUseCase,
@@ -67,6 +70,12 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async deleteAccount(@CurrentUser() user: AuthenticatedUser): Promise<DeleteAccountDtoOut> {
         return this.deleteAccountUseCase.execute(user, undefined);
+    }
+
+    @Get("me/export")
+    @UseGuards(JwtAuthGuard)
+    async exportData(@CurrentUser() user: AuthenticatedUser): Promise<ExportUserDataDtoOut> {
+        return this.exportUserDataUseCase.execute(user, undefined);
     }
 
     @Put("me/preferences")

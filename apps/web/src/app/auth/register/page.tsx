@@ -104,7 +104,7 @@ export default function RegisterPage() {
             </button>
             <p className="text-sm text-text-2 leading-relaxed">
               J&apos;accepte la{" "}
-              <span className="text-primary font-medium cursor-pointer">politique de confidentialité</span>{" "}
+              <Link href="/confidentialite" className="text-primary font-medium">politique de confidentialité</Link>{" "}
               et le traitement de mes données personnelles conformément au RGPD.
             </p>
           </div>
