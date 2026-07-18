@@ -1,6 +1,21 @@
 import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { z as zod } from "zod";
 
+export function validateUseCaseData<T>(
+    direction: "ENTRÉE" | "SORTIE",
+    schema: zod.ZodType<T>,
+    data: unknown,
+): T {
+    const parsed = schema.safeParse(data);
+    if (parsed.success) {
+        return parsed.data;
+    }
+    if (direction === "ENTRÉE") {
+        throw new BadRequestException({ direction, issues: parsed.error.issues });
+    }
+    throw new InternalServerErrorException({ direction, issues: parsed.error.issues });
+}
+
 export abstract class AbstractUseCase<DataIn, DataOut> {
     protected constructor(
         private readonly dataInSchema: zod.ZodType<DataIn>,
@@ -8,20 +23,9 @@ export abstract class AbstractUseCase<DataIn, DataOut> {
     ) {}
 
     async execute(rawInput: unknown): Promise<DataOut> {
-        const dataIn = this.validateAgainstSchema(this.dataInSchema, rawInput, "ENTRÉE");
+        const dataIn = validateUseCaseData("ENTRÉE", this.dataInSchema, rawInput);
         const result = await this.executeUseCase(dataIn);
-        return this.validateAgainstSchema(this.dataOutSchema, result, "SORTIE");
-    }
-
-    private validateAgainstSchema<T>(schema: zod.ZodType<T>, data: unknown, direction: "ENTRÉE" | "SORTIE"): T {
-        const parsed = schema.safeParse(data);
-        if (!parsed.success) {
-            if (direction === "ENTRÉE") {
-                throw new BadRequestException({ direction, issues: parsed.error.issues });
-            }
-            throw new InternalServerErrorException({ direction, issues: parsed.error.issues });
-        }
-        return parsed.data;
+        return validateUseCaseData("SORTIE", this.dataOutSchema, result);
     }
 
     protected abstract executeUseCase(dataIn: DataIn): Promise<DataOut>;

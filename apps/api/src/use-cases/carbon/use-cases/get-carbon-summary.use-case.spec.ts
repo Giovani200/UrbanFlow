@@ -26,7 +26,10 @@ describe("GetCarbonSummaryUseCase", () => {
             preferences: { findUnique: async () => ({ monthlyGoalKg: 20 }) },
         } as unknown as PrismaService;
 
-        const summary = await new GetCarbonSummaryUseCase(prisma).execute({ userId: "u1", period: "month" });
+        const summary = await new GetCarbonSummaryUseCase(prisma).execute(
+            { userId: "u1", email: "u1@test.fr" },
+            { period: "month" },
+        );
 
         expect(summary.tripCount).toBe(1); // deux entries, même tripId
         expect(summary.totalCarbonGrams).toBeCloseTo(17.76, 5);
@@ -42,7 +45,10 @@ describe("GetCarbonSummaryUseCase", () => {
             preferences: { findUnique },
         } as unknown as PrismaService;
 
-        const summary = await new GetCarbonSummaryUseCase(prisma).execute({ userId: "u1", period: "week" });
+        const summary = await new GetCarbonSummaryUseCase(prisma).execute(
+            { userId: "u1", email: "u1@test.fr" },
+            { period: "week" },
+        );
 
         expect(summary.goal).toBeNull();
         expect(findUnique).not.toHaveBeenCalled();
@@ -54,7 +60,10 @@ describe("GetCarbonSummaryUseCase", () => {
             preferences: { findUnique: async () => null },
         } as unknown as PrismaService;
 
-        const summary = await new GetCarbonSummaryUseCase(prisma).execute({ userId: "u1", period: "month" });
+        const summary = await new GetCarbonSummaryUseCase(prisma).execute(
+            { userId: "u1", email: "u1@test.fr" },
+            { period: "month" },
+        );
 
         expect(summary.tripCount).toBe(0);
         expect(summary.totalSavedGrams).toBe(0);
