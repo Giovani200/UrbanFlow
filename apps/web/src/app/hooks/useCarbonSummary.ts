@@ -21,7 +21,6 @@ export function useCarbonSummary(period: Period): CarbonSummaryState {
   useEffect(() => {
     if (status === "loading") return;
     let cancelled = false;
-    setLoading(true);
 
     async function load() {
       if (status === "authenticated") {

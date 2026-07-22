@@ -1,28 +1,49 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type GeolocationConsent = "unknown" | "granted" | "denied";
 
 const STORAGE_KEY = "urbanflow.geolocation.consent";
 
-export function useGeolocationConsent() {
-    const [consent, setConsent] = useState<GeolocationConsent>("unknown");
+// Le consentement vit dans le stockage du navigateur, une source externe à React.
+// useSyncExternalStore le lit sans effet et sans état dupliqué.
+const listeners = new Set<() => void>();
 
-    useEffect(() => {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (stored === "granted" || stored === "denied") {
-            setConsent(stored);
-        }
-    }, []);
+function emit(): void {
+    for (const listener of listeners) {
+        listener();
+    }
+}
+
+function subscribe(listener: () => void): () => void {
+    listeners.add(listener);
+    window.addEventListener("storage", listener);
+    return () => {
+        listeners.delete(listener);
+        window.removeEventListener("storage", listener);
+    };
+}
+
+function getSnapshot(): GeolocationConsent {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored === "granted" || stored === "denied" ? stored : "unknown";
+}
+
+function getServerSnapshot(): GeolocationConsent {
+    return "unknown";
+}
+
+export function useGeolocationConsent() {
+    const consent = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
     const grant = useCallback(() => {
         window.localStorage.setItem(STORAGE_KEY, "granted");
-        setConsent("granted");
+        emit();
     }, []);
 
     const deny = useCallback(() => {
         window.localStorage.setItem(STORAGE_KEY, "denied");
-        setConsent("denied");
+        emit();
     }, []);
 
     return { consent, grant, deny };

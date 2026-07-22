@@ -109,7 +109,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
+          {error && <p role="alert" className="text-sm text-red-600 font-medium">{error}</p>}
 
           <button type="submit" disabled={loading}
             className="w-full bg-primary text-white rounded-lg py-3.5 font-semibold text-sm tracking-tight disabled:opacity-60 transition-opacity">

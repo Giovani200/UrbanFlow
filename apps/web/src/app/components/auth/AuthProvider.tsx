@@ -33,9 +33,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // La session est résolue au montage. L'état n'est posé qu'à la réponse,
+  // jamais de façon synchrone dans le corps de l'effet.
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    let cancelled = false;
+    authService.me().then((res) => {
+      if (cancelled) return;
+      setUser(res.isOk ? res.data : null);
+      setStatus(res.isOk ? "authenticated" : "unauthenticated");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const login = useCallback(
     async (input: LoginDtoIn): Promise<LoginResult> => {
