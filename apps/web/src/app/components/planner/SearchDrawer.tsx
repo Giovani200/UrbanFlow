@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowUpDown, Search, Clock, ArrowRight, Bike, Bus, Footprints, Train, Navigation } from "lucide-react";
 import { useGeocoding, reverseGeocode } from "@/app/hooks/useGeocoding";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
@@ -49,9 +49,14 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
   const showSuggestions = activeField === "from" || currentResults.length > 0;
   const showRecents = !activeField;
 
+  // Une référence garde le verrou sans déclencher de rendu : la position peut
+  // changer pendant le géocodage inverse, on ne le relance pas pour autant.
+  const resolvingPositionRef = useRef(false);
+
   useEffect(() => {
-    if (!awaitingPosition || !userPosition) return;
-    setAwaitingPosition(false);
+    if (!awaitingPosition || !userPosition || resolvingPositionRef.current) return;
+    resolvingPositionRef.current = true;
+
     void (async () => {
       const label =
           (await reverseGeocode(userPosition.latitude, userPosition.longitude)) ?? "Ma position actuelle";
@@ -63,6 +68,8 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
       setFromGeo(origin);
       setFromText(label);
       setActiveField(null);
+      setAwaitingPosition(false);
+      resolvingPositionRef.current = false;
     })();
   }, [awaitingPosition, userPosition]);
 
@@ -113,7 +120,8 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
                   onChange={(e) => setFromText(e.target.value)}
                   onFocus={() => setActiveField("from")}
                   placeholder="D'où partez-vous ?"
-                  className="flex-1 text-sm font-medium text-ink bg-transparent outline-none"
+                  aria-label="Point de départ"
+                  className="flex-1 text-sm font-medium text-ink bg-transparent"
               />
             </div>
 
@@ -134,7 +142,8 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
                   onChange={(e) => setToText(e.target.value)}
                   onFocus={() => setActiveField("to")}
                   placeholder="Où allez-vous ?"
-                  className="flex-1 text-sm text-text-2 bg-transparent outline-none"
+                  aria-label="Destination"
+                  className="flex-1 text-sm text-text-2 bg-transparent"
               />
             </div>
           </div>

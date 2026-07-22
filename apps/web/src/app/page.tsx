@@ -55,9 +55,13 @@ export default function PlannerPage() {
     }
   }, [position]);
 
-  useEffect(() => {
+  // Ajustement pendant le rendu plutôt que dans un effet : la boîte d'erreur
+  // s'ouvre quand le statut bascule, et reste refermable par l'utilisateur.
+  const [lastGeoStatus, setLastGeoStatus] = useState(status);
+  if (status !== lastGeoStatus) {
+    setLastGeoStatus(status);
     if (status === "denied" || status === "unavailable") setGeoError(status);
-  }, [status]);
+  }
 
   function startTracking() {
     recenterPendingRef.current = true;

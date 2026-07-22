@@ -56,3 +56,8 @@ dist/
 
 # maquette / direction artistique (hors versionnement)
 design/
+
+# Serwist : service worker généré au build
+apps/web/public/sw.js
+apps/web/public/sw.js.map
+apps/web/public/swe-worker-*.js

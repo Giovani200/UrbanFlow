@@ -20,10 +20,7 @@ export function useGeocoding(query: string): GeocodingResult[] {
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (query.length < 3) {
-            setResults([]);
-            return;
-        }
+        if (query.length < 3) return;
 
         if (debounceRef.current) clearTimeout(debounceRef.current);
         debounceRef.current = setTimeout(async () => {
@@ -49,7 +46,8 @@ export function useGeocoding(query: string): GeocodingResult[] {
         return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
     }, [query]);
 
-    return results;
+    // Dérivé plutôt que remis à zéro dans l'effet : sous 3 caractères, aucun résultat n'est pertinent.
+    return query.length < 3 ? [] : results;
 }
 
 // Géocodage inverse (position → adresse lisible).

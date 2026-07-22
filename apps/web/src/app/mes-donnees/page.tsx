@@ -87,7 +87,7 @@ export default function MesDonneesPage() {
             </div>
           </div>
           {exportError && (
-            <p className="text-[11px] text-red-600 mt-2">Échec de l&apos;export. Réessaie.</p>
+            <p role="alert" className="text-[11px] text-red-600 mt-2">Échec de l&apos;export. Réessaie.</p>
           )}
           <button
             onClick={handleExport}

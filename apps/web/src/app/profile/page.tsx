@@ -293,6 +293,7 @@ export default function ProfilePage() {
                     type="range"
                     min={0}
                     max={100}
+                    aria-label={p.label}
                     value={p.val}
                     onChange={(e) => redistributeWeights(p.key, Number(e.target.value))}
                     className="w-full h-[5px] rounded-full appearance-none cursor-pointer accent-primary"
@@ -356,6 +357,7 @@ export default function ProfilePage() {
                 <input
                   type="number"
                   min={0}
+                  aria-label="Objectif carbone mensuel en kilogrammes"
                   value={monthlyGoalKg ?? ""}
                   onChange={(event) =>
                     setMonthlyGoalKg(event.target.value === "" ? null : Number(event.target.value))
@@ -422,6 +424,7 @@ export default function ProfilePage() {
                 value={newLabel}
                 onChange={(event) => setNewLabel(event.target.value)}
                 placeholder="Nom (ex. Pharmacie de maman)"
+                aria-label="Nom de l'adresse favorite"
                 className="w-full border border-border rounded-lg px-3 py-2 text-[13px] text-ink outline-none focus:border-primary"
               />
 
@@ -443,6 +446,7 @@ export default function ProfilePage() {
                     value={addressQuery}
                     onChange={(event) => setAddressQuery(event.target.value)}
                     placeholder="Rechercher une adresse…"
+                    aria-label="Rechercher une adresse"
                     className="w-full border border-border rounded-lg px-3 py-2 text-[13px] text-ink outline-none focus:border-primary"
                   />
                   {geocodingResults.length > 0 && (
@@ -506,6 +510,7 @@ export default function ProfilePage() {
                   type="text"
                   value={nameDraft}
                   onChange={(event) => setNameDraft(event.target.value)}
+                  aria-label="Nom du compte"
                   className="flex-1 border border-border rounded-lg px-3 py-2 text-[13px] text-ink outline-none focus:border-primary"
                 />
                 <button
@@ -542,6 +547,7 @@ export default function ProfilePage() {
                       value={currentPassword}
                       onChange={(event) => setCurrentPassword(event.target.value)}
                       placeholder="Mot de passe actuel"
+                      aria-label="Mot de passe actuel"
                       className="w-full border border-border rounded-lg px-3 py-2 text-[13px] text-ink outline-none focus:border-primary"
                     />
                     <input
@@ -549,9 +555,10 @@ export default function ProfilePage() {
                       value={newPassword}
                       onChange={(event) => setNewPassword(event.target.value)}
                       placeholder="Nouveau mot de passe (8 car. min)"
+                      aria-label="Nouveau mot de passe"
                       className="w-full border border-border rounded-lg px-3 py-2 text-[13px] text-ink outline-none focus:border-primary"
                     />
-                    {passwordError && <p className="text-[11px] text-red-600">{passwordError}</p>}
+                    {passwordError && <p role="alert" className="text-[11px] text-red-600">{passwordError}</p>}
                     <div className="flex gap-2">
                       <button
                         onClick={handleChangePassword}

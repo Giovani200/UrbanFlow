@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "tsc -p ../../packages/app-front-back-lib/tsconfig.json && next build",
+    "build": "tsc -p ../../packages/app-front-back-lib/tsconfig.json && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run"

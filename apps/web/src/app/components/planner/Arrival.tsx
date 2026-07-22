@@ -37,7 +37,7 @@ export function Arrival({ route, onDone }: Props) {
         className="mt-8 bg-primary text-white rounded-xl py-3 px-6 font-bold text-sm flex items-center gap-2 hover:bg-[#B8132C] transition-colors"
       >
         <Home size={16} />
-        Retour à l'accueil
+        Retour à l&apos;accueil
       </button>
     </div>
   );
