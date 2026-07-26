@@ -37,7 +37,7 @@ export class ChangePasswordUseCase extends AbstractAuthenticatedUseCase<ChangePa
         const passwordHash = await bcrypt.hash(dataIn.newPassword, 12);
         await this.prisma.user.update({
             where: { id: authenticatedUser.userId },
-            data: { passwordHash },
+            data: { passwordHash, sessionsInvalidatedAt: new Date() },
         });
 
         return { success: true };
