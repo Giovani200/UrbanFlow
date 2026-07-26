@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ArrowUpDown, Search, Clock, ArrowRight, Bike, Bus, Footprints, Train, Navigation } from "lucide-react";
+import { useEscapeKey } from "@/app/hooks/useEscapeKey";
+import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { useGeocoding, reverseGeocode } from "@/app/hooks/useGeocoding";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import type { UserPosition } from "@/app/hooks/useGeolocation";
@@ -31,9 +33,13 @@ interface Props {
   onSearch: (origin: GeocodingResult, destination: GeocodingResult) => void;
   userPosition: UserPosition | null;
   onRequestPosition: () => void;
+  onBack: () => void;
 }
 
-export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Props) {
+export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack }: Props) {
+  const panelRef = useFocusOnMount<HTMLDivElement>();
+  useEscapeKey(onBack);
+
   const [when, setWhen]               = useState<WhenId>("now");
   const [fromText, setFromText]       = useState("");
   const [toText, setToText]           = useState("");
@@ -104,7 +110,13 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
   const canSearch = !!(fromGeo && toGeo);
 
   return (
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white rounded-t-2xl shadow-2xl max-h-[75%]">
+      <div
+          ref={panelRef}
+          role="region"
+          aria-label="Planifier un trajet"
+          tabIndex={-1}
+          className="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-white rounded-t-2xl shadow-2xl max-h-[75%]"
+      >
         <div className="flex justify-center py-3 shrink-0">
           <div className="w-9 h-1 rounded-full bg-border" />
         </div>
@@ -129,6 +141,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition }: Prop
               <div className="flex-1 h-px bg-border ml-[34px]" />
               <button
                   onClick={swapInputs}
+                  aria-label="Inverser le départ et la destination"
                   className="w-7 h-7 rounded-lg bg-white border border-border flex items-center justify-center mx-3 shrink-0"
               >
                 <ArrowUpDown size={13} className="text-text-2" />

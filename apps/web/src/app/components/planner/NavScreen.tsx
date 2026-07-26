@@ -5,6 +5,8 @@ import { ChevronLeft, ChevronRight, Navigation, Square } from "lucide-react";
 import type { TripRoute, TripSegment } from "@/app/services/trips.service";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 import { haversineMeters } from "@/app/lib/geo";
+import { useEscapeKey } from "@/app/hooks/useEscapeKey";
+import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 
 const ADVANCE_THRESHOLD_METERS = 30;
 const SWIPE_THRESHOLD_PIXELS = 50;
@@ -37,6 +39,9 @@ interface Props {
 }
 
 export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit, onArrived }: Props) {
+  const panelRef = useFocusOnMount<HTMLDivElement>();
+  useEscapeKey(onExit);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const swipeStartX = useRef<number | null>(null);
   const segments = route.segments;
@@ -83,6 +88,7 @@ export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit,
     <>
       <button
         title="Recentrer"
+        aria-label="Recentrer la carte"
         onClick={onRecenter}
         className="absolute right-4 bottom-[300px] z-10 w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center"
       >
@@ -90,6 +96,10 @@ export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit,
       </button>
 
       <div
+        ref={panelRef}
+        role="region"
+        aria-label="Navigation en cours"
+        tabIndex={-1}
         className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl px-4 pt-3 pb-8 max-h-[75%] flex flex-col"
         onTouchStart={(event) => handleSwipeStart(event.touches[0].clientX)}
         onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}

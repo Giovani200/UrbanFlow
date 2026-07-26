@@ -156,6 +156,8 @@ export default function PlannerPage() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans">
+      <h1 className="sr-only">UrbanFlow, planificateur de trajets à Grenoble</h1>
+
       <div className="absolute inset-0">
         <MapViewDynamic ref={mapRef} />
       </div>
@@ -171,6 +173,7 @@ export default function PlannerPage() {
           </button>
           <button
             title="Ma position"
+            aria-label="Ma position"
             onClick={handleLocateClick}
             className="w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center shrink-0"
           >
@@ -178,6 +181,7 @@ export default function PlannerPage() {
           </button>
           <button
             title="Paramètres"
+            aria-label="Paramètres"
             onClick={() => setShowSettings(true)}
             className="w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center shrink-0"
           >
@@ -189,6 +193,7 @@ export default function PlannerPage() {
       {view === "search" && (
         <button
           title="Retour"
+          aria-label="Retour"
           onClick={() => setView("home")}
           className="absolute top-12 left-4 z-30 w-11 h-11 rounded-xl bg-surface shadow-lg flex items-center justify-center"
         >
@@ -206,7 +211,12 @@ export default function PlannerPage() {
       )}
 
       {view === "search" && (
-        <SearchDrawer onSearch={handleSearch} userPosition={position} onRequestPosition={handleLocateClick} />
+        <SearchDrawer
+          onSearch={handleSearch}
+          userPosition={position}
+          onRequestPosition={handleLocateClick}
+          onBack={() => setView("home")}
+        />
       )}
 
       {view === "results" && (

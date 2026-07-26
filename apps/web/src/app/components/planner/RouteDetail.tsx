@@ -3,6 +3,8 @@
 import { ArrowRight, Navigation } from "lucide-react";
 import type { TripRoute, TripSegment } from "@/app/services/trips.service";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
+import { useEscapeKey } from "@/app/hooks/useEscapeKey";
+import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 
 function formatDuration(seconds: number): string {
   const minutes = Math.round(seconds / 60);
@@ -25,8 +27,17 @@ interface Props {
 }
 
 export function RouteDetail({ route, originLabel, destLabel, onGo, onBack }: Props) {
+  const panelRef = useFocusOnMount<HTMLDivElement>();
+  useEscapeKey(onBack);
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl px-4 pt-3 pb-8 max-h-[80%] flex flex-col">
+    <div
+      ref={panelRef}
+      role="region"
+      aria-label="Détail de l'itinéraire"
+      tabIndex={-1}
+      className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl px-4 pt-3 pb-8 max-h-[80%] flex flex-col"
+    >
       <div className="w-9 h-1 rounded-full bg-border mx-auto mb-3.5 shrink-0" />
 
       <div className="flex items-center gap-2 mb-3 shrink-0 min-w-0">

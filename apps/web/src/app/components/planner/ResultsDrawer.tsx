@@ -2,6 +2,8 @@
 
 import { ArrowLeft, ArrowRight, ChevronRight, Bike, Bus, Footprints, Train, Leaf, Navigation, Car, Loader2 } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
+import { useEscapeKey } from "@/app/hooks/useEscapeKey";
+import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import type { TripRoute } from "@/app/services/trips.service";
 
 const MODE_ICONS: Record<string, React.ElementType> = {
@@ -69,6 +71,9 @@ export function ResultsDrawer({
     onMouseDown, onMouseMove, onMouseUp, onMouseLeave,
   } = useBottomSheetDrag({ onDismiss: onBack });
 
+  const panelRef = useFocusOnMount<HTMLDivElement>();
+  useEscapeKey(onBack);
+
   const minDuration = routes.length > 0
     ? formatDuration(Math.min(...routes.map((route) => route.totalDurationSeconds)))
     : "";
@@ -78,6 +83,7 @@ export function ResultsDrawer({
       <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-12 flex items-center gap-2.5">
         <button
           onClick={onBack}
+          aria-label="Retour à la recherche"
           className="w-[42px] h-[42px] rounded-xl bg-white shadow-lg flex items-center justify-center shrink-0"
         >
           <ArrowLeft size={18} className="text-ink" />
@@ -91,6 +97,10 @@ export function ResultsDrawer({
       </div>
 
       <div
+        ref={panelRef}
+        role="region"
+        aria-label="Itinéraires proposés"
+        tabIndex={-1}
         className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-2xl shadow-2xl"
         style={{
           transform: `translateY(${dragY}px)`,
@@ -107,6 +117,14 @@ export function ResultsDrawer({
         <div className="flex justify-center py-3">
           <div className="w-9 h-1 rounded-full bg-border" />
         </div>
+
+        <p className="sr-only" aria-live="polite">
+          {loading
+            ? "Calcul des itinéraires en cours"
+            : routes.length === 0
+              ? "Aucun itinéraire trouvé"
+              : `${routes.length} itinéraire${routes.length > 1 ? "s" : ""} proposé${routes.length > 1 ? "s" : ""}`}
+        </p>
 
         <div className="px-4 pb-8">
           {loading ? (

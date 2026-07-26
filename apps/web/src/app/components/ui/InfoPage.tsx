@@ -25,7 +25,7 @@ export function InfoPage({ title, sections }: { title: string; sections: InfoSec
       <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8 flex flex-col gap-3">
         {sections.map((section) => (
           <div key={section.title} className="bg-white rounded-xl p-4">
-            <p className="text-[14px] font-semibold text-ink mb-2">{section.title}</p>
+            <h2 className="text-[14px] font-semibold text-ink mb-2">{section.title}</h2>
             {section.paragraphs?.map((paragraph, index) => (
               <p key={index} className="text-[13px] text-text-2 leading-relaxed">
                 {paragraph}

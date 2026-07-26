@@ -32,7 +32,17 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${schibstedGrotesk.variable} ${fraunces.variable} h-full`}>
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <a
+          href="#contenu"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-lg"
+        >
+          Aller au contenu principal
+        </a>
+        <Providers>
+          <main id="contenu" className="flex-1 flex flex-col">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
