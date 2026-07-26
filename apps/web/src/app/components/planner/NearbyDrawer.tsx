@@ -34,14 +34,12 @@ function summariseVehicles(vehicles: SharedVehicle[]): string | null {
 export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded }: Props) {
   const [stops, setStops] = useState<TransitStop[]>([]);
   const [vehicles, setVehicles] = useState<SharedVehicle[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!position) return;
     let active = true;
-    setLoading(true);
-    setError(null);
 
     transportService
       .getNearby({ latitude: position.latitude, longitude: position.longitude })
@@ -52,6 +50,7 @@ export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded
           const nextVehicles = result.data.sharedVehicles ?? [];
           setStops(nextStops);
           setVehicles(nextVehicles);
+          setError(null);
           onLoaded?.(nextStops, nextVehicles);
         } else {
           setError(result.error);

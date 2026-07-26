@@ -59,6 +59,7 @@ export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit,
     const currentEnd = segmentEnd(current);
     if (!currentEnd || haversineMeters(position, currentEnd) >= ADVANCE_THRESHOLD_METERS) return;
     if (activeIndex >= segments.length - 1) onArrived();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- avancement piloté par le GPS (système externe), cas légitime selon la doc React
     else setActiveIndex((index) => index + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position, activeIndex, segments]);

@@ -18,10 +18,6 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "UrbanFlow",
   },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/icons/apple-touch-icon.png",
-  },
 };
 
 export const viewport: Viewport = {

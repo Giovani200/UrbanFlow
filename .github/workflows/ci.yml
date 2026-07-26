@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  web:
+    name: Web (lint + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w apps/web
+      - run: npm run build -w apps/web
+
+  api:
+    name: API (build + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build -w apps/api
+      - run: npm test -w apps/api
