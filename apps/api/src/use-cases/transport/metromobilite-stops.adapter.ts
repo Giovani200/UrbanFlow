@@ -1,6 +1,7 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import type { Coordinates, TransitLine, TransitStop, TransitStopMode } from "@urbanflow/app-front-back-lib";
 import { haversineMeters } from "../../shared/geo/haversine";
+import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
 
 const LINES_NEAR_URL = "https://data.mobilites-m.fr/api/linesNear/json";
 
@@ -24,9 +25,11 @@ export class MetromobiliteStopsAdapter {
             details: "true",
         });
 
-        const response = await fetch(`${LINES_NEAR_URL}?${parameters.toString()}`, {
-            headers: { Accept: "application/json" },
-        });
+        const response = await fetchWithTimeout(
+            `${LINES_NEAR_URL}?${parameters.toString()}`,
+            { headers: { Accept: "application/json" } },
+            "METROMOBILITE_REQUEST_FAILED",
+        );
         if (!response.ok) {
             throw new ServiceUnavailableException("METROMOBILITE_REQUEST_FAILED");
         }

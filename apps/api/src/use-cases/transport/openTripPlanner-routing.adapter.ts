@@ -1,5 +1,6 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import type { Coordinates, GeoJsonLineString, TripMode } from "@urbanflow/app-front-back-lib";
+import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
 
 // otp = OpenTripPlanner (calculateur d'itinéraires Métromobilité, réseau TAG)
 const OTP_PLAN_URL = "https://data.mobilites-m.fr/api/routers/default/plan";
@@ -68,9 +69,11 @@ export class OtpRoutingAdapter {
             showIntermediateStops: "true",
         });
 
-        const response = await fetch(`${OTP_PLAN_URL}?${parameters.toString()}`, {
-            headers: { Accept: "application/json" },
-        });
+        const response = await fetchWithTimeout(
+            `${OTP_PLAN_URL}?${parameters.toString()}`,
+            { headers: { Accept: "application/json" } },
+            "OTP_REQUEST_FAILED",
+        );
 
         if (!response.ok) {
             throw new ServiceUnavailableException("OTP_REQUEST_FAILED");
