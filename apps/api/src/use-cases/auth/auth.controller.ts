@@ -4,19 +4,21 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthGuard } from "@nestjs/passport";
 import { Throttle } from "@nestjs/throttler";
 import type { CookieOptions, Request, Response } from "express";
-import { LoginDtoOut } from "@urbanflow/app-front-back-lib";
+import { LoginDtoOut, LogoutDtoOut } from "@urbanflow/app-front-back-lib";
 import { LoginUseCase } from "./use-cases/login.use-case";
+import { LogoutUseCase } from "./use-cases/logout.use-case";
 import { JwtAuthGuard } from "../../shared/auth/jwt-auth.guard";
 import { CurrentUser } from "../../shared/auth/current-user.decorator";
 import { AUTH_COOKIE_NAME } from "../../shared/auth/jwt.strategy";
 import type { AuthenticatedUser } from "../../shared/auth/jwt.strategy";
 
-const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const COOKIE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 @Controller("auth")
 export class AuthController {
     constructor(
         private readonly loginUseCase: LoginUseCase,
+        private readonly logoutUseCase: LogoutUseCase,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
     ) {}
@@ -35,9 +37,14 @@ export class AuthController {
 
     @Post("logout")
     @HttpCode(200)
-    logout(@Res({ passthrough: true }) response: Response): { success: true } {
+    @UseGuards(JwtAuthGuard)
+    async logout(
+        @CurrentUser() user: AuthenticatedUser,
+        @Res({ passthrough: true }) response: Response,
+    ): Promise<LogoutDtoOut> {
+        const result = await this.logoutUseCase.execute(user, undefined);
         response.clearCookie(AUTH_COOKIE_NAME, this.cookieOptions());
-        return { success: true };
+        return result;
     }
 
     @Get("me")

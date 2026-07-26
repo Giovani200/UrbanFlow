@@ -16,6 +16,7 @@ model User {
   email         String    @unique
   name          String?
   passwordHash  String?
+  sessionsInvalidatedAt DateTime?
   emailVerified DateTime?
   image         String?
   googleId        String?   @unique
