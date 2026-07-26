@@ -17,10 +17,15 @@ const targets = [
   { file: "icon-192.png", size: 192 },
   { file: "icon-512.png", size: 512 },
   { file: "icon-maskable-512.png", size: 512 },
-  { file: "apple-touch-icon.png", size: 180 },
 ];
 
 for (const target of targets) {
   await sharp(source).resize(target.size, target.size).png().toFile(`${outputDirectory}/${target.file}`);
   console.log(`généré ${outputDirectory}/${target.file} (${target.size}px)`);
 }
+
+await sharp(source).resize(64, 64).png().toFile("src/app/icon.png");
+console.log("généré src/app/icon.png (64px)");
+
+await sharp(source).resize(180, 180).png().toFile("src/app/apple-icon.png");
+console.log("généré src/app/apple-icon.png (180px)");
