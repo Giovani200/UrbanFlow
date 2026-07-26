@@ -1,6 +1,7 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import type { Coordinates, GeoJsonLineString } from "@urbanflow/app-front-back-lib";
+import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
 
 
 // ors = OpenRouteService
@@ -35,19 +36,23 @@ export class OrsRoutingAdapter {
             throw new ServiceUnavailableException("ORS_API_KEY_MISSING");
         }
 
-        const response = await fetch(`${ORS_DIRECTIONS_URL}/${profile}/geojson`, {
-            method: "POST",
-            headers: {
-                Authorization: apiKey,
-                "Content-Type": "application/json; charset=utf-8",
+        const response = await fetchWithTimeout(
+            `${ORS_DIRECTIONS_URL}/${profile}/geojson`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: apiKey,
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+                body: JSON.stringify({
+                    coordinates: [
+                        [origin.longitude, origin.latitude],
+                        [destination.longitude, destination.latitude],
+                    ],
+                }),
             },
-            body: JSON.stringify({
-                coordinates: [
-                    [origin.longitude, origin.latitude],
-                    [destination.longitude, destination.latitude],
-                ],
-            }),
-        });
+            "ORS_REQUEST_FAILED",
+        );
 
         if (!response.ok) {
             throw new ServiceUnavailableException("ORS_REQUEST_FAILED");
