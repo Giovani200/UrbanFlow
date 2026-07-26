@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import {
     ChangePasswordDtoOut,
     CreateFavoriteAddressDtoOut,
@@ -41,6 +42,7 @@ export class UsersController {
     ) {}
 
     @Post("register")
+    @Throttle({ default: { limit: 5, ttl: 900_000 } })
     async register(@Body() body: unknown): Promise<CreateUserDtoOut> {
         return this.createUserUseCase.execute(body);
     }

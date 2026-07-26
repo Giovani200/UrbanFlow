@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from "@nes
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { AuthGuard } from "@nestjs/passport";
+import { Throttle } from "@nestjs/throttler";
 import type { CookieOptions, Request, Response } from "express";
 import { LoginDtoOut } from "@urbanflow/app-front-back-lib";
 import { LoginUseCase } from "./use-cases/login.use-case";
@@ -21,6 +22,7 @@ export class AuthController {
     ) {}
 
     @Post("login")
+    @Throttle({ default: { limit: 5, ttl: 60_000 } })
     @HttpCode(200)
     async login(
         @Body() body: unknown,

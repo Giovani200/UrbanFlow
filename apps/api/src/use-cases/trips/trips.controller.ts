@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { ListTripsDtoOut, RecordTripDtoOut, TripPlanningDtoOut } from "@urbanflow/app-front-back-lib";
 import { TripPlanningUseCase } from "./use-cases/trip-planning.use-case";
 import { RecordTripUseCase } from "./use-cases/record-trip.use-case";
@@ -16,6 +17,7 @@ export class TripsController {
     ) {}
 
     @Post("plan")
+    @Throttle({ default: { limit: 20, ttl: 60_000 } })
     async plan(@Body() body: unknown): Promise<TripPlanningDtoOut> {
         return this.tripPlanningUseCase.execute(body);
     }
