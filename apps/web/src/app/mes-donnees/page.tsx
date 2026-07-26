@@ -80,7 +80,7 @@ export default function MesDonneesPage() {
               <Download size={18} className="text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-ink">Télécharger mes données</p>
+              <h2 className="text-[14px] font-semibold text-ink">Télécharger mes données</h2>
               <p className="text-[12px] text-text-2 mt-0.5">
                 Compte, préférences, adresses, trajets et empreinte, au format JSON.
               </p>
@@ -104,7 +104,7 @@ export default function MesDonneesPage() {
               <Trash2 size={18} className="text-red-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-ink">Supprimer mon compte</p>
+              <h2 className="text-[14px] font-semibold text-ink">Supprimer mon compte</h2>
               <p className="text-[12px] text-text-2 mt-0.5">
                 Efface définitivement votre compte et toutes vos données.
               </p>

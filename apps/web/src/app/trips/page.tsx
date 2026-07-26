@@ -131,8 +131,9 @@ export default function TripsPage() {
       {/* Liste */}
       <div className="flex-1 overflow-y-auto px-4 pt-3 pb-8 flex flex-col gap-2">
         {loading ? (
-          <div className="flex-1 flex items-center justify-center py-10">
+          <div role="status" className="flex-1 flex items-center justify-center py-10">
             <Loader2 size={22} className="animate-spin text-primary" />
+            <span className="sr-only">Chargement des trajets…</span>
           </div>
         ) : !data || data.total === 0 ? (
           <div className="bg-white rounded-xl px-5 py-10 text-center flex flex-col items-center gap-3">

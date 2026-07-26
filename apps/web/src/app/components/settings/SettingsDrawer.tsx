@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { User, Leaf, Clock, Bell, Database, Lock, HelpCircle, LogOut, LogIn, ChevronRight } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
+import { useEscapeKey } from "@/app/hooks/useEscapeKey";
+import { useModalFocus } from "@/app/hooks/useModalFocus";
 
 const LOGGED_ITEMS = [
   { icon: User,       label: "Compte",          href: "/profile" },
@@ -44,6 +46,9 @@ export function SettingsDrawer({ onClose }: Props) {
     onMouseDown, onMouseMove, onMouseUp, onMouseLeave,
   } = useBottomSheetDrag({ onDismiss: dismiss });
 
+  const dialogRef = useModalFocus<HTMLDivElement>();
+  useEscapeKey(dismiss);
+
   useEffect(() => {
     const id = requestAnimationFrame(() =>
       requestAnimationFrame(() => setVisible(true))
@@ -75,6 +80,11 @@ export function SettingsDrawer({ onClose }: Props) {
       />
 
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titre-parametres"
+        tabIndex={-1}
         className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-2xl shadow-2xl"
         style={{
           transform: visible ? `translateY(${dragY}px)` : "translateY(100%)",
@@ -93,7 +103,7 @@ export function SettingsDrawer({ onClose }: Props) {
         </div>
 
         <div className="px-4 pb-8">
-          <p className="text-[17px] font-bold text-ink mb-1">Paramètres</p>
+          <h2 id="titre-parametres" className="text-[17px] font-bold text-ink mb-1">Paramètres</h2>
           {isLogged && (
             <p className="text-xs text-text-2 mb-3">{user?.email}</p>
           )}
@@ -101,7 +111,7 @@ export function SettingsDrawer({ onClose }: Props) {
             <p className="text-xs text-text-2 mb-3">Mode invité</p>
           )}
 
-          <div className="flex flex-col">
+          <div role="navigation" aria-label="Navigation principale" className="flex flex-col">
             {items.map((item, i) => (
               <button
                 key={item.label}

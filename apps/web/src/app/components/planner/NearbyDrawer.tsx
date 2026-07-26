@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Bus, MapPin, Navigation, TrainFront } from "lucide-react";
+import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { transportService } from "@/app/services/transport.service";
 import type { SharedVehicle, TransitStop } from "@/app/services/transport.service";
 
@@ -32,6 +33,7 @@ function summariseVehicles(vehicles: SharedVehicle[]): string | null {
 }
 
 export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded }: Props) {
+  const panelRef = useFocusOnMount<HTMLDivElement>();
   const [stops, setStops] = useState<TransitStop[]>([]);
   const [vehicles, setVehicles] = useState<SharedVehicle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,16 +70,22 @@ export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded
   const vehiclesSummary = summariseVehicles(vehicles);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl pb-7">
+    <div
+      ref={panelRef}
+      role="region"
+      aria-label="Transports à proximité"
+      tabIndex={-1}
+      className="absolute bottom-0 left-0 right-0 z-20 bg-surface rounded-t-[18px] shadow-2xl pb-7"
+    >
       <div className="flex justify-center py-3">
         <div className="w-9 h-1 rounded-full bg-border" />
       </div>
 
       <div className="px-4">
         <div className="mb-3.5">
-          <p className="text-base font-bold text-ink">À proximité</p>
+          <h2 className="text-base font-bold text-ink">À proximité</h2>
           {position && (
-            <p className="text-xs text-text-2 mt-0.5">
+            <p className="text-xs text-text-2 mt-0.5" aria-live="polite">
               {loading ? "Recherche…" : `${stops.length} arrêt${stops.length > 1 ? "s" : ""} autour de vous`}
             </p>
           )}
@@ -95,7 +103,7 @@ export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded
           </button>
         )}
 
-        {error && <p className="text-sm text-primary mb-3.5">{error}</p>}
+        {error && <p role="alert" className="text-sm text-primary mb-3.5">{error}</p>}
 
         {position && (
           <div className="flex flex-col gap-2 mb-3.5 max-h-64 overflow-y-auto">
