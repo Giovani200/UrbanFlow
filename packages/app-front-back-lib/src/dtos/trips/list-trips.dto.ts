@@ -1,5 +1,5 @@
 import { z as zod } from "zod";
-import { TripModeSchema } from "./trip-planning.dto";
+import { CoordinatesSchema, TripModeSchema } from "./trip-planning.dto";
 
 export const TripHistoryPeriodSchema = zod.enum(["week", "month", "all"]);
 export type TripHistoryPeriod = zod.output<typeof TripHistoryPeriodSchema>;
@@ -16,6 +16,8 @@ export const TripHistoryItemSchema = zod.object({
     takenAt: zod.string(),
     originLabel: zod.string(),
     destinationLabel: zod.string(),
+    origin: CoordinatesSchema,
+    destination: CoordinatesSchema,
     modes: zod.array(TripModeSchema),
     durationSeconds: zod.number(),
     distanceMeters: zod.number(),

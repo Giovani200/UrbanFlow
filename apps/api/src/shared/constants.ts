@@ -1,8 +1,3 @@
-// Facteurs d'émission carbone, source unique : impactco2.fr (outil officiel ADEME).
-// Unité : gCO2e/passager·km, fabrication incluse. Relevé le 29/06/2026.
-//   bus thermique : https://impactco2.fr/outils/transport/busthermique (122)
-//   métro         : https://impactco2.fr/outils/transport/metro (4,44, proxy tram, pas d'entrée "tramway")
-//   voiture / covoiturage / trottinette : https://impactco2.fr/outils/transport
 export const CARBON_FACTORS = {
     walk: 0,
     bike: 0,

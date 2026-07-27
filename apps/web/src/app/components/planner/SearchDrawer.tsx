@@ -1,25 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ArrowUpDown, Search, Clock, ArrowRight, Bike, Bus, Footprints, Train, Navigation } from "lucide-react";
+import { ArrowUpDown, Search, Clock, ArrowRight, Navigation } from "lucide-react";
 import { useEscapeKey } from "@/app/hooks/useEscapeKey";
 import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { useGeocoding, reverseGeocode } from "@/app/hooks/useGeocoding";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import type { UserPosition } from "@/app/hooks/useGeolocation";
-
-const MODE_ICONS: Record<string, React.ReactNode> = {
-  walk: <Footprints size={12} className="text-text-2" />,
-  tram: <Train size={12} className="text-text-2" />,
-  bus:  <Bus size={12} className="text-text-2" />,
-  bike: <Bike size={12} className="text-text-2" />,
-};
-
-const RECENTS = [
-  { from: "Domicile",  to: "Place Victor Hugo", modes: ["walk", "tram"] },
-  { from: "Gare SNCF", to: "Campus UPMF",       modes: ["bike"] },
-  { from: "Berriat",   to: "Hôpital Michallon",  modes: ["bus", "walk"] },
-];
+import { useRecentTrips, type RecentTrip } from "@/app/hooks/useRecentTrips";
+import { MODE_META, MODE_FALLBACK } from "@/app/lib/mode-meta";
 
 const WHEN_OPTIONS = [
   { id: "now",    label: "Maintenant" },
@@ -51,9 +40,11 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
   const fromResults = useGeocoding(activeField === "from" ? fromText : "");
   const toResults   = useGeocoding(activeField === "to" ? toText : "");
 
+  const { trips: recentTrips } = useRecentTrips();
+
   const currentResults = activeField === "from" ? fromResults : activeField === "to" ? toResults : [];
   const showSuggestions = activeField === "from" || currentResults.length > 0;
-  const showRecents = !activeField;
+  const showRecents = !activeField && recentTrips.length > 0;
 
   // Une référence garde le verrou sans déclencher de rendu : la position peut
   // changer pendant le géocodage inverse, on ne le relance pas pour autant.
@@ -101,6 +92,14 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
     if (fromGeo && toGeo) {
       onSearch(fromGeo, toGeo);
     }
+  }
+
+  function handleRecentTrip(trip: RecentTrip) {
+    if (!trip.origin || !trip.destination) return;
+    onSearch(
+      { label: trip.originLabel, ...trip.origin },
+      { label: trip.destinationLabel, ...trip.destination },
+    );
   }
 
   function handleUseMyPosition() {
@@ -230,11 +229,15 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
                 Trajets récents
               </p>
               <div className="flex flex-col">
-                {RECENTS.map((recent, index) => (
-                    <div
-                        key={index}
-                        className={`flex items-center gap-3 py-2.5 cursor-pointer ${
-                            index < RECENTS.length - 1 ? "border-b border-border" : ""
+                {recentTrips.map((trip, index) => (
+                    <button
+                        key={trip.id}
+                        type="button"
+                        onClick={() => handleRecentTrip(trip)}
+                        disabled={!trip.origin || !trip.destination}
+                        aria-label={`Relancer le trajet ${trip.originLabel} vers ${trip.destinationLabel}`}
+                        className={`w-full text-left flex items-center gap-3 py-2.5 disabled:cursor-default ${
+                            index < recentTrips.length - 1 ? "border-b border-border" : ""
                         }`}
                     >
                       <div className="w-8 h-8 rounded-lg bg-bg flex items-center justify-center shrink-0">
@@ -242,15 +245,18 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] text-ink truncate">
-                          {recent.from} <span className="text-text-2">→</span>{" "}
-                          <span className="font-medium">{recent.to}</span>
+                          {trip.originLabel} <span className="text-text-2">→</span>{" "}
+                          <span className="font-medium">{trip.destinationLabel}</span>
                         </p>
                         <div className="flex gap-1 mt-1">
-                          {recent.modes.map((mode) => <span key={mode}>{MODE_ICONS[mode]}</span>)}
+                          {trip.modes.map((mode) => {
+                            const ModeIcon = (MODE_META[mode] ?? MODE_FALLBACK).icon;
+                            return <ModeIcon key={mode} size={12} className="text-text-2" />;
+                          })}
                         </div>
                       </div>
                       <ArrowRight size={14} className="text-text-2 shrink-0" />
-                    </div>
+                    </button>
                 ))}
               </div>
             </div>

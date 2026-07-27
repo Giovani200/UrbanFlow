@@ -12,6 +12,10 @@ describe("ListTripsUseCase", () => {
             createdAt: new Date("2026-07-10T08:00:00Z"),
             originLabel: "Domicile",
             destLabel: "Victor Hugo",
+            originLat: 45.1885,
+            originLng: 5.7245,
+            destLat: 45.1912,
+            destLng: 5.7301,
             modes: ["bike"],
             durationSeconds: 1080,
             distanceMeters: 4000,
@@ -34,6 +38,8 @@ describe("ListTripsUseCase", () => {
         expect(findMany.mock.calls[0][0].skip).toBe(10);
         expect(findMany.mock.calls[0][0].take).toBe(10);
         expect(result.items[0].destinationLabel).toBe("Victor Hugo");
+        expect(result.items[0].origin).toEqual({ latitude: 45.1885, longitude: 5.7245 });
+        expect(result.items[0].destination).toEqual({ latitude: 45.1912, longitude: 5.7301 });
         expect(result.items[0].savedGrams).toBeCloseTo(56.8, 5);
         expect(result.total).toBe(1);
         expect(result.totalSavedGrams).toBeCloseTo(56.8, 5);

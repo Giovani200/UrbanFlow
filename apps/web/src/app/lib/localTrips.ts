@@ -16,6 +16,8 @@ export function toTripRecord(input: RecordTripDtoIn): TripRecord {
         takenAt: new Date().toISOString(),
         originLabel: input.origin.label,
         destinationLabel: input.destination.label,
+        origin: { latitude: input.origin.latitude, longitude: input.origin.longitude },
+        destination: { latitude: input.destination.latitude, longitude: input.destination.longitude },
         segments: input.route.segments.map((segment) => ({
             mode: segment.mode,
             distanceMeters: segment.distanceMeters,

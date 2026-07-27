@@ -1,6 +1,5 @@
 import type { Coordinates } from "@urbanflow/app-front-back-lib";
 
-// Distance à vol d'oiseau entre deux points (formule de haversine), en mètres.
 export function haversineMeters(from: Coordinates, to: Coordinates): number {
     const earthRadiusMeters = 6_371_000;
     const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;

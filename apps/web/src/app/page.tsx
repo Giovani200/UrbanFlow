@@ -44,6 +44,13 @@ export default function PlannerPage() {
   const [geoError, setGeoError] = useState<"denied" | "unavailable" | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const recenterPendingRef = useRef(false);
+  const autoStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (autoStartedRef.current || consent !== "granted") return;
+    autoStartedRef.current = true;
+    start();
+  }, [consent, start]);
 
   // Position utilisateur → marqueur sur la carte (+ recentrage si demandé).
   useEffect(() => {
