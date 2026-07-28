@@ -70,7 +70,11 @@ body {
 
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: none;
+}
+
+:root[data-input-modality="keyboard"] :focus-visible {
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 

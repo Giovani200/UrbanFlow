@@ -92,7 +92,6 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
           layerIdsRef.current.push(layerId);
         });
 
-        // Marqueurs départ (point vert) + arrivée (épingle rouge).
         const allCoordinates = segments.flatMap((segment) => segment.geometry.coordinates);
         if (allCoordinates.length > 0) {
           const originPoint = allCoordinates[0];

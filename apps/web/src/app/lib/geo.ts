@@ -3,7 +3,6 @@ interface LatLon {
   longitude: number;
 }
 
-// Distance à vol d'oiseau entre deux points (haversine), en mètres.
 export function haversineMeters(from: LatLon, to: LatLon): number {
   const earthRadiusMeters = 6_371_000;
   const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;

@@ -13,6 +13,7 @@ import { Arrival } from "@/app/components/planner/Arrival";
 import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useGeolocation } from "@/app/hooks/useGeolocation";
+import type { GeolocationFailure } from "@/app/hooks/useGeolocation";
 import { useGeolocationConsent } from "@/app/hooks/useGeolocationConsent";
 import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsentDialog";
 import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
@@ -41,11 +42,17 @@ export default function PlannerPage() {
   const { status, position, start, stop } = useGeolocation();
   const { consent, grant, deny } = useGeolocationConsent();
   const [showConsent, setShowConsent] = useState(false);
-  const [geoError, setGeoError] = useState<"denied" | "unavailable" | null>(null);
+  const [geoError, setGeoError] = useState<GeolocationFailure | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const recenterPendingRef = useRef(false);
+  const trackingStartedRef = useRef(false);
 
-  // Position utilisateur → marqueur sur la carte (+ recentrage si demandé).
+  useEffect(() => {
+    if (trackingStartedRef.current || consent !== "granted") return;
+    trackingStartedRef.current = true;
+    start();
+  }, [consent, start]);
+
   useEffect(() => {
     if (!position) return;
     mapRef.current?.setUserPosition(position.latitude, position.longitude);
@@ -55,17 +62,10 @@ export default function PlannerPage() {
     }
   }, [position]);
 
-  // Ajustement pendant le rendu plutôt que dans un effet : la boîte d'erreur
-  // s'ouvre quand le statut bascule, et reste refermable par l'utilisateur.
-  const [lastGeoStatus, setLastGeoStatus] = useState(status);
-  if (status !== lastGeoStatus) {
-    setLastGeoStatus(status);
-    if (status === "denied" || status === "unavailable") setGeoError(status);
-  }
-
   function startTracking() {
+    trackingStartedRef.current = true;
     recenterPendingRef.current = true;
-    start();
+    start(setGeoError);
   }
 
   function handleLocateClick() {

@@ -33,6 +33,8 @@ export const TripRecordSchema = zod.object({
     takenAt: zod.string(),
     originLabel: zod.string(),
     destinationLabel: zod.string(),
+    origin: CoordinatesSchema.optional(),
+    destination: CoordinatesSchema.optional(),
     segments: zod.array(TripRecordSegmentSchema),
     totalCarbonGrams: zod.number(),
     totalSavedGrams: zod.number(),

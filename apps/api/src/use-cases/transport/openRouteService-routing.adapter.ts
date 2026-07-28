@@ -3,8 +3,6 @@ import { ConfigService } from "@nestjs/config";
 import type { Coordinates, GeoJsonLineString } from "@urbanflow/app-front-back-lib";
 import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
 
-
-// ors = OpenRouteService
 export type OrsProfile = "foot-walking" | "cycling-regular" | "wheelchair" | "driving-car";
 
 export interface OrsRoute {

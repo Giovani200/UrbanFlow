@@ -1,7 +1,7 @@
 import { Bike, Bus, Car, Footprints, TrainFront, Zap } from "lucide-react";
 import type { ElementType } from "react";
 
-// Couleur + icône + libellé par mode, alignés sur la DA (design/DA.md).
+// Aligné sur la DA (design/DA.md).
 export const MODE_META: Record<string, { color: string; icon: ElementType; label: string }> = {
   walk: { color: "#5A6470", icon: Footprints, label: "Marche" },
   bike: { color: "#11805A", icon: Bike, label: "Vélo" },

@@ -9,6 +9,10 @@ function stubGeolocation(available: boolean) {
     vi.stubGlobal("navigator", available ? { geolocation: { watchPosition, clearWatch } } : {});
 }
 
+function geolocationError(code: number): GeolocationPositionError {
+    return { code, PERMISSION_DENIED: 1, POSITION_UNAVAILABLE: 2, TIMEOUT: 3 } as GeolocationPositionError;
+}
+
 beforeEach(() => {
     watchPosition.mockReset();
     clearWatch.mockReset();
@@ -44,7 +48,7 @@ describe("useGeolocation", () => {
     it("passe à denied quand l'utilisateur refuse", () => {
         stubGeolocation(true);
         watchPosition.mockImplementation((_success: PositionCallback, error: PositionErrorCallback) => {
-            error({ code: 1, PERMISSION_DENIED: 1 } as GeolocationPositionError);
+            error(geolocationError(1));
             return 1;
         });
 
@@ -54,10 +58,10 @@ describe("useGeolocation", () => {
         expect(result.current.status).toBe("denied");
     });
 
-    it("passe à unavailable sur une autre erreur (timeout)", () => {
+    it("passe à unavailable quand la position est indisponible", () => {
         stubGeolocation(true);
         watchPosition.mockImplementation((_success: PositionCallback, error: PositionErrorCallback) => {
-            error({ code: 3, PERMISSION_DENIED: 1 } as GeolocationPositionError);
+            error(geolocationError(2));
             return 1;
         });
 
@@ -67,11 +71,57 @@ describe("useGeolocation", () => {
         expect(result.current.status).toBe("unavailable");
     });
 
+    it("ignore les timeouts et reste en watching", () => {
+        stubGeolocation(true);
+        watchPosition.mockImplementation((_success: PositionCallback, error: PositionErrorCallback) => {
+            error(geolocationError(3));
+            return 1;
+        });
+
+        const onFailure = vi.fn();
+        const { result } = renderHook(() => useGeolocation());
+        act(() => result.current.start(onFailure));
+
+        expect(result.current.status).toBe("watching");
+        expect(onFailure).not.toHaveBeenCalled();
+        expect(clearWatch).not.toHaveBeenCalled();
+    });
+
     it("passe à unavailable si la géoloc n'est pas supportée", () => {
         stubGeolocation(false);
         const { result } = renderHook(() => useGeolocation());
         act(() => result.current.start());
         expect(result.current.status).toBe("unavailable");
+    });
+
+    it("transmet l'échec au handler fourni à start", () => {
+        stubGeolocation(true);
+        watchPosition.mockImplementation((_success: PositionCallback, error: PositionErrorCallback) => {
+            error(geolocationError(1));
+            return 1;
+        });
+
+        const onFailure = vi.fn();
+        const { result } = renderHook(() => useGeolocation());
+        act(() => result.current.start(onFailure));
+
+        expect(onFailure).toHaveBeenCalledWith("denied");
+    });
+
+    it("ne notifie personne quand start est lancé sans handler", () => {
+        stubGeolocation(true);
+        watchPosition.mockReturnValue(1);
+
+        const onFailure = vi.fn();
+        const { result } = renderHook(() => useGeolocation());
+        act(() => result.current.start(onFailure));
+        act(() => result.current.stop());
+        act(() => result.current.start());
+
+        const [, notifyError] = watchPosition.mock.calls[1] as [PositionCallback, PositionErrorCallback];
+        act(() => notifyError(geolocationError(1)));
+
+        expect(onFailure).not.toHaveBeenCalled();
     });
 
     it("stop libère le watch et revient à inactive", () => {
