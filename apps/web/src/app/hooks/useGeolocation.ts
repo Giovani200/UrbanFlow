@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type GeolocationStatus = "inactive" | "watching" | "denied" | "unavailable";
+export type GeolocationFailure = "denied" | "unavailable";
+export type GeolocationStatus = "inactive" | "watching" | GeolocationFailure;
 
 export interface UserPosition {
     latitude: number;
@@ -12,7 +13,7 @@ export interface UserPosition {
 export interface UseGeolocation {
     status: GeolocationStatus;
     position: UserPosition | null;
-    start: () => void;
+    start: (onFailure?: (reason: GeolocationFailure) => void) => void;
     stop: () => void;
 }
 
@@ -26,8 +27,10 @@ export function useGeolocation(): UseGeolocation {
     const [status, setStatus] = useState<GeolocationStatus>("inactive");
     const [position, setPosition] = useState<UserPosition | null>(null);
     const watchIdRef = useRef<number | null>(null);
+    const onFailureRef = useRef<((reason: GeolocationFailure) => void) | null>(null);
 
     const stop = useCallback(() => {
+        onFailureRef.current = null;
         if (watchIdRef.current !== null) {
             navigator.geolocation.clearWatch(watchIdRef.current);
             watchIdRef.current = null;
@@ -35,9 +38,12 @@ export function useGeolocation(): UseGeolocation {
         setStatus("inactive");
     }, []);
 
-    const start = useCallback(() => {
+    const start = useCallback((onFailure?: (reason: GeolocationFailure) => void) => {
+        onFailureRef.current = onFailure ?? null;
+
         if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
             setStatus("unavailable");
+            onFailureRef.current?.("unavailable");
             return;
         }
         if (watchIdRef.current !== null) return;
@@ -53,7 +59,12 @@ export function useGeolocation(): UseGeolocation {
                 setStatus("watching");
             },
             (error) => {
-                setStatus(error.code === error.PERMISSION_DENIED ? "denied" : "unavailable");
+                if (error.code === error.TIMEOUT) return;
+
+                const reason: GeolocationFailure =
+                    error.code === error.PERMISSION_DENIED ? "denied" : "unavailable";
+                setStatus(reason);
+                onFailureRef.current?.(reason);
                 if (watchIdRef.current !== null) {
                     navigator.geolocation.clearWatch(watchIdRef.current);
                     watchIdRef.current = null;
