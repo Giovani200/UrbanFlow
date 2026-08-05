@@ -20,7 +20,7 @@ export interface UseGeolocation {
 const WATCH_OPTIONS: PositionOptions = {
     enableHighAccuracy: true,
     timeout: 10000,
-    maximumAge: 0,
+    maximumAge: 30000,
 };
 
 export function useGeolocation(): UseGeolocation {
