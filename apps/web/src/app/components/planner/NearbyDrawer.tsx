@@ -5,6 +5,7 @@ import { Bus, MapPin, Navigation, TrainFront } from "lucide-react";
 import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { transportService } from "@/app/services/transport.service";
 import type { SharedVehicle, TransitStop } from "@/app/services/transport.service";
+import type { UserLocation } from "@/app/hooks/useUserLocation";
 
 const MODE_COLOR: Record<string, string> = {
   tram: "#2F62E6",
@@ -12,7 +13,7 @@ const MODE_COLOR: Record<string, string> = {
 };
 
 interface Props {
-  position: { latitude: number; longitude: number } | null;
+  location: UserLocation;
   onPlanTrip: () => void;
   onRequestPosition: () => void;
   onLoaded?: (stops: TransitStop[], vehicles: SharedVehicle[]) => void;
@@ -32,8 +33,9 @@ function summariseVehicles(vehicles: SharedVehicle[]): string | null {
   return `${parts.join(" et ")} en libre-service`;
 }
 
-export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded }: Props) {
+export function NearbyDrawer({ location, onPlanTrip, onRequestPosition, onLoaded }: Props) {
   const panelRef = useFocusOnMount<HTMLDivElement>();
+  const position = location.state === "located" ? location.position : null;
   const [stops, setStops] = useState<TransitStop[]>([]);
   const [vehicles, setVehicles] = useState<SharedVehicle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,14 +86,19 @@ export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded
       <div className="px-4">
         <div className="mb-3.5">
           <h2 className="text-base font-bold text-ink">À proximité</h2>
-          {position && (
+          {location.state === "located" && (
             <p className="text-xs text-text-2 mt-0.5" aria-live="polite">
               {loading ? "Recherche…" : `${stops.length} arrêt${stops.length > 1 ? "s" : ""} autour de vous`}
             </p>
           )}
+          {location.state === "locating" && (
+            <p className="text-xs text-text-2 mt-0.5" aria-live="polite">
+              Localisation en cours…
+            </p>
+          )}
         </div>
 
-        {!position && (
+        {(location.state === "idle" || location.state === "asking") && (
           <button
             onClick={onRequestPosition}
             className="w-full flex items-center gap-3 px-3 py-3 bg-bg rounded-xl text-left mb-3.5"
@@ -105,7 +112,7 @@ export function NearbyDrawer({ position, onPlanTrip, onRequestPosition, onLoaded
 
         {error && <p role="alert" className="text-sm text-primary mb-3.5">{error}</p>}
 
-        {position && (
+        {location.state === "located" && (
           <div className="flex flex-col gap-2 mb-3.5 max-h-64 overflow-y-auto">
             {stops.map((stop) => (
               <div key={stop.id} className="flex items-center gap-3 px-3 py-2.5 bg-bg rounded-xl">

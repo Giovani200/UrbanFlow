@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UrbanFlow
 
-## Getting Started
+**L'empreinte au cœur du choix.**
 
-First, run the development server:
+Plateforme de mobilité urbaine multimodale pour l'aire grenobloise. UrbanFlow compare chaque itinéraire en temps et en empreinte carbone, et classe les options selon les priorités de l'utilisateur. Application web progressive (PWA) ; les fonctions cœur sont accessibles sans compte.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Fonctionnalités
+
+- Planification d'itinéraires multimodaux (marche, vélo, accessible fauteuil, transports en commun) avec géolocalisation temps réel.
+- Comparaison des trajets par empreinte carbone (facteurs ADEME), pondérable selon les priorités.
+- Données temps réel : trottinettes en libre-service (Voi) et arrêts du réseau grenoblois (Métromobilité).
+- Comptes et profil mobilité (e-mail / mot de passe ou Google) pour les fonctions personnalisées.
+
+## Stack
+
+| Domaine | Choix |
+|---|---|
+| Monorepo | npm workspaces (`packages/*`, `apps/*`) |
+| Front | Next.js 16 · React 19 · Tailwind CSS 4 · Radix UI |
+| Back | NestJS 11 |
+| Types partagés | Zod 4 |
+| Base de données | PostgreSQL 16 + PostGIS 3.4 · Prisma 6 |
+| Auth | Passport-JWT + Google OAuth |
+| Cartographie | MapLibre GL JS + MapTiler |
+| PWA | Serwist |
+| Tests | Vitest |
+
+## Architecture
+
+Monorepo npm workspaces.
+
+```
+packages/app-front-back-lib/   Contrat de types partagé (Zod)
+apps/api/                      API NestJS — Prisma, PostgreSQL / PostGIS
+apps/web/                      Front Next.js — App Router, PWA
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Démarrage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prérequis
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 20+
+- Docker + Docker Compose
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+git clone <url-du-repo>
+cd urbanflow
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+```
 
-## Deploy on Vercel
+Renseigner les valeurs. Comptes externes requis : OpenRouteService (`ORS_API_KEY`), Google OAuth (`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`), MapTiler (`NEXT_PUBLIC_MAPTILER_KEY`).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Base de données
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+cd apps/api
+docker compose up -d      # PostgreSQL + PostGIS sur localhost:5433
+npm run prisma:migrate    # applique le schéma
+```
+
+### Lancement
+
+```bash
+# API — http://localhost:3001
+cd apps/api && npm run start:dev
+
+# Front — http://localhost:3000  (depuis la racine)
+npm run dev:web
+```
+
+## Scripts
+
+| Commande | Emplacement | Effet |
+|---|---|---|
+| `npm run dev:web` | racine | Front en développement |
+| `npm run start:dev` | `apps/api` | API en développement (watch) |
+| `npm run build` | `apps/api` · `apps/web` | Build de production |
+| `npm run test` | `apps/api` · `apps/web` | Tests Vitest |
+| `npm run prisma:migrate` | `apps/api` | Migration Prisma |
+| `npm run prisma:studio` | `apps/api` | Prisma Studio |
+
+## Tests
+
+```bash
+npm run test --workspace @urbanflow/api
+npm run test --workspace @urbanflow/web
+```

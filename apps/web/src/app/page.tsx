@@ -12,9 +12,7 @@ import { RouteDetail } from "@/app/components/planner/RouteDetail";
 import { Arrival } from "@/app/components/planner/Arrival";
 import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
-import { useGeolocation } from "@/app/hooks/useGeolocation";
-import type { GeolocationFailure } from "@/app/hooks/useGeolocation";
-import { useGeolocationConsent } from "@/app/hooks/useGeolocationConsent";
+import { useUserLocation } from "@/app/hooks/useUserLocation";
 import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsentDialog";
 import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
 import { tripsService } from "@/app/services/trips.service";
@@ -39,19 +37,11 @@ export default function PlannerPage() {
   const { status: authStatus } = useAuth();
   const hasRecordedRef = useRef(false);
 
-  const { status, position, start, stop } = useGeolocation();
-  const { consent, grant, deny } = useGeolocationConsent();
-  const [showConsent, setShowConsent] = useState(false);
-  const [geoError, setGeoError] = useState<GeolocationFailure | null>(null);
+  const { location, failure, request, acceptConsent, refuseConsent, dismissAsking, dismissFailure } = useUserLocation();
   const [showSettings, setShowSettings] = useState(false);
   const recenterPendingRef = useRef(false);
-  const trackingStartedRef = useRef(false);
 
-  useEffect(() => {
-    if (trackingStartedRef.current || consent !== "granted") return;
-    trackingStartedRef.current = true;
-    start();
-  }, [consent, start]);
+  const position = location.state === "located" ? location.position : null;
 
   useEffect(() => {
     if (!position) return;
@@ -62,38 +52,13 @@ export default function PlannerPage() {
     }
   }, [position]);
 
-  function startTracking() {
-    trackingStartedRef.current = true;
-    recenterPendingRef.current = true;
-    start(setGeoError);
-  }
-
   function handleLocateClick() {
-    if (status === "watching" && position) {
-      mapRef.current?.recenterOnUser(position.latitude, position.longitude);
+    if (location.state === "located") {
+      mapRef.current?.recenterOnUser(location.position.latitude, location.position.longitude);
       return;
     }
-    if (status === "denied") {
-      setGeoError("denied");
-      return;
-    }
-    if (consent === "granted") {
-      startTracking();
-      return;
-    }
-    setShowConsent(true);
-  }
-
-  function handleConsentAccept() {
-    grant();
-    setShowConsent(false);
-    startTracking();
-  }
-
-  function handleConsentRefuse() {
-    deny();
-    setShowConsent(false);
-    stop();
+    recenterPendingRef.current = true;
+    request();
   }
 
   async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
@@ -203,7 +168,7 @@ export default function PlannerPage() {
 
       {view === "home" && (
         <NearbyDrawer
-          position={position}
+          location={location}
           onPlanTrip={() => setView("search")}
           onRequestPosition={handleLocateClick}
           onLoaded={(stops, vehicles) => mapRef.current?.setNearbyMarkers(stops, vehicles)}
@@ -272,18 +237,20 @@ export default function PlannerPage() {
       )}
 
       <GeolocationConsentDialog
-        open={showConsent}
-        onOpenChange={setShowConsent}
-        onAccept={handleConsentAccept}
-        onRefuse={handleConsentRefuse}
+        open={location.state === "asking"}
+        onOpenChange={(open) => {
+          if (!open) dismissAsking();
+        }}
+        onAccept={acceptConsent}
+        onRefuse={refuseConsent}
       />
 
       <GeolocationErrorDialog
-        open={geoError !== null}
+        open={failure !== null}
         onOpenChange={(open) => {
-          if (!open) setGeoError(null);
+          if (!open) dismissFailure();
         }}
-        variant={geoError ?? "unavailable"}
+        variant={failure ?? "unavailable"}
       />
 
       {showSettings && <SettingsDrawer onClose={() => setShowSettings(false)} />}
