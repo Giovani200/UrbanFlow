@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import type { Request } from "express";
 import { HttpExceptionFilter } from "./shared/core/http-exception.filter";
+import { HealthController } from "./shared/health/health.controller";
 import { DatabaseModule } from "./shared/database/database.module";
 import { UsersModule } from "./use-cases/users/users.module";
 import { TripsModule } from "./use-cases/trips/trips.module";
@@ -33,6 +34,7 @@ function trackerFromRequest(request: Request): string {
         AuthModule,
         TransportModule,
     ],
+    controllers: [HealthController],
     providers: [
         { provide: APP_GUARD, useClass: ThrottlerGuard },
         { provide: APP_FILTER, useClass: HttpExceptionFilter },
