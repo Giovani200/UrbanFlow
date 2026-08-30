@@ -56,10 +56,7 @@ export default function PlannerPage() {
   }, [position]);
 
   useEffect(() => {
-    if (authStatus !== "authenticated") {
-      setRoutingProfile(null);
-      return;
-    }
+    if (authStatus !== "authenticated") return;
     void usersService.getProfile().then((res) => {
       if (!res.isOk || !res.data.preferences) return;
       const preferences = res.data.preferences;
@@ -97,7 +94,7 @@ export default function PlannerPage() {
     const result = await tripsService.planTrip({
       origin: { latitude: origin.latitude, longitude: origin.longitude },
       destination: { latitude: destination.latitude, longitude: destination.longitude },
-      profile: routingProfile ?? undefined,
+      profile: authStatus === "authenticated" ? routingProfile ?? undefined : undefined,
       plannedTime,
     });
 
