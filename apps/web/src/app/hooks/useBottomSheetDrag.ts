@@ -3,13 +3,15 @@
 import { useState, useRef, useCallback } from "react";
 
 interface Options {
-  onDismiss: () => void;
+  onDismiss?: () => void;
+  collapsible?: boolean;
   threshold?: number;
 }
 
-export function useBottomSheetDrag({ onDismiss, threshold = 120 }: Options) {
+export function useBottomSheetDrag({ onDismiss, collapsible = false, threshold = 120 }: Options) {
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const startY = useRef(0);
 
   const handleStart = useCallback((clientY: number) => {
@@ -19,18 +21,20 @@ export function useBottomSheetDrag({ onDismiss, threshold = 120 }: Options) {
 
   const handleMove = useCallback((clientY: number) => {
     const delta = clientY - startY.current;
-    if (delta > 0) setDragY(delta);
-  }, []);
+    setDragY(collapsed ? Math.min(0, delta) : Math.max(0, delta));
+  }, [collapsed]);
 
   const handleEnd = useCallback(() => {
     setDragging(false);
-    if (dragY > threshold) {
-      setDragY(0);
-      onDismiss();
-    } else {
-      setDragY(0);
+    const delta = dragY;
+    setDragY(0);
+    if (collapsible) {
+      if (!collapsed && delta > threshold) setCollapsed(true);
+      else if (collapsed && delta < -threshold) setCollapsed(false);
+    } else if (delta > threshold) {
+      onDismiss?.();
     }
-  }, [dragY, threshold, onDismiss]);
+  }, [dragY, collapsed, collapsible, threshold, onDismiss]);
 
   const onTouchStart = useCallback((e: React.TouchEvent) => handleStart(e.touches[0].clientY), [handleStart]);
   const onTouchMove = useCallback((e: React.TouchEvent) => handleMove(e.touches[0].clientY), [handleMove]);
@@ -53,6 +57,7 @@ export function useBottomSheetDrag({ onDismiss, threshold = 120 }: Options) {
   return {
     dragY,
     dragging,
+    collapsed,
     onTouchStart,
     onTouchMove,
     onTouchEnd,

@@ -5,8 +5,7 @@ export type GeolocationConsent = "unknown" | "granted" | "denied";
 
 const STORAGE_KEY = "urbanflow.geolocation.consent";
 
-// Le consentement vit dans le stockage du navigateur, une source externe à React.
-// useSyncExternalStore le lit sans effet et sans état dupliqué.
+
 const listeners = new Set<() => void>();
 
 function emit(): void {

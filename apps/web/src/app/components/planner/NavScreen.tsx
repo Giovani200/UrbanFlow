@@ -32,13 +32,12 @@ function segmentEnd(segment: TripSegment): { latitude: number; longitude: number
 interface Props {
   route: TripRoute;
   position: { latitude: number; longitude: number } | null;
-  onFocusSegment: (segment: TripSegment) => void;
   onRecenter: () => void;
   onExit: () => void;
   onArrived: () => void;
 }
 
-export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit, onArrived }: Props) {
+export function NavScreen({ route, position, onRecenter, onExit, onArrived }: Props) {
   const panelRef = useFocusOnMount<HTMLDivElement>();
   useEscapeKey(onExit);
 
@@ -50,12 +49,6 @@ export function NavScreen({ route, position, onFocusSegment, onRecenter, onExit,
   const meta = MODE_META[active.mode] ?? MODE_FALLBACK;
   const Icon = meta.icon;
   const isTransit = active.mode === "tram" || active.mode === "bus";
-
-  // Cadre la carte sur le segment actif à chaque changement.
-  useEffect(() => {
-    onFocusSegment(active);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeIndex]);
 
   // Bascule automatique au segment suivant quand la position atteint la fin du segment.
   useEffect(() => {

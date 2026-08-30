@@ -5,7 +5,6 @@ const TransportModeSchema = zod.enum([
     "scooter",
     "tram",
     "bus",
-    "carpool",
     "walk",
 ]);
 

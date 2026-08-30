@@ -26,7 +26,6 @@ const MODE_ICON_SVG: Record<string, string> = {
   tram: '<path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="m9 15-1-1"/><path d="m15 15 1-1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/>',
   bus: '<path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>',
 };
-const USER_POSITION_COLOR = "#2F62E6";
 const ORIGIN_COLOR = "#138A5E";
 const DESTINATION_COLOR = "#CC1B36";
 
@@ -37,15 +36,17 @@ export type MapViewHandle = {
   recenterOnUser: (latitude: number, longitude: number) => void;
   setUserPosition: (latitude: number, longitude: number) => void;
   setNearbyMarkers: (stops: TransitStop[], vehicles: SharedVehicle[]) => void;
+  startFollow: () => void;
 };
 
 interface MapViewProps {
   center?: [number, number];
   zoom?: number;
+  onFollowChange?: (following: boolean) => void;
 }
 
 const MapView = forwardRef<MapViewHandle, MapViewProps>(
-  function MapView({ center = MAP_DEFAULT_CENTER, zoom = MAP_DEFAULT_ZOOM }, ref) {
+  function MapView({ center = MAP_DEFAULT_CENTER, zoom = MAP_DEFAULT_ZOOM, onFollowChange }, ref) {
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
     const layerIdsRef = useRef<string[]>([]);
@@ -53,6 +54,10 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
     const destinationMarkerRef = useRef<maplibregl.Marker | null>(null);
     const userMarkerRef = useRef<maplibregl.Marker | null>(null);
     const nearbyMarkersRef = useRef<maplibregl.Marker[]>([]);
+    const followingRef = useRef(false);
+    const onFollowChangeRef = useRef(onFollowChange);
+
+    useEffect(() => { onFollowChangeRef.current = onFollowChange; });
 
     useImperativeHandle(ref, () => ({
       drawSegments(segments: TripSegment[]) {
@@ -136,24 +141,34 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
           });
         });
 
-        map.fitBounds(bounds, { padding: 80, maxZoom: 16 });
+        map.fitBounds(bounds, { padding: 80, maxZoom: 18 });
       },
 
       recenterOnUser(latitude: number, longitude: number) {
-        mapRef.current?.flyTo({ center: [longitude, latitude], zoom: 15 });
+        mapRef.current?.flyTo({ center: [longitude, latitude], zoom: 18 });
       },
 
       setUserPosition(latitude: number, longitude: number) {
         const map = mapRef.current;
         if (!map) return;
 
-        if (userMarkerRef.current) {
-          userMarkerRef.current.setLngLat([longitude, latitude]);
-          return;
-        }
-        userMarkerRef.current = new maplibregl.Marker({ element: buildDot(USER_POSITION_COLOR) })
-          .setLngLat([longitude, latitude])
+        const lngLat: [number, number] = [longitude, latitude];
+        if (userMarkerRef.current) userMarkerRef.current.setLngLat(lngLat);
+        else userMarkerRef.current = new maplibregl.Marker({ element: buildUserMarker() })
+          .setLngLat(lngLat)
           .addTo(map);
+
+        if (followingRef.current) this.startFollow();
+      },
+
+      startFollow() {
+        const map = mapRef.current;
+        const here = userMarkerRef.current?.getLngLat();
+        followingRef.current = true;
+        if (!map || !here) return;
+        onFollowChangeRef.current?.(true);
+        if (map.getZoom() < 14) map.flyTo({ center: here, zoom: 15 });
+        else map.easeTo({ center: here, duration: 600 });
       },
 
       setNearbyMarkers(stops: TransitStop[], vehicles: SharedVehicle[]) {
@@ -195,6 +210,12 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
 
       mapRef.current.addControl(new maplibregl.NavigationControl(), "top-right");
 
+      mapRef.current.on("movestart", (event) => {
+        if (!event.originalEvent || !followingRef.current) return;
+        followingRef.current = false;
+        onFollowChangeRef.current?.(false);
+      });
+
       mapRef.current.on("styleimagemissing", (e) => {
         const id = e.id;
         if (!mapRef.current?.hasImage(id)) {
@@ -215,6 +236,12 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
 function buildDot(color: string, size = 16): HTMLDivElement {
   const element = document.createElement("div");
   element.style.cssText = `width:${size}px;height:${size}px;border-radius:9999px;background:${color};border:3px solid #fff;box-shadow:0 1px 4px rgba(21,23,28,.3)`;
+  return element;
+}
+
+function buildUserMarker(): HTMLDivElement {
+  const element = document.createElement("div");
+  element.className = "user-location-marker";
   return element;
 }
 

@@ -7,6 +7,7 @@ import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { useGeocoding, reverseGeocode } from "@/app/hooks/useGeocoding";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import type { UserPosition } from "@/app/hooks/useGeolocation";
+import type { PlannedTime } from "@urbanflow/app-front-back-lib";
 import { useRecentTrips, type RecentTrip } from "@/app/hooks/useRecentTrips";
 import { MODE_META, MODE_FALLBACK } from "@/app/lib/mode-meta";
 
@@ -18,8 +19,14 @@ const WHEN_OPTIONS = [
 
 type WhenId = (typeof WHEN_OPTIONS)[number]["id"];
 
+/** Formate une date en valeur d'input `datetime-local` (YYYY-MM-DDTHH:mm) en heure locale, sans passer par l'UTC. */
+function toLocalInputValue(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 interface Props {
-  onSearch: (origin: GeocodingResult, destination: GeocodingResult) => void;
+  onSearch: (origin: GeocodingResult, destination: GeocodingResult, plannedTime?: PlannedTime) => void;
   userPosition: UserPosition | null;
   onRequestPosition: () => void;
   onBack: () => void;
@@ -30,6 +37,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
   useEscapeKey(onBack);
 
   const [when, setWhen]               = useState<WhenId>("now");
+  const [dateTimeValue, setDateTimeValue] = useState("");
   const [fromText, setFromText]       = useState("");
   const [toText, setToText]           = useState("");
   const [fromGeo, setFromGeo]         = useState<GeocodingResult | null>(null);
@@ -89,8 +97,11 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
   }
 
   function handleSearch() {
-    if (fromGeo && toGeo) {
+    if (!fromGeo || !toGeo) return;
+    if (when === "now") {
       onSearch(fromGeo, toGeo);
+    } else {
+      onSearch(fromGeo, toGeo, { dateTime: dateTimeValue, mode: when === "arrive" ? "arrival" : "departure" });
     }
   }
 
@@ -106,7 +117,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
     setAwaitingPosition(true);
     onRequestPosition();}
 
-  const canSearch = !!(fromGeo && toGeo);
+  const canSearch = !!(fromGeo && toGeo) && (when === "now" || dateTimeValue !== "");
 
   return (
       <div
@@ -197,7 +208,12 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
             {WHEN_OPTIONS.map((option) => (
                 <button
                     key={option.id}
-                    onClick={() => setWhen(option.id)}
+                    onClick={() => {
+                      setWhen(option.id);
+                      if (option.id !== "now" && !dateTimeValue) {
+                        setDateTimeValue(toLocalInputValue(new Date(Date.now() + 15 * 60 * 1000)));
+                      }
+                    }}
                     className={`flex-1 py-2 text-xs rounded-lg border-[1.5px] transition-colors ${
                         when === option.id
                             ? "border-primary bg-primary-tint font-semibold text-primary"
@@ -208,6 +224,22 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
                 </button>
             ))}
           </div>
+
+          {when !== "now" && (
+            <div className="flex flex-col gap-1">
+              <label htmlFor="planned-time" className="text-[11px] font-semibold text-text-2">
+                {when === "arrive" ? "Arriver avant" : "Partir à"}
+              </label>
+              <input
+                id="planned-time"
+                type="datetime-local"
+                value={dateTimeValue}
+                min={toLocalInputValue(new Date())}
+                onChange={(event) => setDateTimeValue(event.target.value)}
+                className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink"
+              />
+            </div>
+          )}
 
           <button
               onClick={handleSearch}

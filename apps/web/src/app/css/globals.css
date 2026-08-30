@@ -86,3 +86,22 @@ body {
     animation: none !important;
   }
 }
+
+.user-location-marker {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #2f62e6;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(21, 23, 28, 0.3);
+  animation: user-pulse 2s ease-out infinite;
+}
+
+@keyframes user-pulse {
+  from {
+    box-shadow: 0 1px 4px rgba(21, 23, 28, 0.3), 0 0 0 0 rgba(47, 98, 230, 0.5);
+  }
+  to {
+    box-shadow: 0 1px 4px rgba(21, 23, 28, 0.3), 0 0 0 16px rgba(47, 98, 230, 0);
+  }
+}

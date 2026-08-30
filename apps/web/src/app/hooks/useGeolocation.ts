@@ -74,7 +74,7 @@ export function useGeolocation(): UseGeolocation {
         );
     }, []);
 
-    useEffect(() => stop, [stop]); // cleanup à l'unmount
+    useEffect(() => stop, [stop]);
 
     return { status, position, start, stop };
 }

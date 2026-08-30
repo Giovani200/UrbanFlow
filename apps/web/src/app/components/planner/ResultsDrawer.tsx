@@ -53,6 +53,7 @@ interface Props {
   onStart: () => void;
   onSelectRoute: (index: number) => void;
   selectedIndex: number;
+  noTransitNotice?: boolean;
 }
 
 export function ResultsDrawer({
@@ -64,12 +65,13 @@ export function ResultsDrawer({
   onStart,
   onSelectRoute,
   selectedIndex,
+  noTransitNotice,
 }: Props) {
   const {
-    dragY, dragging,
+    dragY, dragging, collapsed,
     onTouchStart, onTouchMove, onTouchEnd,
     onMouseDown, onMouseMove, onMouseUp, onMouseLeave,
-  } = useBottomSheetDrag({ onDismiss: onBack });
+  } = useBottomSheetDrag({ collapsible: true });
 
   const panelRef = useFocusOnMount<HTMLDivElement>();
   useEscapeKey(onBack);
@@ -103,7 +105,9 @@ export function ResultsDrawer({
         tabIndex={-1}
         className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-2xl shadow-2xl"
         style={{
-          transform: `translateY(${dragY}px)`,
+          transform: collapsed
+            ? `translateY(calc(100% - 88px + ${dragY}px))`
+            : `translateY(${dragY}px)`,
           transition: dragging ? "none" : "transform 280ms cubic-bezier(0.32,0.72,0,1)",
         }}
         onTouchStart={onTouchStart}
@@ -138,6 +142,11 @@ export function ResultsDrawer({
             </div>
           ) : (
             <>
+              {noTransitNotice && (
+                <div role="status" className="mb-3 rounded-lg bg-bg px-3 py-2 text-[13px] text-text-2">
+                  Aucun transport en commun trouvé pour cet horaire.
+                </div>
+              )}
               <div className="flex justify-between items-center mb-3">
                 <p className="text-[15px] font-bold text-ink">
                   {routes.length} itinéraire{routes.length > 1 ? "s" : ""} trouvé{routes.length > 1 ? "s" : ""}
