@@ -49,15 +49,23 @@ export type TripRoute = zod.output<typeof TripRouteSchema>;
 export const RoutingProfileSchema = zod.object({
     weightCarbon: zod.number().min(0).max(100),
     weightTime: zod.number().min(0).max(100),
-    weightCost: zod.number().min(0).max(100),
     wheelchairAccess: zod.boolean(),
+    preferredModes: zod.array(TripModeSchema).optional(),
 });
 export type RoutingProfile = zod.output<typeof RoutingProfileSchema>;
+
+export const PlannedTimeSchema = zod.object({
+    // Heure locale Grenoble (Europe/Paris), wall-clock sans offset UTC.
+    dateTime: zod.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
+    mode: zod.enum(["departure", "arrival"]),
+});
+export type PlannedTime = zod.output<typeof PlannedTimeSchema>;
 
 export const TripPlanningDtoInSchema = zod.object({
     origin: CoordinatesSchema,
     destination: CoordinatesSchema,
     profile: RoutingProfileSchema.optional(),
+    plannedTime: PlannedTimeSchema.optional(),
 });
 export type TripPlanningDtoIn = zod.output<typeof TripPlanningDtoInSchema>;
 

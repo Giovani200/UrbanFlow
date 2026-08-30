@@ -1,5 +1,5 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
-import type { Coordinates, GeoJsonLineString, TripMode } from "@urbanflow/app-front-back-lib";
+import type { Coordinates, GeoJsonLineString, PlannedTime, TripMode } from "@urbanflow/app-front-back-lib";
 import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
 
 // otp = OpenTripPlanner (calculateur d'itinéraires Métromobilité, réseau TAG)
@@ -59,6 +59,7 @@ export class OtpRoutingAdapter {
         origin: Coordinates,
         destination: Coordinates,
         wheelchairAccess: boolean,
+        plannedTime?: PlannedTime,
     ): Promise<OtpItinerary[]> {
         const parameters = new URLSearchParams({
             fromPlace: `${origin.latitude},${origin.longitude}`,
@@ -68,6 +69,13 @@ export class OtpRoutingAdapter {
             wheelchair: String(wheelchairAccess),
             showIntermediateStops: "true",
         });
+
+        if (plannedTime) {
+            const [date, time] = plannedTime.dateTime.split("T");
+            parameters.set("date", date);
+            parameters.set("time", time);
+            parameters.set("arriveBy", String(plannedTime.mode === "arrival"));
+        }
 
         const response = await fetchWithTimeout(
             `${OTP_PLAN_URL}?${parameters.toString()}`,

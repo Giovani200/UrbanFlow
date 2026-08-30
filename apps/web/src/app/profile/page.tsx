@@ -13,15 +13,14 @@ import { Modal } from "@/app/components/ui/Modal";
 
 const MODE_LABELS: Record<string, string> = {
   bike: "Vélo", scooter: "Trottinette", tram: "Tram",
-  bus: "Bus", carpool: "Covoiturage", walk: "Marche",
+  bus: "Bus", walk: "Marche",
 };
 
-const ALL_MODES = ["bike", "scooter", "tram", "bus", "carpool", "walk"] as const;
+const ALL_MODES = ["bike", "scooter", "tram", "bus", "walk"] as const;
 
 const PREF_CONFIG = [
   { key: "weightTime" as const, label: "Rapidité", color: "#3B82F6" },
   { key: "weightCarbon" as const, label: "Écologie", color: "#16A34A" },
-  { key: "weightCost" as const, label: "Confort", color: "#F59E0B" },
 ];
 
 function formatKg(grams: number): string {
@@ -46,7 +45,6 @@ export default function ProfilePage() {
 
   const [weightTime, setWeightTime] = useState(34);
   const [weightCarbon, setWeightCarbon] = useState(33);
-  const [weightCost, setWeightCost] = useState(33);
   const [wheelchairAccess, setWheelchairAccess] = useState(false);
   const [avoidStairs, setAvoidStairs] = useState(false);
   type TransportMode = NonNullable<UpdatePreferencesDtoIn["preferredModes"]>[number];
@@ -84,12 +82,13 @@ export default function ProfilePage() {
         setNameDraft(res.data.name ?? "");
         if (res.data.preferences) {
           const mp = res.data.preferences;
-          setWeightTime(mp.weightTime);
-          setWeightCarbon(mp.weightCarbon);
-          setWeightCost(mp.weightCost);
+          const total = mp.weightTime + mp.weightCarbon;
+          const timePct = total === 0 ? 50 : Math.round((mp.weightTime / total) * 100);
+          setWeightTime(timePct);
+          setWeightCarbon(100 - timePct);
           setWheelchairAccess(mp.wheelchairAccess);
           setAvoidStairs(mp.avoidStairs);
-          setPreferredModes(mp.preferredModes as TransportMode[]);
+          setPreferredModes(mp.preferredModes.filter((m): m is TransportMode => (ALL_MODES as readonly string[]).includes(m)));
           setMonthlyGoalKg(mp.monthlyGoalKg);
         }
       });
@@ -103,7 +102,7 @@ export default function ProfilePage() {
   async function handleSave() {
     setSaving(true);
     const res = await usersService.updateProfile({
-      weightTime, weightCarbon, weightCost,
+      weightTime, weightCarbon,
       wheelchairAccess, avoidStairs, preferredModes,
       monthlyGoalKg,
     });
@@ -147,17 +146,14 @@ export default function ProfilePage() {
     if (res.isOk) setAddresses((prev) => prev.filter((address) => address.id !== id));
   }
 
-  function redistributeWeights(changedKey: "weightTime" | "weightCarbon" | "weightCost", value: number) {
-    const current = { weightTime, weightCarbon, weightCost };
-    const otherKeys = (["weightTime", "weightCarbon", "weightCost"] as const).filter((key) => key !== changedKey);
-    const remaining = 100 - value;
-    const othersSum = current[otherKeys[0]] + current[otherKeys[1]];
-    const first = othersSum === 0 ? Math.round(remaining / 2) : Math.round(remaining * (current[otherKeys[0]] / othersSum));
-    const second = remaining - first;
-    const next = { ...current, [changedKey]: value, [otherKeys[0]]: first, [otherKeys[1]]: second };
-    setWeightTime(next.weightTime);
-    setWeightCarbon(next.weightCarbon);
-    setWeightCost(next.weightCost);
+  function redistributeWeights(changedKey: "weightTime" | "weightCarbon", value: number) {
+    if (changedKey === "weightTime") {
+      setWeightTime(value);
+      setWeightCarbon(100 - value);
+    } else {
+      setWeightCarbon(value);
+      setWeightTime(100 - value);
+    }
   }
 
   async function handleSaveName() {
@@ -199,7 +195,6 @@ export default function ProfilePage() {
   const prefs = [
     { ...PREF_CONFIG[0], val: weightTime },
     { ...PREF_CONFIG[1], val: weightCarbon },
-    { ...PREF_CONFIG[2], val: weightCost },
   ];
 
   return (
@@ -296,7 +291,7 @@ export default function ProfilePage() {
                     aria-label={p.label}
                     value={p.val}
                     onChange={(e) => redistributeWeights(p.key, Number(e.target.value))}
-                    className="w-full h-[5px] rounded-full appearance-none cursor-pointer accent-primary"
+                    className="w-full cursor-pointer"
                     style={{ accentColor: p.color }}
                   />
                 ) : (

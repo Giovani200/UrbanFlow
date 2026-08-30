@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// "unknown" = Permissions API absente (Safari < 16) ou nom non supporté.
-// Dans ce cas, useUserLocation retombe sur le consentement localStorage.
 export type GeolocationPermission = "granted" | "prompt" | "denied" | "unknown";
 
 export function useGeolocationPermission(): GeolocationPermission {

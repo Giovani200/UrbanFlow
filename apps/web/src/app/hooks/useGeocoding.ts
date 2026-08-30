@@ -28,7 +28,7 @@ export function useGeocoding(query: string): GeocodingResult[] {
             if (!key) return;
 
             try {
-                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${GRENOBLE_BBOX}&language=fr&limit=5`,
+                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${GRENOBLE_BBOX}&types=poi,address,street&language=fr&limit=5`,
                 );
                 if (!response.ok) return;
                 const data = (await response.json()) as MapTilerGeocodingResponse;
@@ -46,7 +46,6 @@ export function useGeocoding(query: string): GeocodingResult[] {
         return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
     }, [query]);
 
-    // Dérivé plutôt que remis à zéro dans l'effet : sous 3 caractères, aucun résultat n'est pertinent.
     return query.length < 3 ? [] : results;
 }
 

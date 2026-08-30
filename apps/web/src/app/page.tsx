@@ -17,9 +17,10 @@ import { GeolocationConsentDialog } from "@/app/components/map/GeolocationConsen
 import { GeolocationErrorDialog } from "@/app/components/map/GeolocationErrorDialog";
 import { tripsService } from "@/app/services/trips.service";
 import type { TripRoute } from "@/app/services/trips.service";
+import { usersService } from "@/app/services/users.service";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { addLocalTrip, toTripRecord } from "@/app/lib/localTrips";
-import type { RecordTripDtoIn } from "@urbanflow/app-front-back-lib";
+import type { PlannedTime, RecordTripDtoIn, RoutingProfile, TripMode } from "@urbanflow/app-front-back-lib";
 
 type View = "home" | "search" | "results" | "detail" | "navigation" | "arrival";
 
@@ -32,6 +33,8 @@ export default function PlannerPage() {
   const [destLabel, setDestLabel] = useState("");
   const [originPoint, setOriginPoint] = useState<RecordTripDtoIn["origin"] | null>(null);
   const [destPoint, setDestPoint] = useState<RecordTripDtoIn["destination"] | null>(null);
+  const [noTransitNotice, setNoTransitNotice] = useState(false);
+  const [routingProfile, setRoutingProfile] = useState<RoutingProfile | null>(null);
 
   const mapRef = useRef<MapViewHandle>(null);
   const { status: authStatus } = useAuth();
@@ -52,6 +55,20 @@ export default function PlannerPage() {
     }
   }, [position]);
 
+  useEffect(() => {
+    if (authStatus !== "authenticated") return;
+    void usersService.getProfile().then((res) => {
+      if (!res.isOk || !res.data.preferences) return;
+      const preferences = res.data.preferences;
+      setRoutingProfile({
+        weightCarbon: preferences.weightCarbon,
+        weightTime: preferences.weightTime,
+        wheelchairAccess: preferences.wheelchairAccess,
+        preferredModes: preferences.preferredModes as TripMode[],
+      });
+    });
+  }, [authStatus]);
+
   function handleLocateClick() {
     if (location.state === "located") {
       mapRef.current?.recenterOnUser(location.position.latitude, location.position.longitude);
@@ -61,7 +78,7 @@ export default function PlannerPage() {
     request();
   }
 
-  async function handleSearch(origin: GeocodingResult, destination: GeocodingResult) {
+  async function handleSearch(origin: GeocodingResult, destination: GeocodingResult, plannedTime?: PlannedTime) {
     setOriginLabel(origin.label);
     setDestLabel(destination.label);
     setOriginPoint({ latitude: origin.latitude, longitude: origin.longitude, label: origin.label });
@@ -71,11 +88,14 @@ export default function PlannerPage() {
     setLoading(true);
     setRoutes([]);
     setSelectedRoute(0);
+    setNoTransitNotice(false);
     mapRef.current?.setNearbyMarkers([], []);
 
     const result = await tripsService.planTrip({
       origin: { latitude: origin.latitude, longitude: origin.longitude },
       destination: { latitude: destination.latitude, longitude: destination.longitude },
+      profile: authStatus === "authenticated" ? routingProfile ?? undefined : undefined,
+      plannedTime,
     });
 
     setLoading(false);
@@ -85,6 +105,7 @@ export default function PlannerPage() {
     const { walk, bike, transit } = result.data;
     const combined = [...transit, ...(bike ? [bike] : []), ...(walk ? [walk] : [])];
     setRoutes(combined);
+    setNoTransitNotice(!!plannedTime && transit.length === 0);
 
     const first = combined[0];
     if (first) {
@@ -194,6 +215,7 @@ export default function PlannerPage() {
           onStart={() => setView("detail")}
           onSelectRoute={handleSelectRoute}
           selectedIndex={selectedRoute}
+          noTransitNotice={noTransitNotice}
         />
       )}
 
@@ -202,7 +224,9 @@ export default function PlannerPage() {
           route={routes[selectedRoute]}
           originLabel={originLabel}
           destLabel={destLabel}
-          onGo={() => setView("navigation")}
+          onGo={() => {
+              mapRef.current?.startFollow();
+              setView("navigation")}}
           onBack={() => setView("results")}
         />
       )}
@@ -211,10 +235,7 @@ export default function PlannerPage() {
         <NavScreen
           route={routes[selectedRoute]}
           position={position}
-          onFocusSegment={(segment) => mapRef.current?.fitToSegments([segment])}
-          onRecenter={() => {
-            if (position) mapRef.current?.recenterOnUser(position.latitude, position.longitude);
-          }}
+          onRecenter={() => mapRef.current?.startFollow()}
           onExit={() => {
             mapRef.current?.clearSegments();
             setView("home");

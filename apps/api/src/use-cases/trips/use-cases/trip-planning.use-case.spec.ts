@@ -116,13 +116,13 @@ describe("TripPlanningUseCase", () => {
         await useCase.execute({
             origin,
             destination,
-            profile: { weightCarbon: 50, weightTime: 30, weightCost: 20, wheelchairAccess: true },
+            profile: { weightCarbon: 50, weightTime: 30, wheelchairAccess: true },
         });
 
         const orsProfiles = getRoute.mock.calls.map((call) => call[0]);
         expect(orsProfiles).toContain("wheelchair");
         expect(orsProfiles).not.toContain("foot-walking");
-        expect(getItineraries).toHaveBeenCalledWith(origin, destination, true);
+        expect(getItineraries).toHaveBeenCalledWith(origin, destination, true, undefined);
     });
 
     it("classe les options transit par score décroissant", async () => {
@@ -147,6 +147,34 @@ describe("TripPlanningUseCase", () => {
         expect(result.transit[0].segments.some((segment) => segment.mode === "tram")).toBe(true);
     });
 
+    it("preferredModes booste le score de l'itinéraire du mode préféré", async () => {
+        const tram: OtpItinerary = {
+            durationSeconds: 900,
+            legs: [makeOtpLeg("walk", 100, 90), makeOtpLeg("tram", 4000, 700, "B")],
+        };
+        const bus: OtpItinerary = {
+            durationSeconds: 2400,
+            legs: [makeOtpLeg("walk", 100, 90), makeOtpLeg("bus", 6000, 2200, "C1")],
+        };
+        const useCase = makeUseCase(
+            async () => makeOrsRoute(2500, 1800),
+            async () => [tram, bus],
+        );
+
+        const sans = await useCase.execute({ origin, destination });
+        const avec = await useCase.execute({
+            origin,
+            destination,
+            profile: { weightCarbon: 50, weightTime: 30, wheelchairAccess: false, preferredModes: ["bus"] },
+        });
+
+        const busSans = sans.transit.find((route) => route.segments.some((segment) => segment.mode === "bus"));
+        const busAvec = avec.transit.find((route) => route.segments.some((segment) => segment.mode === "bus"));
+        expect(busSans).toBeDefined();
+        expect(busAvec).toBeDefined();
+        expect(busAvec!.score).toBeGreaterThan(busSans!.score);
+    });
+
     it("recopie les arrêts intermédiaires du leg transit sur le segment", async () => {
         const busLeg: OtpLeg = {
             mode: "bus",
@@ -169,5 +197,15 @@ describe("TripPlanningUseCase", () => {
 
         const busSegment = result.transit[0].segments.find((segment) => segment.mode === "bus");
         expect(busSegment?.intermediateStops).toEqual([{ name: "Arrêt A", latitude: 45.185, longitude: 5.725 }]);
+    });
+
+    it("transmet plannedTime à l'adaptateur OTP", async () => {
+        const getItineraries = vi.fn(async () => [] as OtpItinerary[]);
+        const useCase = makeUseCase(async () => makeOrsRoute(2000, 1500), getItineraries);
+        const plannedTime = { dateTime: "2026-08-28T14:00", mode: "departure" as const };
+
+        await useCase.execute({ origin, destination, plannedTime });
+
+        expect(getItineraries).toHaveBeenCalledWith(origin, destination, false, plannedTime);
     });
 });

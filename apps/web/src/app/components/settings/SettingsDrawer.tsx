@@ -12,7 +12,7 @@ const LOGGED_ITEMS = [
   { icon: User,       label: "Compte",          href: "/profile" },
   { icon: Leaf,       label: "Mon empreinte",   href: "/carbon"  },
   { icon: Clock,      label: "Mes trajets",     href: "/trips"   },
-  { icon: Bell,       label: "Notifications",   href: null               },
+  { icon: Bell,       label: "Notifications",   href: null, soon: true   },
   { icon: Database,   label: "Mes données",     href: "/mes-donnees"     },
   { icon: Lock,       label: "Confidentialité", href: "/confidentialite" },
   { icon: HelpCircle, label: "Aide",            href: "/aide"            },
@@ -112,21 +112,31 @@ export function SettingsDrawer({ onClose }: Props) {
           )}
 
           <div role="navigation" aria-label="Navigation principale" className="flex flex-col">
-            {items.map((item, i) => (
-              <button
-                key={item.label}
-                onClick={() => handleItem(item.href)}
-                className={`flex items-center gap-3 py-3 w-full text-left ${
-                  i < items.length - 1 ? "border-b border-border" : ""
-                }`}
-              >
-                <div className="w-9 h-9 rounded-xl bg-bg flex items-center justify-center shrink-0">
-                  <item.icon size={17} className="text-ink" />
-                </div>
-                <span className="flex-1 text-[14px] text-ink">{item.label}</span>
-                <ChevronRight size={15} className="text-text-2" />
-              </button>
-            ))}
+            {items.map((item, i) => {
+              const soon = "soon" in item && item.soon;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => handleItem(item.href)}
+                  disabled={soon}
+                  className={`flex items-center gap-3 py-3 w-full text-left disabled:cursor-default ${
+                    i < items.length - 1 ? "border-b border-border" : ""
+                  } ${soon ? "opacity-60" : ""}`}
+                >
+                  <div className="w-9 h-9 rounded-xl bg-bg flex items-center justify-center shrink-0">
+                    <item.icon size={17} className={soon ? "text-text-2" : "text-ink"} />
+                  </div>
+                  <span className={`flex-1 text-[14px] ${soon ? "text-text-2" : "text-ink"}`}>{item.label}</span>
+                  {soon ? (
+                    <span className="text-[10px] font-semibold text-text-2 bg-bg border border-border rounded-md px-2 py-0.5">
+                      À venir
+                    </span>
+                  ) : (
+                    <ChevronRight size={15} className="text-text-2" />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <button

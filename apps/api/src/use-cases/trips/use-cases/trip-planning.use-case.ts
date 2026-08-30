@@ -14,7 +14,10 @@ import { OrsProfile, OrsRoutingAdapter } from "../../transport/openRouteService-
 import { OtpItinerary, OtpRoutingAdapter } from "../../transport/openTripPlanner-routing.adapter";
 
 // Pondérations par défaut si l'utilisateur n'a pas de profil.
-const DEFAULT_WEIGHTS = { weightCarbon: 50, weightTime: 30, weightCost: 20 };
+const DEFAULT_WEIGHTS = { weightCarbon: 50, weightTime: 30};
+
+// Match complet des modes préférés = jusqu'à 20 % du poids temps+carbone (réglage produit).
+const PREFERRED_MODE_BONUS_RATIO = 0.2;
 
 // Normalise en [0,1] : plus la valeur est basse, meilleur le score (1 = le meilleur du lot).
 function normalize(value: number, min: number, max: number): number {
@@ -85,6 +88,7 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
             dataIn.origin,
             dataIn.destination,
             wheelchairAccess,
+            dataIn.plannedTime,
         );
 
         return itineraries
@@ -131,6 +135,8 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
 
     private rankRoutes(routes: TripRoute[], dataIn: TripPlanningDtoIn): TripRoute[] {
         const weights = dataIn.profile ?? DEFAULT_WEIGHTS;
+        const preferredModes = dataIn.profile?.preferredModes;
+        const weightSum = weights.weightTime + weights.weightCarbon;
 
         const durations = routes.map((route) => route.totalDurationSeconds);
         const carbons = routes.map((route) => route.totalCarbonGrams);
@@ -145,9 +151,17 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
                 score: Math.round(
                     weights.weightTime * normalize(route.totalDurationSeconds, minDuration, maxDuration) +
                     weights.weightCarbon * normalize(route.totalCarbonGrams, minCarbon, maxCarbon) +
-                    weights.weightCost * 1,
-                ),
+                    this.preferenceBonus(route, weightSum, preferredModes)),
             }))
             .sort((a, b) => b.score - a.score);
+    }
+
+    // Bonus si l'itinéraire emprunte les modes préférés : coup de pouce au classement, jamais de masquage.
+    private preferenceBonus(route: TripRoute, weightSum: number, preferredModes?: TripMode[]): number {
+        if (!preferredModes?.length) return 0;
+        const modes = route.segments.map((segment) => segment.mode).filter((mode) => mode !== "walk");
+        if (modes.length === 0) return 0;
+        const matched = modes.filter((mode) => preferredModes.includes(mode)).length;
+        return PREFERRED_MODE_BONUS_RATIO * weightSum * (matched / modes.length);
     }
 }
