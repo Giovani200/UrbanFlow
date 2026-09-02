@@ -54,8 +54,7 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
   const showSuggestions = activeField === "from" || currentResults.length > 0;
   const showRecents = !activeField && recentTrips.length > 0;
 
-  // Une référence garde le verrou sans déclencher de rendu : la position peut
-  // changer pendant le géocodage inverse, on ne le relance pas pour autant.
+  // Une référence garde le verrou sans déclencher de rendu : la position peut changer pendant le géocodage inverse, on ne le relance pas pour autant.
   const resolvingPositionRef = useRef(false);
 
   useEffect(() => {
@@ -280,10 +279,16 @@ export function SearchDrawer({ onSearch, userPosition, onRequestPosition, onBack
                           {trip.originLabel} <span className="text-text-2">→</span>{" "}
                           <span className="font-medium">{trip.destinationLabel}</span>
                         </p>
-                        <div className="flex gap-1 mt-1">
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
                           {trip.modes.map((mode) => {
-                            const ModeIcon = (MODE_META[mode] ?? MODE_FALLBACK).icon;
-                            return <ModeIcon key={mode} size={12} className="text-text-2" />;
+                            const meta = MODE_META[mode] ?? MODE_FALLBACK;
+                            const ModeIcon = meta.icon;
+                            return (
+                              <span key={mode} className="flex items-center gap-1">
+                                <ModeIcon size={12} style={{ color: meta.color }} />
+                                <span className="text-[10px] text-text-2">{meta.label}</span>
+                              </span>
+                            );
                           })}
                         </div>
                       </div>

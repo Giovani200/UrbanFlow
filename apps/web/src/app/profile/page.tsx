@@ -10,11 +10,7 @@ import { useCarbonSummary } from "@/app/hooks/useCarbonSummary";
 import { useGeocoding } from "@/app/hooks/useGeocoding";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { Modal } from "@/app/components/ui/Modal";
-
-const MODE_LABELS: Record<string, string> = {
-  bike: "Vélo", scooter: "Trottinette", tram: "Tram",
-  bus: "Bus", walk: "Marche",
-};
+import { MODE_META, MODE_FALLBACK } from "@/app/lib/mode-meta";
 
 const ALL_MODES = ["bike", "scooter", "tram", "bus", "walk"] as const;
 
@@ -329,17 +325,20 @@ export default function ProfilePage() {
           <div className="flex gap-1.5 flex-wrap mt-2.5">
             {(editing ? ALL_MODES : preferredModes).map((m) => {
               const active = preferredModes.includes(m);
+              const meta = MODE_META[m] ?? MODE_FALLBACK;
+              const Icon = meta.icon;
               return (
                 <button
                   key={m}
                   onClick={() => editing && toggleMode(m)}
-                  className={`px-2.5 py-0.5 rounded-[10px] text-[11px] font-medium transition-colors ${
+                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[11px] font-medium transition-colors ${
                     active
                       ? "bg-primary-tint text-primary"
                       : "bg-bg text-text-2"
                   } ${editing ? "cursor-pointer" : ""}`}
                 >
-                  {MODE_LABELS[m] ?? m}
+                  <Icon size={12} style={{ color: meta.color }} />
+                  {meta.label}
                 </button>
               );
             })}

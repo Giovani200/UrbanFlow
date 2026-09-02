@@ -7,6 +7,8 @@ export type TransitStopMode = zod.output<typeof TransitStopModeSchema>;
 export const TransitLineSchema = zod.object({
     code: zod.string(),
     mode: TransitStopModeSchema,
+    color: zod.string().optional(),
+    textColor: zod.string().optional(),
 });
 export type TransitLine = zod.output<typeof TransitLineSchema>;
 

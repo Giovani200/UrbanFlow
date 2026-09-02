@@ -6,17 +6,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import type { TripSegment } from "@/app/services/trips.service";
 import type { SharedVehicle, TransitStop } from "@/app/services/transport.service";
 import { MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM } from "@/app/config/geolocalisation";
+import { MODE_META } from "@/app/lib/mode-meta";
 
-const MODE_COLORS: Record<string, string> = {
-  walk:    "#5A6470",
-  bike:    "#138A5E",
-  scooter: "#5A6470",
-  tram:    "#2F62E6",
-  bus:     "#E07A1F",
-  carpool: "#9A1B2F",
-  car:     "#9A1B2F",
-};
 const FALLBACK_COLOR = "#5A6470";
+
+function modeColor(mode: string): string {
+  return MODE_META[mode]?.color ?? FALLBACK_COLOR;
+}
 
 // Glyphes Lucide (viewBox 24) par mode, pour les pins carte façon DA.
 const MODE_ICON_SVG: Record<string, string> = {
@@ -88,7 +84,7 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
               "line-cap": "round",
             },
             paint: {
-              "line-color": MODE_COLORS[segment.mode] ?? FALLBACK_COLOR,
+              "line-color": segment.lineColor ?? modeColor(segment.mode),
               "line-width": 4,
               "line-opacity": 0.85,
             },
@@ -180,7 +176,7 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
 
         stops.forEach((stop) => {
           const mode = stop.lines[0]?.mode ?? "bus";
-          const color = MODE_COLORS[mode] ?? FALLBACK_COLOR;
+          const color = modeColor(mode);
           const marker = new maplibregl.Marker({ element: buildPin(color, mode, 32) })
             .setLngLat([stop.location.longitude, stop.location.latitude])
             .addTo(map);
@@ -188,7 +184,7 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
         });
 
         vehicles.forEach((vehicle) => {
-          const color = vehicle.type === "bike" ? MODE_COLORS.bike : MODE_COLORS.scooter;
+          const color = modeColor(vehicle.type === "bike" ? "bike" : "scooter");
           const iconKey = vehicle.type === "bike" ? "bike" : "scooter";
           const marker = new maplibregl.Marker({ element: buildPin(color, iconKey, 24) })
             .setLngLat([vehicle.location.longitude, vehicle.location.latitude])

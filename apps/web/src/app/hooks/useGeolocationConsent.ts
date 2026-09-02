@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
 
-export type GeolocationConsent = "unknown" | "granted" | "denied";
+type GeolocationConsent = "unknown" | "granted" | "denied";
 
 const STORAGE_KEY = "urbanflow.geolocation.consent";
 

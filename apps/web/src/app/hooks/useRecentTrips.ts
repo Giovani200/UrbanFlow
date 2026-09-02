@@ -6,7 +6,7 @@ import { useAuth } from "@/app/components/auth/AuthProvider";
 import { tripsService } from "@/app/services/trips.service";
 import { getLocalTrips } from "@/app/lib/localTrips";
 
-export const RECENT_TRIPS_LIMIT = 3;
+const RECENT_TRIPS_LIMIT = 3;
 
 export interface RecentTrip {
   id: string;

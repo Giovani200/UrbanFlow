@@ -23,6 +23,8 @@ export interface OtpLeg {
     departureStopName?: string;
     arrivalStopName?: string;
     lineShortName?: string;
+    lineColor?: string;
+    lineTextColor?: string;
     intermediateStops?: { name: string; latitude: number; longitude: number }[];
 }
 
@@ -35,6 +37,8 @@ interface OtpRawLeg {
     mode: string;
     transitLeg?: boolean;
     routeShortName?: string;
+    routeColor?: string;
+    routeTextColor?: string;
     distance: number;
     duration: number;
     from?: { name?: string };
@@ -122,6 +126,8 @@ export class OtpRoutingAdapter {
                 departureStopName: leg.transitLeg ? leg.from?.name : undefined,
                 arrivalStopName: leg.transitLeg ? leg.to?.name : undefined,
                 lineShortName: leg.transitLeg ? leg.routeShortName : undefined,
+                lineColor: leg.transitLeg && leg.routeColor ? `#${leg.routeColor}` : undefined,
+                lineTextColor: leg.transitLeg && leg.routeTextColor ? `#${leg.routeTextColor}` : undefined,
                 intermediateStops: leg.transitLeg ? mapIntermediateStops(leg.intermediateStops) : undefined,
             });
         }

@@ -88,10 +88,20 @@ function SegmentRow({ segment }: { segment: TripSegment }) {
         <Icon size={18} className="text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-ink truncate">
-          {meta.label}
-          {isTransit && segment.lineShortName ? ` ${segment.lineShortName}` : ""}
-        </p>
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-medium text-ink">{meta.label}</span>
+          {isTransit && segment.lineShortName && (
+            <span
+              className="num text-[11px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
+              style={{
+                background: segment.lineColor ?? meta.color,
+                color: segment.lineTextColor ?? "#FFFFFF",
+              }}
+            >
+              {segment.lineShortName}
+            </span>
+          )}
+        </div>
         {hasStops ? (
           <p className="text-xs text-text-2 truncate">
             {segment.departureStopName} → {segment.arrivalStopName}

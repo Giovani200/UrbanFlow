@@ -5,6 +5,7 @@ import {
     ListTripsDtoInSchema,
     ListTripsDtoOut,
     ListTripsDtoOutSchema,
+    periodWindow,
     TripMode,
 } from "@urbanflow/app-front-back-lib";
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
@@ -13,13 +14,7 @@ import { PrismaService } from "../../../shared/database/prisma.service";
 
 function periodStart(period: ListTripsDtoIn["period"]): Date | undefined {
     if (period === "all") return undefined;
-    const start = new Date();
-    if (period === "week") {
-        start.setDate(start.getDate() - 7);
-    } else {
-        start.setMonth(start.getMonth() - 1);
-    }
-    return start;
+    return periodWindow(new Date(), period).start;
 }
 
 @Injectable()

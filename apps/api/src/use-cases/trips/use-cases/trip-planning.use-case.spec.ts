@@ -60,8 +60,8 @@ describe("TripPlanningUseCase", () => {
         expect(result.transit).toHaveLength(1);
         const route = result.transit[0];
         expect(route.segments.map((segment) => segment.mode)).toEqual(["walk", "bus", "tram", "walk"]);
-        // carbone = bus 2 km × 122 + tram 4 km × 4,44 (marche = 0)
-        const expectedCarbon = (2000 / 1000) * 122 + (4000 / 1000) * 4.44;
+        // carbone = bus 2 km × 122 + tram 4 km × 4,28 (marche = 0)
+        const expectedCarbon = (2000 / 1000) * 122 + (4000 / 1000) * 4.28;
         expect(route.totalCarbonGrams).toBeCloseTo(expectedCarbon, 5);
         expect(route.totalDistanceMeters).toBe(6500);
         expect(route.totalDurationSeconds).toBe(1500);

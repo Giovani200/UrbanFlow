@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type GeolocationFailure = "denied" | "unavailable";
-export type GeolocationStatus = "inactive" | "watching" | GeolocationFailure;
+type GeolocationStatus = "inactive" | "watching" | GeolocationFailure;
 
 export interface UserPosition {
     latitude: number;

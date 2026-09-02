@@ -17,6 +17,11 @@ function formatKg(grams: number): string {
   return (grams / 1000).toFixed(1).replace(".", ",");
 }
 
+function formatCarbon(grams: number): string {
+  if (grams < 1000) return `${Math.round(grams)} g`;
+  return `${(grams / 1000).toFixed(1).replace(".", ",")} kg`;
+}
+
 export default function CarbonPage() {
   const [period, setPeriod] = useState<Period>("month");
   const router = useRouter();
@@ -62,7 +67,7 @@ export default function CarbonPage() {
             )}
 
             <div className="bg-white rounded-xl px-5 py-5 text-center">
-              <p className="text-[11px] font-semibold text-text-2 tracking-widest uppercase mb-2">
+              <p className="text-[12px] font-semibold text-text-2 mb-2">
                 CO₂ économisé {periodMeta.savedLabel}
               </p>
               <p className="font-mono text-[54px] font-bold text-ink leading-none tracking-tight">
@@ -72,13 +77,12 @@ export default function CarbonPage() {
               <div className="inline-flex items-center gap-1.5 bg-green-50 rounded-[10px] px-3.5 py-1.5">
                 <Leaf size={14} className="text-success" />
                 <span className="text-[13px] font-semibold text-success">
-                  −{Math.round(summary.savedPercent)}% vs voiture solo
+                  {Math.round(summary.savedPercent)}% de moins qu&apos;en voiture
                 </span>
               </div>
               <p className="text-[12px] text-text-2 mt-2.5">
-                Équivalent à{" "}
-                <span className="font-semibold text-ink">{Math.round(summary.equivalentCarKm)} km</span> en voiture
-                évités
+                Comme si tu avais évité{" "}
+                <span className="font-semibold text-ink">{Math.round(summary.equivalentCarKm)} km</span> en voiture.
               </p>
             </div>
 
@@ -134,13 +138,14 @@ function BucketChart({ buckets }: { buckets: CarbonSummaryDtoOut["buckets"] }) {
   const max = Math.max(...buckets.map((bucket) => bucket.carbonGrams), 1);
   return (
     <div className="bg-white rounded-xl p-4">
-      <p className="text-[13px] font-semibold text-ink mb-3">Émissions par période (kg CO₂)</p>
+      <p className="text-[13px] font-semibold text-ink mb-0.5">Ce que tes trajets ont émis</p>
+      <p className="text-[11px] text-text-2 mb-3">Plus la barre est basse, moins tu as émis.</p>
       <div className="flex items-end gap-1.5 h-20">
         {buckets.map((bucket, index) => {
           const good = bucket.carbonGrams <= bucket.savedGrams;
           return (
             <div key={index} className="flex-1 flex flex-col items-center gap-1">
-              <span className="text-[8px] font-mono text-text-2">{formatKg(bucket.carbonGrams)}</span>
+              <span className="text-[8px] font-mono text-text-2">{formatCarbon(bucket.carbonGrams)}</span>
               <div
                 className="w-full rounded-t-[3px] min-h-[4px]"
                 style={{ height: `${(bucket.carbonGrams / max) * 60}px`, background: good ? "#16A34A" : "#B91C1C" }}
@@ -161,7 +166,8 @@ function BucketChart({ buckets }: { buckets: CarbonSummaryDtoOut["buckets"] }) {
 function ModeBreakdown({ byMode }: { byMode: CarbonSummaryDtoOut["byMode"] }) {
   return (
     <div className="bg-white rounded-xl p-4">
-      <p className="text-[13px] font-semibold text-ink mb-3">Émissions par mode</p>
+      <p className="text-[13px] font-semibold text-ink mb-0.5">D&apos;où viennent tes émissions</p>
+      <p className="text-[11px] text-text-2 mb-3">Marche et vélo n&apos;émettent rien : ils restent à 0 %.</p>
       <div className="flex flex-col gap-2.5">
         {byMode.map((entry) => {
           const meta = MODE_META[entry.mode] ?? MODE_FALLBACK;
@@ -194,10 +200,10 @@ function GoalCard({ goal }: { goal: NonNullable<CarbonSummaryDtoOut["goal"]> }) 
   return (
     <div className="bg-white rounded-xl p-4">
       <div className="flex justify-between items-center mb-2.5">
-        <p className="text-[13px] font-semibold text-ink">Objectif mensuel</p>
+        <p className="text-[13px] font-semibold text-ink">Objectif du mois</p>
         <div className="flex items-center gap-1">
           <Target size={12} className="text-primary" />
-          <span className="text-[12px] font-semibold text-primary font-mono">{goal.targetKg} kg CO₂</span>
+          <span className="text-[12px] font-semibold text-primary font-mono">{goal.targetKg} kg à économiser</span>
         </div>
       </div>
       <div className="h-2.5 bg-bg rounded-full overflow-hidden mb-1.5">

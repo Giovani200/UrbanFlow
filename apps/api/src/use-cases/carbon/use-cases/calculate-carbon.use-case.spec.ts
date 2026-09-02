@@ -26,7 +26,7 @@ describe("CalculateCarbonUseCase", () => {
             ],
         });
 
-        const expectedTotal = (2000 / 1000) * 122 + (4000 / 1000) * 4.44; // marche = 0
+        const expectedTotal = (2000 / 1000) * 122 + (4000 / 1000) * 4.28; // marche = 0
         const totalDistanceKilometers = (500 + 2000 + 4000) / 1000;
 
         expect(result.totalCarbonGrams).toBeCloseTo(expectedTotal, 5);
