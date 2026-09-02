@@ -32,6 +32,8 @@ export const TripSegmentSchema = zod.object({
     departureStopName: zod.string().optional(),
     arrivalStopName: zod.string().optional(),
     lineShortName: zod.string().optional(),
+    lineColor: zod.string().optional(),
+    lineTextColor: zod.string().optional(),
     intermediateStops: zod.array(TransitStopPointSchema).optional(),
 });
 export type TripSegment = zod.output<typeof TripSegmentSchema>;
@@ -55,7 +57,6 @@ export const RoutingProfileSchema = zod.object({
 export type RoutingProfile = zod.output<typeof RoutingProfileSchema>;
 
 export const PlannedTimeSchema = zod.object({
-    // Heure locale Grenoble (Europe/Paris), wall-clock sans offset UTC.
     dateTime: zod.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
     mode: zod.enum(["departure", "arrival"]),
 });

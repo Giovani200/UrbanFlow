@@ -1,16 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bus, MapPin, Navigation, TrainFront } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
+import { MODE_META, MODE_FALLBACK } from "@/app/lib/mode-meta";
 import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import { transportService } from "@/app/services/transport.service";
 import type { SharedVehicle, TransitStop } from "@/app/services/transport.service";
 import type { UserLocation } from "@/app/hooks/useUserLocation";
-
-const MODE_COLOR: Record<string, string> = {
-  tram: "#2F62E6",
-  bus: "#E07A1F",
-};
 
 interface Props {
   location: UserLocation;
@@ -123,8 +119,11 @@ export function NearbyDrawer({ location, onPlanTrip, onRequestPosition, onLoaded
                     {stop.lines.map((line) => (
                       <span
                         key={line.code}
-                        className="num text-[11px] font-bold text-white px-1.5 py-0.5 rounded-md"
-                        style={{ background: MODE_COLOR[line.mode] }}
+                        className="num text-[11px] font-bold px-1.5 py-0.5 rounded-md"
+                        style={{
+                          background: line.color ?? MODE_META[line.mode]?.color ?? MODE_FALLBACK.color,
+                          color: line.textColor ?? "#FFFFFF",
+                        }}
                       >
                         {line.code}
                       </span>
@@ -157,10 +156,10 @@ export function NearbyDrawer({ location, onPlanTrip, onRequestPosition, onLoaded
 
 function StopIcon({ stop }: { stop: TransitStop }) {
   const mode = stop.lines[0]?.mode ?? "bus";
-  const color = MODE_COLOR[mode] ?? "#5A6470";
-  const Icon = mode === "tram" ? TrainFront : Bus;
+  const meta = MODE_META[mode] ?? MODE_FALLBACK;
+  const Icon = meta.icon;
   return (
-    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: color }}>
+    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: meta.color }}>
       <Icon size={18} className="text-white" />
     </div>
   );

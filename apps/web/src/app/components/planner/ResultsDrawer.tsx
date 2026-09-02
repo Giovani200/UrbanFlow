@@ -1,18 +1,11 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ChevronRight, Bike, Bus, Footprints, Train, Leaf, Navigation, Car, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, Leaf, Navigation, Loader2 } from "lucide-react";
+import { MODE_META, MODE_FALLBACK } from "@/app/lib/mode-meta";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
 import { useEscapeKey } from "@/app/hooks/useEscapeKey";
 import { useFocusOnMount } from "@/app/hooks/useFocusOnMount";
 import type { TripRoute } from "@/app/services/trips.service";
-
-const MODE_ICONS: Record<string, React.ElementType> = {
-  walk: Footprints,
-  tram: Train,
-  bus: Bus,
-  bike: Bike,
-  carpool: Car,
-};
 
 function formatDuration(seconds: number): string {
   const minutes = Math.round(seconds / 60);
@@ -25,17 +18,6 @@ function formatDuration(seconds: number): string {
 function formatDistance(meters: number): string {
   if (meters < 1000) return `${meters} m`;
   return `${(meters / 1000).toFixed(1)} km`;
-}
-
-function getUniqueModes(route: TripRoute): string[] {
-  const seen = new Set<string>();
-  return route.segments
-    .map((segment) => segment.mode)
-    .filter((mode) => {
-      if (seen.has(mode)) return false;
-      seen.add(mode);
-      return true;
-    });
 }
 
 function getBadge(route: TripRoute, index: number): { label: string; green: boolean } | null {
@@ -157,7 +139,6 @@ export function ResultsDrawer({
               <div className="flex flex-col gap-2">
                 {routes.map((route, index) => {
                   const isSelected = selectedIndex === index;
-                  const modes = getUniqueModes(route);
                   const badge = getBadge(route, index);
 
                   return (
@@ -169,15 +150,35 @@ export function ResultsDrawer({
                       }`}
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-1.5">
-                          {modes.map((mode, modeIndex) => {
-                            const Icon = MODE_ICONS[mode] ?? Footprints;
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {route.segments.map((segment, segmentIndex) => {
+                            const meta = MODE_META[segment.mode] ?? MODE_FALLBACK;
+                            const Icon = meta.icon;
+                            const isTransit = segment.mode === "tram" || segment.mode === "bus";
                             return (
-                              <span key={modeIndex} className="flex items-center gap-1.5">
-                                <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-white" : "bg-bg"}`}>
-                                  <Icon size={14} className={isSelected ? "text-primary" : "text-text-2"} />
+                              <span key={segmentIndex} className="flex items-center gap-1.5">
+                                <span className="flex items-center gap-1">
+                                  <span
+                                    className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
+                                    style={{ background: `${meta.color}1A` }}
+                                  >
+                                    <Icon size={13} style={{ color: meta.color }} />
+                                  </span>
+                                  {isTransit && segment.lineShortName ? (
+                                    <span
+                                      className="num text-[11px] font-bold px-1.5 py-0.5 rounded-md"
+                                      style={{
+                                        background: segment.lineColor ?? meta.color,
+                                        color: segment.lineTextColor ?? "#FFFFFF",
+                                      }}
+                                    >
+                                      {segment.lineShortName}
+                                    </span>
+                                  ) : (
+                                    <span className="text-[11px] font-medium text-ink">{meta.label}</span>
+                                  )}
                                 </span>
-                                {modeIndex < modes.length - 1 && (
+                                {segmentIndex < route.segments.length - 1 && (
                                   <ChevronRight size={10} className="text-border" />
                                 )}
                               </span>

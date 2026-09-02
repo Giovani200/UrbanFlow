@@ -63,7 +63,8 @@ export function aggregateCarbon(
         totalSavedGrams,
         carReferenceGrams,
         savedPercent,
-        equivalentCarKm: totalDistanceMeters / 1000,
+        equivalentCarKm:
+            carReferenceGrams === 0 ? 0 : (totalSavedGrams / carReferenceGrams) * (totalDistanceMeters / 1000),
         buckets,
         byMode,
         goal,
@@ -71,7 +72,7 @@ export function aggregateCarbon(
 }
 
 // Fenêtre calendaire courante (semaine lundi→dimanche, mois, année).
-function periodWindow(now: Date, period: Period): { start: Date; end: Date } {
+export function periodWindow(now: Date, period: Period): { start: Date; end: Date } {
     const start = new Date(now);
     start.setHours(0, 0, 0, 0);
 

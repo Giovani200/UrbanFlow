@@ -1,7 +1,4 @@
 import dynamic from "next/dynamic";
-import type { MapViewHandle } from "./MapView";
-
-export type { MapViewHandle };
 
 export const MapViewDynamic = dynamic(
   () => import("./MapView"),

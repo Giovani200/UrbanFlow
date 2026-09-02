@@ -49,7 +49,7 @@ describe("aggregateCarbon", () => {
         expect(summary.totalSavedGrams).toBeCloseTo(692.24, 5);
         expect(summary.carReferenceGrams).toBeCloseTo(710, 5); // carbone + économisé
         expect(summary.savedPercent).toBeCloseTo((692.24 / 710) * 100, 5);
-        expect(summary.equivalentCarKm).toBeCloseTo(5, 5); // (1000 + 4000) / 1000
+        expect(summary.equivalentCarKm).toBeCloseTo(692.24 / 142, 5); // vrais km voiture évités = CO₂ économisé ÷ 142
         expect(summary.byMode.map((entry) => entry.mode).sort()).toEqual(["tram", "walk"]);
         expect(summary.byMode.reduce((total, entry) => total + entry.percent, 0)).toBeCloseTo(100, 5);
     });

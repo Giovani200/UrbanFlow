@@ -109,6 +109,8 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
                 departureStopName: leg.departureStopName,
                 arrivalStopName: leg.arrivalStopName,
                 lineShortName: leg.lineShortName,
+                lineColor: leg.lineColor,
+                lineTextColor: leg.lineTextColor,
                 intermediateStops: leg.intermediateStops,
             };
         });
