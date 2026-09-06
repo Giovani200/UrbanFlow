@@ -182,7 +182,7 @@ export default function ProfilePage() {
 
   if (status === "loading" || !profile) {
     return (
-      <div className="flex items-center justify-center h-screen bg-bg">
+      <div className="flex items-center justify-center h-dvh bg-bg">
         <Loader2 size={24} className="animate-spin text-primary" />
       </div>
     );
@@ -194,7 +194,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-bg font-sans">
+    <div className="flex flex-col h-dvh bg-bg font-sans">
       <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.push("/")}

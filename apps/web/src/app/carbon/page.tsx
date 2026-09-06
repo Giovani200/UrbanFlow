@@ -29,7 +29,7 @@ export default function CarbonPage() {
   const periodMeta = PERIODS.find((entry) => entry.id === period) ?? PERIODS[1];
 
   return (
-    <div className="flex flex-col h-screen bg-bg font-sans">
+    <div className="flex flex-col h-dvh bg-bg font-sans">
       <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.push("/")}

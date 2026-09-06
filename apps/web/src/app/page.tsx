@@ -141,7 +141,7 @@ export default function PlannerPage() {
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden font-sans">
+    <div className="relative w-full h-dvh overflow-hidden font-sans">
       <h1 className="sr-only">UrbanFlow, planificateur de trajets à Grenoble</h1>
 
       <div className="absolute inset-0">

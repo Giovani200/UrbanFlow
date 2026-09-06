@@ -10,7 +10,7 @@ export interface InfoSection {
 
 export function InfoPage({ title, sections }: { title: string; sections: InfoSection[] }) {
   return (
-    <div className="flex flex-col h-screen bg-bg font-sans">
+    <div className="flex flex-col h-dvh bg-bg font-sans">
       <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
         <Link
           href="/"
