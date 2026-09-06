@@ -73,11 +73,6 @@ body {
   outline: none;
 }
 
-:root[data-input-modality="keyboard"] :focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
