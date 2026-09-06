@@ -58,7 +58,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col px-6 pb-8 max-w-sm mx-auto">
+    <div className="min-h-dvh bg-surface flex flex-col px-6 pb-8 max-w-sm mx-auto">
       <div className="pt-8 pb-6">
         <Logo size="md" />
       </div>

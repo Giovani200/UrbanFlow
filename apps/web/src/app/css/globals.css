@@ -74,7 +74,7 @@ body {
 }
 
 :root[data-input-modality="keyboard"] :focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -84,6 +84,16 @@ body {
   *::after {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* iOS/WebKit (Safari + Chrome iOS) zoome au focus si un champ a un font-size < 16px.
+   16px sur les champs tactiles supprime le zoom sans désactiver le pinch-to-zoom (WCAG 1.4.4). */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 

@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/components/auth/AuthProvider";
-import { User, Leaf, Clock, Bell, Database, Lock, HelpCircle, LogOut, LogIn, ChevronRight } from "lucide-react";
+import { User, Leaf, Clock, Bell, Database, Lock, HelpCircle, LogOut, LogIn, ChevronRight, Download } from "lucide-react";
 import { useBottomSheetDrag } from "@/app/hooks/useBottomSheetDrag";
 import { useEscapeKey } from "@/app/hooks/useEscapeKey";
 import { useModalFocus } from "@/app/hooks/useModalFocus";
+import { usePwaInstall } from "@/app/hooks/usePwaInstall";
+import { PwaInstallInstructions } from "@/app/components/pwa/PwaInstallInstructions";
 
 const LOGGED_ITEMS = [
   { icon: User,       label: "Compte",          href: "/profile" },
@@ -34,6 +36,18 @@ export function SettingsDrawer({ onClose }: Props) {
   const isLogged = !!user;
 
   const items = isLogged ? LOGGED_ITEMS : GUEST_ITEMS;
+
+  const { canInstall, isIOS, promptInstall } = usePwaInstall();
+  const [showInstall, setShowInstall] = useState(false);
+
+  async function handleInstall() {
+    if (isIOS) {
+      setShowInstall(true);
+      return;
+    }
+    await promptInstall();
+    dismiss();
+  }
 
   function dismiss() {
     setVisible(false);
@@ -139,6 +153,18 @@ export function SettingsDrawer({ onClose }: Props) {
             })}
           </div>
 
+          {canInstall && (
+            <button
+              onClick={handleInstall}
+              className="mt-3 flex items-center gap-3 py-3 w-full text-left border-t border-border"
+            >
+              <div className="w-9 h-9 rounded-xl bg-bg flex items-center justify-center shrink-0">
+                <Download size={17} className="text-ink" />
+              </div>
+              <span className="flex-1 text-[14px] text-ink">Installer l&apos;application</span>
+            </button>
+          )}
+
           <button
             onClick={handleAuthAction}
             className="mt-3 flex items-center gap-3 py-3 w-full text-left border-t border-border"
@@ -152,6 +178,8 @@ export function SettingsDrawer({ onClose }: Props) {
           </button>
         </div>
       </div>
+
+      <PwaInstallInstructions open={showInstall} onOpenChange={setShowInstall} />
     </>
   );
 }

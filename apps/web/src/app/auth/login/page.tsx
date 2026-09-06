@@ -37,7 +37,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-bg flex flex-col px-6 pb-8 max-w-sm mx-auto">
+        <div className="min-h-dvh bg-bg flex flex-col px-6 pb-8 max-w-sm mx-auto">
             <div className="pt-8 pb-6">
                 <Logo size="md"/>
             </div>
