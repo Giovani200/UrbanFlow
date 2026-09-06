@@ -204,8 +204,6 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
         zoom,
       });
 
-      mapRef.current.addControl(new maplibregl.NavigationControl(), "top-right");
-
       mapRef.current.on("movestart", (event) => {
         if (!event.originalEvent || !followingRef.current) return;
         followingRef.current = false;
