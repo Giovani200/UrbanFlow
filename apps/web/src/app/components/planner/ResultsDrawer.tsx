@@ -22,8 +22,17 @@ function formatDistance(meters: number): string {
 
 function getBadge(route: TripRoute, index: number): { label: string; green: boolean } | null {
   if (route.totalCarbonGrams === 0) return { label: "Zéro carbone", green: true };
-  if (index === 0) return { label: "Recommandé", green: false };
+  if (index === 0) return { label: "Recommandé", green: true };
   return null;
+}
+
+function carbonColor(grams: number, meters: number): string {
+  if (grams === 0) return "#11805A";
+  const km = meters / 1000;
+  const perKm = km > 0 ? grams / km : grams;
+  if (perKm <= 30) return "#11805A";
+  if (perKm <= 100) return "#B45309";
+  return "#9A1B2F";
 }
 
 interface Props {
@@ -142,14 +151,16 @@ export function ResultsDrawer({
                 {routes.map((route, index) => {
                   const isSelected = selectedIndex === index;
                   const badge = getBadge(route, index);
+                  const carbonHex = carbonColor(route.totalCarbonGrams, route.totalDistanceMeters);
 
                   return (
                     <div
                       key={index}
                       onClick={() => onSelectRoute(index)}
                       className={`rounded-xl border-2 p-3 cursor-pointer transition-colors ${
-                        isSelected ? "border-primary bg-primary-tint" : "border-border bg-white"
+                        isSelected ? "" : "border-border bg-white"
                       }`}
+                      style={isSelected ? { borderColor: carbonHex, background: `${carbonHex}14` } : undefined}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-1.5 flex-wrap">
@@ -197,18 +208,19 @@ export function ResultsDrawer({
                       </div>
 
                       <div className="flex justify-between items-center">
+                        <div className="flex items-baseline gap-1">
+                          <Leaf size={15} style={{ color: carbonHex }} className="self-center" />
+                          <span className="num text-[16px] font-bold" style={{ color: carbonHex }}>
+                            {Math.round(route.totalCarbonGrams)}
+                          </span>
+                          <span className="num text-[11px]" style={{ color: carbonHex }}>gCO₂</span>
+                        </div>
                         <div className="flex items-baseline gap-1.5">
-                          <span className="num text-[20px] font-bold text-ink">
+                          <span className="num text-[15px] font-bold text-ink">
                             {formatDuration(route.totalDurationSeconds)}
                           </span>
                           <span className="text-xs text-text-2">
                             {formatDistance(route.totalDistanceMeters)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Leaf size={12} className={route.totalCarbonGrams === 0 ? "text-eco" : "text-text-2"} />
-                          <span className={`text-[11px] num ${route.totalCarbonGrams === 0 ? "text-eco" : "text-text-2"}`}>
-                            {Math.round(route.totalCarbonGrams)} gCO₂
                           </span>
                         </div>
                       </div>
@@ -216,7 +228,8 @@ export function ResultsDrawer({
                       {isSelected && (
                         <button
                           onClick={onStart}
-                          className="mt-2.5 w-full bg-primary text-white rounded-lg py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
+                          className="mt-2.5 w-full text-white rounded-lg py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
+                          style={{ background: carbonHex }}
                         >
                           <Navigation size={15} />
                           Choisir cet itinéraire
