@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { SharedVehicle, TransitStop } from "@urbanflow/app-front-back-lib";
 import { GetNearbyTransportUseCase } from "./get-nearby-transport.use-case";
-import type { MetromobiliteStopsAdapter } from "../metromobilite-stops.adapter";
-import type { VoiGbfsAdapter } from "../voi-gbfs.adapter";
+import type { MetromobiliteStopsAdapter } from "../grenoble-adapters/metromobilite-stops.adapter";
+import type { VoiGbfsAdapter } from "../grenoble-adapters/voi-gbfs.adapter";
 
 function makeUseCase(
     getNearbyStops: MetromobiliteStopsAdapter["getNearbyStops"],

@@ -11,7 +11,7 @@ import {
 import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
 import { CARBON_FACTORS } from "../../../shared/constants";
 import { OrsProfile, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
-import { OtpItinerary, OtpRoutingAdapter } from "../../transport/openTripPlanner-routing.adapter";
+import { OtpItinerary, OtpRoutingAdapter } from "../../transport/grenoble-adapters/openTripPlanner-routing.adapter";
 
 // Pondérations par défaut si l'utilisateur n'a pas de profil.
 const DEFAULT_WEIGHTS = { weightCarbon: 50, weightTime: 30};

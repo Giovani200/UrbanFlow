@@ -6,8 +6,8 @@ import {
     NearbyTransportDtoOutSchema,
 } from "@urbanflow/app-front-back-lib";
 import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
-import { MetromobiliteStopsAdapter } from "../metromobilite-stops.adapter";
-import { VoiGbfsAdapter } from "../voi-gbfs.adapter";
+import { MetromobiliteStopsAdapter } from "../grenoble-adapters/metromobilite-stops.adapter";
+import { VoiGbfsAdapter } from "../grenoble-adapters/voi-gbfs.adapter";
 
 @Injectable()
 export class GetNearbyTransportUseCase extends AbstractUseCase<NearbyTransportDtoIn, NearbyTransportDtoOut> {

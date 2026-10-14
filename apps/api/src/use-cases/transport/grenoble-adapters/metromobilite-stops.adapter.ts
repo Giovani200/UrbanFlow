@@ -1,7 +1,7 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import type { Coordinates, TransitLine, TransitStop, TransitStopMode } from "@urbanflow/app-front-back-lib";
-import { haversineMeters } from "../../shared/geo/haversine";
-import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
+import { haversineMeters } from "../../../shared/geo/haversine";
+import { fetchWithTimeout } from "../../../shared/http/fetch-with-timeout";
 
 const LINES_NEAR_URL = "https://data.mobilites-m.fr/api/linesNear/json";
 const ROUTES_INDEX_URL = "https://data.mobilites-m.fr/api/routers/default/index/routes";

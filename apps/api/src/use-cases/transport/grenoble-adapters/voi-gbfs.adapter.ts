@@ -1,7 +1,7 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import type { Coordinates, SharedVehicle, SharedVehicleType } from "@urbanflow/app-front-back-lib";
-import { haversineMeters } from "../../shared/geo/haversine";
-import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
+import { haversineMeters } from "../../../shared/geo/haversine";
+import { fetchWithTimeout } from "../../../shared/http/fetch-with-timeout";
 
 const VOI_GBFS_DISCOVERY_URL = "https://api.voiapp.io/gbfs/fr/6bb6b5dc-1cda-4da7-9216-d3023a0bc54a/v2/358/gbfs.json";
 const FREE_BIKE_STATUS_FEED = "free_bike_status";

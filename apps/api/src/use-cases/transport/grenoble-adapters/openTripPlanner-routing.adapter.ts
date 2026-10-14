@@ -1,6 +1,6 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import type { Coordinates, GeoJsonLineString, PlannedTime, TripMode } from "@urbanflow/app-front-back-lib";
-import { fetchWithTimeout } from "../../shared/http/fetch-with-timeout";
+import { fetchWithTimeout } from "../../../shared/http/fetch-with-timeout";
 
 // otp = OpenTripPlanner (calculateur d'itinéraires Métromobilité, réseau TAG)
 const OTP_PLAN_URL = "https://data.mobilites-m.fr/api/routers/default/plan";

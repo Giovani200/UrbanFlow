@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { Coordinates, TripMode } from "@urbanflow/app-front-back-lib";
 import { TripPlanningUseCase } from "./trip-planning.use-case";
 import type { OrsProfile, OrsRoute, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
-import type { OtpItinerary, OtpLeg, OtpRoutingAdapter } from "../../transport/openTripPlanner-routing.adapter";
+import type { OtpItinerary, OtpLeg, OtpRoutingAdapter } from "../../transport/grenoble-adapters/openTripPlanner-routing.adapter";
 
 function makeOrsRoute(distanceMeters: number, durationSeconds: number): OrsRoute {
     return {
