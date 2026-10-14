@@ -1,0 +1,324 @@
+{
+ "pagination": {
+  "total_result": 5,
+  "start_page": 0,
+  "items_per_page": 20,
+  "items_on_page": 5
+ },
+ "feed_publishers": [
+  {
+   "id": "osm",
+   "name": "openstreetmap",
+   "url": "https://www.openstreetmap.org/copyright",
+   "license": "ODbL"
+  },
+  {
+   "id": "IDFM:idfm_netex",
+   "name": "idfm_netex",
+   "url": "",
+   "license": "private"
+  }
+ ],
+ "disruptions": [],
+ "context": {
+  "current_datetime": "20261014T112650",
+  "timezone": "Europe/Paris"
+ },
+ "places_nearby": [
+  {
+   "id": "stop_area:IDFM:61901",
+   "name": "Henri Wallon (Dammarie-les-Lys)",
+   "quality": 0,
+   "stop_area": {
+    "id": "stop_area:IDFM:61901",
+    "name": "Henri Wallon",
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR::multimodalStopPlace:61901:FR1"
+     }
+    ],
+    "timezone": "Europe/Paris",
+    "label": "Henri Wallon (Dammarie-les-Lys)",
+    "coord": {
+     "lon": "2.643742",
+     "lat": "48.524418"
+    },
+    "links": [],
+    "commercial_modes": [
+     {
+      "id": "commercial_mode:Bus",
+      "name": "Bus"
+     }
+    ],
+    "physical_modes": [
+     {
+      "id": "physical_mode:Bus",
+      "name": "Bus",
+      "co2_emission_rate": {
+       "value": 92.0,
+       "unit": "gEC/Km"
+      }
+     }
+    ],
+    "administrative_regions": [
+     {
+      "id": "admin:fr:77152",
+      "name": "Dammarie-les-Lys",
+      "level": 8,
+      "zip_code": "77190",
+      "label": "Dammarie-les-Lys (77190)",
+      "insee": "77152",
+      "coord": {
+       "lon": "2.634701",
+       "lat": "48.515087"
+      }
+     }
+    ]
+   },
+   "embedded_type": "stop_area",
+   "distance": "3"
+  },
+  {
+   "id": "stop_area:IDFM:61891",
+   "name": "Lucien Boutet (Dammarie-les-Lys)",
+   "quality": 0,
+   "stop_area": {
+    "id": "stop_area:IDFM:61891",
+    "name": "Lucien Boutet",
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR::multimodalStopPlace:61891:FR1"
+     }
+    ],
+    "timezone": "Europe/Paris",
+    "label": "Lucien Boutet (Dammarie-les-Lys)",
+    "coord": {
+     "lon": "2.645249",
+     "lat": "48.52284"
+    },
+    "links": [],
+    "commercial_modes": [
+     {
+      "id": "commercial_mode:Bus",
+      "name": "Bus"
+     }
+    ],
+    "physical_modes": [
+     {
+      "id": "physical_mode:Bus",
+      "name": "Bus",
+      "co2_emission_rate": {
+       "value": 92.0,
+       "unit": "gEC/Km"
+      }
+     }
+    ],
+    "administrative_regions": [
+     {
+      "id": "admin:fr:77152",
+      "name": "Dammarie-les-Lys",
+      "level": 8,
+      "zip_code": "77190",
+      "label": "Dammarie-les-Lys (77190)",
+      "insee": "77152",
+      "coord": {
+       "lon": "2.634701",
+       "lat": "48.515087"
+      }
+     }
+    ]
+   },
+   "embedded_type": "stop_area",
+   "distance": "207"
+  },
+  {
+   "id": "stop_area:IDFM:61914",
+   "name": "Jean Jaurès (Dammarie-les-Lys)",
+   "quality": 0,
+   "stop_area": {
+    "id": "stop_area:IDFM:61914",
+    "name": "Jean Jaurès",
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR::multimodalStopPlace:61914:FR1"
+     }
+    ],
+    "timezone": "Europe/Paris",
+    "label": "Jean Jaurès (Dammarie-les-Lys)",
+    "coord": {
+     "lon": "2.645904",
+     "lat": "48.526206"
+    },
+    "links": [],
+    "commercial_modes": [
+     {
+      "id": "commercial_mode:Bus",
+      "name": "Bus"
+     }
+    ],
+    "physical_modes": [
+     {
+      "id": "physical_mode:Bus",
+      "name": "Bus",
+      "co2_emission_rate": {
+       "value": 92.0,
+       "unit": "gEC/Km"
+      }
+     }
+    ],
+    "administrative_regions": [
+     {
+      "id": "admin:fr:77152",
+      "name": "Dammarie-les-Lys",
+      "level": 8,
+      "zip_code": "77190",
+      "label": "Dammarie-les-Lys (77190)",
+      "insee": "77152",
+      "coord": {
+       "lon": "2.634701",
+       "lat": "48.515087"
+      }
+     }
+    ]
+   },
+   "embedded_type": "stop_area",
+   "distance": "258"
+  },
+  {
+   "id": "stop_area:IDFM:481656",
+   "name": "Place du 8 mai 1945 (Dammarie-les-Lys)",
+   "quality": 0,
+   "stop_area": {
+    "id": "stop_area:IDFM:481656",
+    "name": "Place du 8 mai 1945",
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR::multimodalStopPlace:481656:FR1"
+     }
+    ],
+    "timezone": "Europe/Paris",
+    "label": "Place du 8 mai 1945 (Dammarie-les-Lys)",
+    "coord": {
+     "lon": "2.640526",
+     "lat": "48.522466"
+    },
+    "links": [],
+    "commercial_modes": [
+     {
+      "id": "commercial_mode:Bus",
+      "name": "Bus"
+     }
+    ],
+    "physical_modes": [
+     {
+      "id": "physical_mode:Bus",
+      "name": "Bus",
+      "co2_emission_rate": {
+       "value": 92.0,
+       "unit": "gEC/Km"
+      }
+     }
+    ],
+    "administrative_regions": [
+     {
+      "id": "admin:fr:77152",
+      "name": "Dammarie-les-Lys",
+      "level": 8,
+      "zip_code": "77190",
+      "label": "Dammarie-les-Lys (77190)",
+      "insee": "77152",
+      "coord": {
+       "lon": "2.634701",
+       "lat": "48.515087"
+      }
+     }
+    ]
+   },
+   "embedded_type": "stop_area",
+   "distance": "317"
+  },
+  {
+   "id": "stop_area:IDFM:61890",
+   "name": "Politzer (Dammarie-les-Lys)",
+   "quality": 0,
+   "stop_area": {
+    "id": "stop_area:IDFM:61890",
+    "name": "Politzer",
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR::multimodalStopPlace:61890:FR1"
+     }
+    ],
+    "timezone": "Europe/Paris",
+    "label": "Politzer (Dammarie-les-Lys)",
+    "coord": {
+     "lon": "2.64233",
+     "lat": "48.520982"
+    },
+    "links": [],
+    "commercial_modes": [
+     {
+      "id": "commercial_mode:Bus",
+      "name": "Bus"
+     }
+    ],
+    "physical_modes": [
+     {
+      "id": "physical_mode:Bus",
+      "name": "Bus",
+      "co2_emission_rate": {
+       "value": 92.0,
+       "unit": "gEC/Km"
+      }
+     }
+    ],
+    "administrative_regions": [
+     {
+      "id": "admin:fr:77152",
+      "name": "Dammarie-les-Lys",
+      "level": 8,
+      "zip_code": "77190",
+      "label": "Dammarie-les-Lys (77190)",
+      "insee": "77152",
+      "coord": {
+       "lon": "2.634701",
+       "lat": "48.515087"
+      }
+     }
+    ]
+   },
+   "embedded_type": "stop_area",
+   "distance": "393"
+  }
+ ],
+ "links": [
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/commercial_modes/{commercial_modes.id}",
+   "templated": true,
+   "rel": "commercial_modes",
+   "type": "commercial_modes"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/stop_areas/{stop_area.id}",
+   "templated": true,
+   "rel": "stop_areas",
+   "type": "stop_area"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/physical_modes/{physical_modes.id}",
+   "templated": true,
+   "rel": "physical_modes",
+   "type": "physical_modes"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/coord/2.6437;48.5244/places_nearby?count=20&depth=2&distance=400&type%5B%5D=stop_area",
+   "type": "first",
+   "templated": false
+  }
+ ]
+}

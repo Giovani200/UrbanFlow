@@ -1,0 +1,320 @@
+{
+ "Siri": {
+  "ServiceDelivery": {
+   "ResponseTimestamp": "2026-10-14T09:28:46.737Z",
+   "ProducerRef": "IVTR_HET",
+   "ResponseMessageIdentifier": "IVTR_HET:ResponseMessage:054ffd94-cedb-422b-9942-19691d525630:LOC:",
+   "StopMonitoringDelivery": [
+    {
+     "ResponseTimestamp": "2026-10-14T09:28:46.740Z",
+     "Version": "2.0",
+     "Status": "true",
+     "MonitoredStopVisit": [
+      {
+       "RecordedAtTime": "2026-10-14T09:27:31.000Z",
+       "ItemIdentifier": "MELUN:Item::MELUN_268436168:LOC",
+       "MonitoringRef": {
+        "value": "STIF:StopPoint:Q:31051:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C00881:"
+        },
+        "OperatorRef": {
+         "value": "MELUN:Operator::MELUN:"
+        },
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "MELUN:DataFrame::7-10:LOC"
+         },
+         "DatedVehicleJourneyRef": "MELUN:VehicleJourney::3745:LOC"
+        },
+        "DirectionName": [
+         {
+          "value": "A"
+         }
+        ],
+        "DestinationRef": {
+         "value": "STIF:StopPoint:Q:31189:"
+        },
+        "DestinationName": [
+         {
+          "value": "Chamlys"
+         }
+        ],
+        "VehicleJourneyName": [],
+        "JourneyNote": [],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Henri Wallon"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "DLL Chamlys - Cartonnerie"
+          }
+         ],
+         "ExpectedArrivalTime": "2026-10-14T09:32:17.000Z",
+         "ExpectedDepartureTime": "2026-10-14T09:32:17.000Z",
+         "DepartureStatus": "delayed",
+         "Order": 13,
+         "AimedArrivalTime": "2026-10-14T09:31:00.000Z",
+         "AimedDepartureTime": "2026-10-14T09:31:00.000Z",
+         "ArrivalStatus": "delayed"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": []
+        },
+        "VehicleFeatureRef": []
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T08:38:01.000Z",
+       "ItemIdentifier": "MELUN:Item::MELUN_268456102:LOC",
+       "MonitoringRef": {
+        "value": "STIF:StopPoint:Q:31051:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C00875:"
+        },
+        "OperatorRef": {
+         "value": "MELUN:Operator::MELUN:"
+        },
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "MELUN:DataFrame::7-10:LOC"
+         },
+         "DatedVehicleJourneyRef": "MELUN:VehicleJourney::3038:LOC"
+        },
+        "DirectionName": [
+         {
+          "value": "R"
+         }
+        ],
+        "DestinationRef": {
+         "value": "STIF:StopPoint:Q:30282:"
+        },
+        "DestinationName": [
+         {
+          "value": "Hôtel de Ville F"
+         }
+        ],
+        "VehicleJourneyName": [],
+        "JourneyNote": [],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Henri Wallon"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Hôtel de Ville Florelites"
+          }
+         ],
+         "ExpectedArrivalTime": "2026-10-14T09:38:19.000Z",
+         "ExpectedDepartureTime": "2026-10-14T09:38:19.000Z",
+         "DepartureStatus": "noReport",
+         "Order": 17,
+         "AimedArrivalTime": "2026-10-14T09:38:00.000Z",
+         "AimedDepartureTime": "2026-10-14T09:38:00.000Z",
+         "ArrivalStatus": "noReport"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": []
+        },
+        "VehicleFeatureRef": []
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:26:50.000Z",
+       "ItemIdentifier": "MELUN:Item::MELUN_268439354:LOC",
+       "MonitoringRef": {
+        "value": "STIF:StopPoint:Q:31051:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C00881:"
+        },
+        "OperatorRef": {
+         "value": "MELUN:Operator::MELUN:"
+        },
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "MELUN:DataFrame::7-10:LOC"
+         },
+         "DatedVehicleJourneyRef": "MELUN:VehicleJourney::3747:LOC"
+        },
+        "DirectionName": [
+         {
+          "value": "A"
+         }
+        ],
+        "DestinationRef": {
+         "value": "STIF:StopPoint:Q:31189:"
+        },
+        "DestinationName": [
+         {
+          "value": "Chamlys"
+         }
+        ],
+        "VehicleJourneyName": [],
+        "JourneyNote": [],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Henri Wallon"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "DLL Chamlys - Cartonnerie"
+          }
+         ],
+         "ExpectedArrivalTime": "2026-10-14T09:51:40.000Z",
+         "ExpectedDepartureTime": "2026-10-14T09:51:40.000Z",
+         "DepartureStatus": "delayed",
+         "Order": 13,
+         "AimedArrivalTime": "2026-10-14T09:47:00.000Z",
+         "AimedDepartureTime": "2026-10-14T09:47:00.000Z",
+         "ArrivalStatus": "delayed"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": []
+        },
+        "VehicleFeatureRef": []
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:15:10.000Z",
+       "ItemIdentifier": "MELUN:Item::MELUN_268438181:LOC",
+       "MonitoringRef": {
+        "value": "STIF:StopPoint:Q:31051:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C00881:"
+        },
+        "OperatorRef": {
+         "value": "MELUN:Operator::MELUN:"
+        },
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "MELUN:DataFrame::7-10:LOC"
+         },
+         "DatedVehicleJourneyRef": "MELUN:VehicleJourney::3750:LOC"
+        },
+        "DirectionName": [
+         {
+          "value": "A"
+         }
+        ],
+        "DestinationRef": {
+         "value": "STIF:StopPoint:Q:31189:"
+        },
+        "DestinationName": [
+         {
+          "value": "Chamlys"
+         }
+        ],
+        "VehicleJourneyName": [],
+        "JourneyNote": [],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Henri Wallon"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "DLL Chamlys - Cartonnerie"
+          }
+         ],
+         "ExpectedArrivalTime": "2026-10-14T10:01:29.000Z",
+         "ExpectedDepartureTime": "2026-10-14T10:01:29.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 13,
+         "AimedArrivalTime": "2026-10-14T10:01:00.000Z",
+         "AimedDepartureTime": "2026-10-14T10:01:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": []
+        },
+        "VehicleFeatureRef": []
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:14:50.000Z",
+       "ItemIdentifier": "MELUN:Item::MELUN_268438396:LOC",
+       "MonitoringRef": {
+        "value": "STIF:StopPoint:Q:31051:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C00875:"
+        },
+        "OperatorRef": {
+         "value": "MELUN:Operator::MELUN:"
+        },
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "MELUN:DataFrame::7-10:LOC"
+         },
+         "DatedVehicleJourneyRef": "MELUN:VehicleJourney::3041:LOC"
+        },
+        "DirectionName": [
+         {
+          "value": "R"
+         }
+        ],
+        "DestinationRef": {
+         "value": "STIF:StopPoint:Q:31189:"
+        },
+        "DestinationName": [
+         {
+          "value": "Chamlys"
+         }
+        ],
+        "VehicleJourneyName": [],
+        "JourneyNote": [],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Henri Wallon"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Dammarie les Lys Chamlys"
+          }
+         ],
+         "ExpectedArrivalTime": "2026-10-14T10:10:11.000Z",
+         "ExpectedDepartureTime": "2026-10-14T10:10:11.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 17,
+         "AimedArrivalTime": "2026-10-14T10:10:00.000Z",
+         "AimedDepartureTime": "2026-10-14T10:10:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": []
+        },
+        "VehicleFeatureRef": []
+       }
+      }
+     ],
+     "StopLineNotice": [],
+     "ServiceException": []
+    }
+   ]
+  }
+ }
+}
