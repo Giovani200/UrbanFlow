@@ -1,7 +1,7 @@
 import { z as zod } from "zod";
 import { CoordinatesSchema } from "../trips/trip-planning.dto";
 
-export const TransitStopModeSchema = zod.enum(["tram", "bus"]);
+export const TransitStopModeSchema = zod.enum(["tram", "bus", "metro", "rer", "train", "ter"]);
 export type TransitStopMode = zod.output<typeof TransitStopModeSchema>;
 
 export const TransitLineSchema = zod.object({
