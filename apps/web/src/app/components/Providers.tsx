@@ -1,4 +1,4 @@
-import { AmbianceSync } from "@/app/components/ambiance/AmbianceSync";
+import { AmbianceProvider } from "@/app/components/ambiance/AmbianceContext";
 import { AuthProvider } from "@/app/components/auth/AuthProvider";
 import { InputModalityWatcher } from "@/app/components/a11y/InputModalityWatcher";
 import { PwaInstallBanner } from "@/app/components/pwa/PwaInstallBanner";
@@ -6,10 +6,11 @@ import { PwaInstallBanner } from "@/app/components/pwa/PwaInstallBanner";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <AmbianceSync />
-      <InputModalityWatcher />
-      {children}
-      <PwaInstallBanner />
+      <AmbianceProvider>
+        <InputModalityWatcher />
+        {children}
+        <PwaInstallBanner />
+      </AmbianceProvider>
     </AuthProvider>
   );
 }
