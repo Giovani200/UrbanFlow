@@ -22,7 +22,7 @@ export class InMemoryCacheStore implements CacheStore {
     async getOrLoad<T>(key: string, ttlMilliseconds: number, load: () => Promise<T>): Promise<T> {
         const entry = this.entries.get(key);
         if (entry && entry.expiresAt > this.now()) {
-            this.logger.debug(`succès ${key}`);
+            this.logger.debug(`trouvé en cache : ${key}`);
             return entry.value as T;
         }
 
@@ -31,7 +31,7 @@ export class InMemoryCacheStore implements CacheStore {
             return pendingLoad as Promise<T>;
         }
 
-        this.logger.debug(`échec ${key}`);
+        this.logger.debug(`absent du cache, chargement : ${key}`);
         const loading = load()
             .then((value) => {
                 this.store(key, value, ttlMilliseconds);
