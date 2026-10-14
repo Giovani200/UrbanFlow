@@ -1,8 +1,16 @@
 @import "tailwindcss";
+@import "./tokens.css";
+
+/* Les polices du design system sont servies par next/font (layout.tsx) : on y raccorde les tokens. */
+:root {
+  --uf-font-display: var(--font-display), sans-serif;
+  --uf-font-text: var(--font-sans), sans-serif;
+}
 
 :root {
   color-scheme: light;
 
+  /* Tokens hérités de l'ancien style : supprimés à la fin du sous-chantier 3 */
   /* Surfaces et texte */
   --ink: #15171C;
   --bg: #F6F4F0;
@@ -31,6 +39,31 @@
 }
 
 @theme inline {
+  --color-uf-ink: var(--uf-ink);
+  --color-uf-ink-2: var(--uf-ink-2);
+  --color-uf-on-ink: var(--uf-on-ink);
+  --color-uf-glass: var(--uf-glass);
+  --color-uf-glass-edge: var(--uf-glass-edge);
+  --color-uf-glass-opaque: var(--uf-glass-opaque);
+  --color-uf-inset: var(--uf-inset);
+  --color-uf-plate-ink: var(--uf-plate-ink);
+  --color-uf-line-3601: var(--uf-line-3601);
+  --color-uf-line-r: var(--uf-line-r);
+  --color-uf-line-a: var(--uf-line-a);
+  --color-uf-line-d: var(--uf-line-d);
+  --color-uf-line-m1: var(--uf-line-m1);
+  --color-uf-line-b: var(--uf-line-b);
+  --color-uf-line-m14: var(--uf-line-m14);
+
+  --font-uf-display: var(--uf-font-display);
+  --font-uf-text: var(--uf-font-text);
+
+  --radius-uf-panel: var(--uf-radius-panel);
+  --radius-uf-inset: var(--uf-radius-inset);
+  --radius-uf-chip: var(--uf-radius-chip);
+  --radius-uf-plate: var(--uf-radius-plate);
+  --radius-uf-avatar: var(--uf-radius-avatar);
+
   --color-ink: var(--ink);
   --color-bg: var(--bg);
   --color-surface: var(--surface);

@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Schibsted_Grotesk } from "next/font/google";
+import { Figtree, Sora } from "next/font/google";
 import { Providers } from "@/app/components/Providers";
 import "./css/globals.css";
 
-const schibstedGrotesk = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
+const figtree = Figtree({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-sans", display: "swap" });
+const sora = Sora({ subsets: ["latin"], variable: "--font-display", display: "swap" });
 
 export const metadata: Metadata = {
   applicationName: "UrbanFlow",
@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${schibstedGrotesk.variable} ${fraunces.variable} h-full`}>
+    <html lang="fr" className={`${figtree.variable} ${sora.variable} h-full`}>
       <body className="min-h-full flex flex-col">
         <a
           href="#contenu"

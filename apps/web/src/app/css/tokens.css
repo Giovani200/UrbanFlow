@@ -1,0 +1,95 @@
+/* UrbanFlow · verre léger · tokens v1 */
+:root {
+  --uf-font-display: "Sora", sans-serif;
+  --uf-font-text: "Figtree", sans-serif;
+  --uf-title: 650 32px/36px var(--uf-font-display);
+  --uf-title-tracking: -0.01em;
+  --uf-time: 650 17px/24px var(--uf-font-display);
+  --uf-body: 600 15px/22px var(--uf-font-text);
+  --uf-note: 600 13px/18px var(--uf-font-text);
+  --uf-voice: italic 600 17px/24px var(--uf-font-text);
+  --uf-numeric: tabular-nums;
+
+  --uf-radius-panel: 28px;
+  --uf-radius-inset: 22px;
+  --uf-radius-chip: 15px;
+  --uf-radius-plate: 8px;
+  --uf-radius-avatar: 12px;
+  --uf-avatar: 34px;
+  --uf-plate-m: 26px;
+  --uf-plate-s: 20px;
+  --uf-chip-h: 30px;
+  --uf-btn-h: 52px;
+  --uf-nav-h: 62px;
+  --uf-hit: 44px;
+  --uf-space-1: 4px;  --uf-space-2: 8px;
+  --uf-space-3: 12px; --uf-space-4: 16px;
+  --uf-space-5: 20px; --uf-space-6: 24px;
+  --uf-space-8: 32px;
+
+  --uf-glass-blur: 22px;
+  --uf-glass-saturate: 160%;
+  --uf-glass-max: 4;
+  --uf-curve-width: 30px;
+  --uf-curve-blur: 14px;
+
+  --uf-line-3601: #FF5A00;
+  --uf-line-r: #F49FB3;
+  --uf-line-a: #EB2132;
+  --uf-line-d: #008B5B;
+  --uf-line-m1: #FFBE00;
+  --uf-line-b: #5091CB;
+  --uf-line-m14: #640082;
+  --uf-plate-ink: #0F2238;
+  --uf-plate-white: #FFFFFF;
+  --uf-plate-large: 19px;
+
+  --uf-reflet: 3.2s ease-in-out infinite;
+  --uf-focus-width: 2px;
+  --uf-focus-offset: 3px;
+}
+
+[data-ambiance="aube"] {
+  --uf-bg: linear-gradient(165deg, #FFE3CC, #F9D3E6, #DCD6FF);
+  --uf-ink: #1B1530;  --uf-ink-2: #4A3F66;
+  --uf-on-ink: #FFFFFF;
+  --uf-glass: rgba(255,255,255,0.6);
+  --uf-glass-edge: rgba(255,255,255,0.8);
+  --uf-glass-shadow: 0 12px 32px rgba(80,50,130,0.12);
+  --uf-glass-opaque: #FBF1F5;
+  --uf-inset: rgba(255,255,255,0.5);
+  --uf-line-opacity: 0.7;
+}
+[data-ambiance="jour"] {
+  --uf-bg: linear-gradient(170deg, #CDE7FF, #EAF4FF, #FFF0D2);
+  --uf-ink: #0F2238;  --uf-ink-2: #3A4F6B;
+  --uf-on-ink: #FFFFFF;
+  --uf-glass: rgba(255,255,255,0.6);
+  --uf-glass-edge: rgba(255,255,255,0.8);
+  --uf-glass-shadow: 0 12px 32px rgba(30,60,110,0.14);
+  --uf-glass-opaque: #F3F8FF;
+  --uf-inset: rgba(255,255,255,0.5);
+  --uf-line-opacity: 0.6;
+}
+[data-ambiance="crepuscule"] {
+  --uf-bg: linear-gradient(170deg, #4B2E7A, #B04C78, #EE9068);
+  --uf-ink: #FFF6EE;  --uf-ink-2: #F6DCCF;
+  --uf-on-ink: #2C1640;
+  --uf-glass: rgba(30,14,48,0.56);
+  --uf-glass-edge: rgba(255,255,255,0.2);
+  --uf-glass-shadow: 0 12px 32px rgba(20,6,36,0.28);
+  --uf-glass-opaque: #2C1640;
+  --uf-inset: rgba(0,0,0,0.18);
+  --uf-line-opacity: 0.7;
+}
+[data-ambiance="nuit"] {
+  --uf-bg: linear-gradient(175deg, #0A0F2E, #18205A, #2A1C50);
+  --uf-ink: #F2F4FF;  --uf-ink-2: #C3CBF2;
+  --uf-on-ink: #0A0F2E;
+  --uf-glass: rgba(10,15,46,0.38);
+  --uf-glass-edge: rgba(255,255,255,0.16);
+  --uf-glass-shadow: 0 12px 32px rgba(0,0,12,0.35);
+  --uf-glass-opaque: #141A45;
+  --uf-inset: rgba(0,0,0,0.18);
+  --uf-line-opacity: 0.45;
+}
