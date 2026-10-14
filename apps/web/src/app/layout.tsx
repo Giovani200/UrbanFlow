@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree, Sora } from "next/font/google";
+import { AmbianceScript } from "@/app/components/ambiance/AmbianceScript";
 import { Providers } from "@/app/components/Providers";
+import { AMBIANCE_THEME_COLORS } from "@/app/lib/ambiance";
 import "./css/globals.css";
 
 const figtree = Figtree({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-sans", display: "swap" });
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#CC1B36",
+  themeColor: AMBIANCE_THEME_COLORS.jour,
 };
 
 export default function RootLayout({
@@ -30,7 +32,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${figtree.variable} ${sora.variable} h-full`}>
+    <html lang="fr" className={`${figtree.variable} ${sora.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <AmbianceScript />
+      </head>
       <body className="min-h-full flex flex-col">
         <a
           href="#contenu"
