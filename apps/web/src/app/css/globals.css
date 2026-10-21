@@ -141,7 +141,6 @@ body {
   border: 1px solid var(--uf-glass-edge);
   box-shadow: var(--uf-glass-shadow);
   backdrop-filter: blur(var(--uf-glass-blur)) saturate(var(--uf-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--uf-glass-blur)) saturate(var(--uf-glass-saturate));
 }
 
 .uf-inset {
@@ -153,7 +152,6 @@ body {
   .uf-glass {
     background: var(--uf-glass-opaque);
     backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
 }
 

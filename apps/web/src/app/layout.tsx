@@ -11,10 +11,10 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-display", display: "sw
 export const metadata: Metadata = {
   applicationName: "UrbanFlow",
   title: {
-    default: "UrbanFlow, Mobilité urbaine Grenoble",
+    default: "UrbanFlow, mobilité en Île-de-France",
     template: "%s · UrbanFlow",
   },
-  description: "Planificateur multimodal pour la métropole grenobloise",
+  description: "Trajets, correspondances et temps réel en Île-de-France",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

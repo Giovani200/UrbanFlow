@@ -88,7 +88,7 @@ export function SettingsDrawer({ onClose }: Props) {
   return (
     <>
       <div
-        className="absolute inset-0 z-10 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300"
+        className="absolute inset-0 z-50 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300"
         style={{ opacity: visible ? 1 : 0 }}
         onClick={dismiss}
       />
@@ -99,7 +99,7 @@ export function SettingsDrawer({ onClose }: Props) {
         aria-modal="true"
         aria-labelledby="titre-parametres"
         tabIndex={-1}
-        className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-2xl shadow-2xl"
+        className="absolute bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl"
         style={{
           transform: visible ? `translateY(${dragY}px)` : "translateY(100%)",
           transition: dragging ? "none" : "transform 280ms cubic-bezier(0.32,0.72,0,1)",

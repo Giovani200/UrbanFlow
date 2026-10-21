@@ -21,6 +21,12 @@ describe("LinePlate", () => {
         expect(plate.style.fontSize).toBe("19px");
     });
 
+    it("garde le code en 12 px sur une petite plaque, même pour une ligne rouge", () => {
+        render(<LinePlate code="3604" color="#FF1400" label="Bus 3604" size="s" />);
+
+        expect(screen.getByRole("img", { name: "Bus 3604" }).style.fontSize).toBe("12px");
+    });
+
     it("ajoute un liseré à la ligne R sur le verre de jour, pas au crépuscule", () => {
         const { unmount } = render(
             <AmbianceScope ambiance="jour">

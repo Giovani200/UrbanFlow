@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { GRENOBLE_BBOX } from "@/app/config/geolocalisation";
+import { ILE_DE_FRANCE_BBOX } from "@/app/config/geolocalisation";
 
 export type GeocodingResult = {
     label: string;
@@ -14,7 +14,7 @@ interface MapTilerGeocodingResponse {
     features: Array<{ place_name: string; center: [number, number] }>;
 }
 
-// Recherche d'adresses (texte → liste de lieux), débouncée, scoping Grenoble.
+// Recherche d'adresses (texte → liste de lieux), débouncée, limitée à l'Île-de-France.
 export function useGeocoding(query: string): GeocodingResult[] {
     const [results, setResults] = useState<GeocodingResult[]>([]);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -28,7 +28,7 @@ export function useGeocoding(query: string): GeocodingResult[] {
             if (!key) return;
 
             try {
-                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${GRENOBLE_BBOX}&types=poi,address,street&language=fr&limit=5`,
+                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${ILE_DE_FRANCE_BBOX}&types=poi,address,street&language=fr&limit=5`,
                 );
                 if (!response.ok) return;
                 const data = (await response.json()) as MapTilerGeocodingResponse;

@@ -17,7 +17,11 @@ interface LinePlateProps {
     interrupted?: boolean;
 }
 
-/** Plaque d'une ligne : code sur la couleur officielle, contraste réglé automatiquement (voir line-contrast). */
+/**
+ * Plaque d'une ligne : code sur la couleur officielle, contraste réglé automatiquement (voir line-contrast).
+ * Le code agrandi (19 px) ne s'applique qu'à la plaque moyenne : sur la petite, il déborderait.
+ * Les couleurs sous 4,5:1 (rouge `#FF1400`) y restent donc en 12 px, sous le seuil AA (choix assumé).
+ */
 export function LinePlate({ code, color, label, size = "m", interrupted = false }: LinePlateProps) {
     const ambiance = useCurrentAmbiance();
     const contrast = lineContrast(color, AMBIANCE_GLASS_COLORS[ambiance]);
@@ -32,7 +36,7 @@ export function LinePlate({ code, color, label, size = "m", interrupted = false 
             style={{
                 minWidth: height,
                 height,
-                fontSize: contrast.largeCode ? LARGE_CODE_SIZE : CODE_SIZE[size],
+                fontSize: contrast.largeCode && size === "m" ? LARGE_CODE_SIZE : CODE_SIZE[size],
                 color: interrupted ? "var(--uf-ink)" : contrast.textColor,
                 backgroundColor: interrupted ? "transparent" : color,
                 backgroundImage: interrupted ? `repeating-linear-gradient(135deg, ${color} 0 3px, transparent 3px 7px)` : PLATE_GLOSS,
