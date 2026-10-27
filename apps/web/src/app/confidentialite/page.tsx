@@ -7,7 +7,7 @@ const SECTIONS: InfoSection[] = [
     title: "En bref",
     paragraphs: [
       "UrbanFlow Mobility traite certaines de vos données pour vous fournir ses services de mobilité. Cette politique explique lesquelles, pourquoi, combien de temps elles sont conservées et quels sont vos droits.",
-      "Les fonctions cœur (planification, empreinte carbone, transports à proximité) s'utilisent sans compte. Dernière mise à jour : juillet 2026.",
+      "Les fonctions cœur (planification, empreinte carbone, transports à proximité) s'utilisent sans compte. Dernière mise à jour : octobre 2026.",
     ],
   },
   {
@@ -48,9 +48,8 @@ const SECTIONS: InfoSection[] = [
     ],
     links: [
       { label: "MapTiler (carte et géocodage)", href: "https://www.maptiler.com/privacy-policy/" },
-      { label: "OpenRouteService (marche, vélo, fauteuil)", href: "https://openrouteservice.org/privacy-policy/" },
-      { label: "Métromobilité (tram et bus)", href: "https://data.mobilites-m.fr" },
-      { label: "Voi (trottinettes)", href: "https://www.voi.com/privacy-policy/" },
+      { label: "OpenRouteService, par HeiGIT (marche, vélo, fauteuil)", href: "https://heigit.org/privacy-policy/" },
+      { label: "Île-de-France Mobilités, PRIM (transports en commun)", href: "https://www.iledefrance-mobilites.fr/donnees-personnelles" },
     ],
   },
   {

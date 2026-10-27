@@ -5,37 +5,7 @@
 :root {
   --uf-font-display: var(--font-display), sans-serif;
   --uf-font-text: var(--font-sans), sans-serif;
-}
-
-:root {
   color-scheme: light;
-
-  /* Tokens hérités de l'ancien style : supprimés à la fin du sous-chantier 3 */
-  /* Surfaces et texte */
-  --ink: #15171C;
-  --bg: #F6F4F0;
-  --surface: #FFFFFF;
-  --border: #E4E1DA;
-  --text-2: #535A63;
-
-  /* Marque et action */
-  --primary: #CC1B36;
-  --primary-tint: #FBEAED;
-  --success: #15803D;
-
-  /* Couleur par mode, contrastes >= 4.5:1 sur fond clair */
-  --walk: #5A6470;
-  --bike: #11805A;
-  --tram: #2F62E6;
-  --bus: #B45309;
-  --car: #9A1B2F;
-  --eco: #11805A;
-
-  /* Rayons */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-pill: 999px;
 }
 
 @theme inline {
@@ -63,35 +33,12 @@
   --radius-uf-chip: var(--uf-radius-chip);
   --radius-uf-plate: var(--uf-radius-plate);
   --radius-uf-avatar: var(--uf-radius-avatar);
-
-  --color-ink: var(--ink);
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
-  --color-text-2: var(--text-2);
-  --color-primary: var(--primary);
-  --color-primary-tint: var(--primary-tint);
-  --color-success: var(--success);
-  --color-walk: var(--walk);
-  --color-bike: var(--bike);
-  --color-tram: var(--tram);
-  --color-bus: var(--bus);
-  --color-car: var(--car);
-  --color-eco: var(--eco);
-
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
-
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-pill: var(--radius-pill);
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--uf-bg);
+  color: var(--uf-ink);
+  font-family: var(--uf-font-text), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
 }
@@ -133,6 +80,20 @@ body {
   border: 3px solid #fff;
   box-shadow: 0 1px 4px rgba(21, 23, 28, 0.3);
   animation: user-pulse 2s ease-out infinite;
+}
+
+/* Repère d'arrêt sur la carte : pictogramme blanc sur la couleur du mode (fond posé par MapView) */
+.uf-stop-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 34, 56, 0.3);
 }
 
 /* Verre du design system : 4 panneaux au plus par écran, jamais de flou sur du flou */

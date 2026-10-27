@@ -2,5 +2,5 @@ import dynamic from "next/dynamic";
 
 export const MapViewDynamic = dynamic(
   () => import("./MapView"),
-  { ssr: false, loading: () => <div className="w-full h-full bg-bg" /> }
+  { ssr: false, loading: () => <div className="h-full w-full" /> }
 );

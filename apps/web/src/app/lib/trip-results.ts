@@ -21,7 +21,7 @@ export function transitMessage(result: TripPlanningDtoOut): string | null {
   return null;
 }
 
-const NON_TRANSIT_MODES = new Set(["walk", "bike", "scooter", "car", "carpool"]);
+const NON_TRANSIT_MODES = new Set(["walk", "bike", "car", "carpool"]);
 
 export function isTransitSegment(segment: TripSegment): boolean {
   return !NON_TRANSIT_MODES.has(segment.mode);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { delayInMinutes, formatDistance, formatDuration, formatParisClock } from "./format";
+import { delayInMinutes, formatDistance, formatDuration, formatKilograms, formatParisClock } from "./format";
 
 describe("formatParisClock", () => {
   it("donne l'heure de Paris d'une heure ISO avec décalage", () => {
@@ -25,5 +25,12 @@ describe("formatDuration et formatDistance", () => {
     expect(formatDuration(65 * 60)).toBe("1 h 05");
     expect(formatDistance(420)).toBe("420 m");
     expect(formatDistance(12_362)).toBe("12,4 km");
+  });
+});
+
+describe("formatKilograms", () => {
+  it("convertit des grammes en kilogrammes à une décimale, avec la virgule", () => {
+    expect(formatKilograms(1250)).toBe("1,3");
+    expect(formatKilograms(0)).toBe("0,0");
   });
 });

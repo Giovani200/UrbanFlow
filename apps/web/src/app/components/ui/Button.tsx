@@ -15,7 +15,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
 }
 
+/** Classes d'un bouton, pour donner son apparence à un lien (`Link`) sans dupliquer le style. */
+export function buttonClassName(variant: ButtonVariant = "inset", className = ""): string {
+    return `${BASE} ${VARIANTS[variant]} ${className}`;
+}
+
 /** Une seule action principale par écran (`primary`). `glass` hors panneau, `inset` dans un panneau, `text` pour le reste. */
 export function Button({ variant = "inset", type = "button", className = "", ...rest }: ButtonProps) {
-    return <button type={type} className={`${BASE} ${VARIANTS[variant]} ${className}`} {...rest} />;
+    return <button type={type} className={buttonClassName(variant, className)} {...rest} />;
 }

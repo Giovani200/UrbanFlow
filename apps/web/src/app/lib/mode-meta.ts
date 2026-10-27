@@ -1,11 +1,10 @@
-import { Bike, Bus, Car, Footprints, TrainFront, TrainFrontTunnel, TramFront, Zap } from "lucide-react";
+import { Bike, Bus, Car, Footprints, TrainFront, TrainFrontTunnel, TramFront } from "lucide-react";
 import type { ElementType } from "react";
 
 /** Icône, libellé et couleur de repli par mode. Une ligne affiche toujours sa couleur officielle, quand elle existe. */
 export const MODE_META: Record<string, { color: string; icon: ElementType; label: string }> = {
   walk: { color: "#5A6470", icon: Footprints, label: "Marche" },
   bike: { color: "#11805A", icon: Bike, label: "Vélo" },
-  scooter: { color: "#5A6470", icon: Zap, label: "Trottinette" },
   tram: { color: "#2F62E6", icon: TramFront, label: "Tram" },
   bus: { color: "#B45309", icon: Bus, label: "Bus" },
   metro: { color: "#3D4FB8", icon: TrainFrontTunnel, label: "Métro" },

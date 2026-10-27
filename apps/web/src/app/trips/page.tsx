@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, History, Loader2, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { ChevronLeft, ChevronRight, History, RefreshCw } from "lucide-react";
 import type { TripHistoryPeriod } from "@urbanflow/app-front-back-lib";
 import { useAuth } from "@/app/components/auth/AuthProvider";
+import { ChoiceChip } from "@/app/components/ui/ChoiceChip";
+import { GlassPanel } from "@/app/components/ui/GlassPanel";
+import { PageShell } from "@/app/components/ui/PageShell";
 import { useTripHistory } from "@/app/hooks/useTripHistory";
+import { formatDuration, formatKilograms } from "@/app/lib/format";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 
 const FILTERS: { id: TripHistoryPeriod; label: string }[] = [
@@ -16,30 +20,15 @@ const FILTERS: { id: TripHistoryPeriod; label: string }[] = [
 
 const PAGE_SIZE = 10;
 
-function formatKg(grams: number): string {
-  return (grams / 1000).toFixed(1).replace(".", ",");
-}
+const ROUND_BUTTON = "flex size-11 items-center justify-center rounded-full disabled:opacity-40";
 
 function formatTotalHours(seconds: number): string {
   const hours = seconds / 3600;
   return hours >= 10 ? `${Math.round(hours)}` : hours.toFixed(1).replace(".", ",");
 }
 
-function formatDuration(seconds: number): string {
-  const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  const rest = minutes % 60;
-  return rest === 0 ? `${hours} h` : `${hours} h ${rest}`;
-}
-
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 
 export default function TripsPage() {
@@ -59,148 +48,117 @@ export default function TripsPage() {
   }
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
+  const busy = loading || refreshing;
 
-  if (status === "loading" || status === "unauthenticated") {
+  const refreshButton = (
+    <button type="button" onClick={refresh} disabled={busy} aria-label="Actualiser" className={`uf-glass ${ROUND_BUTTON}`}>
+      <RefreshCw size={20} aria-hidden="true" />
+    </button>
+  );
+
+  if (status !== "authenticated") {
     return (
-      <div className="flex items-center justify-center h-dvh bg-bg">
-        <Loader2 size={24} className="animate-spin text-primary" />
-      </div>
+      <PageShell title="Mes trajets">
+        <p role="status" className="px-1 [font:var(--uf-body)] font-medium text-uf-ink-2">
+          Chargement…
+        </p>
+      </PageShell>
     );
   }
 
   return (
-    <div className="flex flex-col h-dvh bg-bg font-sans">
-      {/* Header */}
-      <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
-        <button
-          onClick={() => router.push("/")}
-          className="w-9 h-9 rounded-lg border border-border flex items-center justify-center"
-        >
-          <ArrowLeft size={16} className="text-ink" />
-        </button>
-        <h1 className="flex-1 text-[17px] font-semibold text-ink">Mes trajets</h1>
-        <button
-          onClick={refresh}
-          disabled={loading || refreshing}
-          aria-label="Actualiser"
-          className="w-9 h-9 rounded-lg border border-border flex items-center justify-center disabled:opacity-60"
-        >
-          <RefreshCw size={16} className={`text-ink ${loading || refreshing ? "animate-spin" : ""}`} />
-        </button>
-      </div>
-
-      {/* Filtres */}
-      <div className="bg-white border-b border-border px-4 py-2.5 flex gap-2 shrink-0">
-        {FILTERS.map((filter) => (
-          <button
-            key={filter.id}
-            onClick={() => changePeriod(filter.id)}
-            className={`px-3.5 py-1.5 rounded-2xl border-[1.5px] text-[12px] transition-colors ${
-              period === filter.id
-                ? "border-primary bg-primary-tint font-semibold text-primary"
-                : "border-border bg-white text-text-2"
-            }`}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Résumé */}
-      <div className="bg-white border-b border-border flex shrink-0">
-        <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-ink">{data?.total ?? 0}</p>
-          <p className="text-[10px] text-text-2">trajets</p>
+    <PageShell title="Mes trajets" actions={refreshButton}>
+      <GlassPanel as="section" aria-label="Résumé" className="flex flex-col gap-4 p-5">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((filter) => (
+            <ChoiceChip key={filter.id} selected={period === filter.id} onClick={() => changePeriod(filter.id)}>
+              {filter.label}
+            </ChoiceChip>
+          ))}
         </div>
-        <div className="w-px bg-border" />
-        <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-success">
-            {formatKg(data?.totalSavedGrams ?? 0)}
-          </p>
-          <p className="text-[10px] text-text-2">kg CO₂ évités</p>
-        </div>
-        <div className="w-px bg-border" />
-        <div className="flex-1 py-2.5 text-center">
-          <p className="font-mono text-[18px] font-bold text-ink">
-            {formatTotalHours(data?.totalDurationSeconds ?? 0)}h
-          </p>
-          <p className="text-[10px] text-text-2">en déplacement</p>
-        </div>
-      </div>
-
-      {/* Liste */}
-      <div className="flex-1 overflow-y-auto px-4 pt-3 pb-8 flex flex-col gap-2">
-        {loading ? (
-          <div role="status" className="flex-1 flex items-center justify-center py-10">
-            <Loader2 size={22} className="animate-spin text-primary" />
-            <span className="sr-only">Chargement des trajets…</span>
+        <dl className="grid grid-cols-3 gap-2">
+          <div className="uf-inset flex flex-col gap-0.5 rounded-uf-inset p-3">
+            <dd className="[font:var(--uf-time)] tabular-nums">{data?.total ?? 0}</dd>
+            <dt className="[font:var(--uf-note)] text-uf-ink-2">trajets</dt>
           </div>
+          <div className="uf-inset flex flex-col gap-0.5 rounded-uf-inset p-3">
+            <dd className="[font:var(--uf-time)] tabular-nums">{formatKilograms(data?.totalSavedGrams ?? 0)} kg</dd>
+            <dt className="[font:var(--uf-note)] text-uf-ink-2">CO₂ évité</dt>
+          </div>
+          <div className="uf-inset flex flex-col gap-0.5 rounded-uf-inset p-3">
+            <dd className="[font:var(--uf-time)] tabular-nums">{formatTotalHours(data?.totalDurationSeconds ?? 0)} h</dd>
+            <dt className="[font:var(--uf-note)] text-uf-ink-2">en déplacement</dt>
+          </div>
+        </dl>
+      </GlassPanel>
+
+      <GlassPanel as="section" aria-label="Liste des trajets" className="flex flex-col gap-2 p-3">
+        {loading ? (
+          <p role="status" className="p-3 [font:var(--uf-body)] font-medium text-uf-ink-2">
+            Chargement des trajets…
+          </p>
         ) : !data || data.total === 0 ? (
-          <div className="bg-white rounded-xl px-5 py-10 text-center flex flex-col items-center gap-3">
-            <History size={26} className="text-text-2" />
-            <p className="text-[15px] font-semibold text-ink">Aucun trajet enregistré</p>
-            <p className="text-[13px] text-text-2 leading-relaxed max-w-[280px]">
+          <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
+            <History size={28} aria-hidden="true" />
+            <p className="[font:var(--uf-time)]">Aucun trajet enregistré</p>
+            <p className="max-w-[280px] [font:var(--uf-body)] font-medium text-uf-ink-2">
               Planifie un trajet, suis-le, et marque-le comme fait à l&apos;arrivée pour le retrouver ici.
             </p>
           </div>
         ) : (
           <>
-            {data.items.map((trip) => {
-              const meta = MODE_META[trip.modes[0]] ?? MODE_FALLBACK;
-              const Icon = meta.icon;
-              const isClean = trip.carbonGrams === 0;
-              return (
-                <div key={trip.id} className="bg-white rounded-xl px-3.5 py-3 flex items-center gap-3">
-                  <div
-                    className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: `${meta.color}1A` }}
-                  >
-                    <Icon size={18} style={{ color: meta.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-ink truncate">
-                      {trip.originLabel} <span className="text-text-2">→</span> {trip.destinationLabel}
-                    </p>
-                    <p className="text-[11px] text-text-2 mt-0.5">
-                      {formatDate(trip.takenAt)} · {formatDuration(trip.durationSeconds)}
-                    </p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className={`font-mono text-[12px] font-bold ${isClean ? "text-success" : "text-primary"}`}>
-                      {Math.round(trip.carbonGrams)} gCO₂
-                    </p>
-                    <p className="text-[10px] text-text-2 mt-0.5">émissions</p>
-                  </div>
-                </div>
-              );
-            })}
+            <ul className="flex flex-col gap-2">
+              {data.items.map((trip) => {
+                const meta = MODE_META[trip.modes[0]] ?? MODE_FALLBACK;
+                const Icon = meta.icon;
+                return (
+                  <li key={trip.id} className="uf-inset flex items-center gap-3 rounded-uf-inset px-4 py-3">
+                    <Icon size={20} aria-label={meta.label} style={{ color: meta.color }} className="shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate [font:var(--uf-body)]">
+                        {trip.originLabel} <span aria-label="vers">→</span> {trip.destinationLabel}
+                      </p>
+                      <p className="[font:var(--uf-note)] text-uf-ink-2 tabular-nums">
+                        {formatDate(trip.takenAt)} · {formatDuration(trip.durationSeconds)}
+                      </p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="[font:var(--uf-note)] tabular-nums">{Math.round(trip.carbonGrams)} g CO₂</p>
+                      <p className="[font:var(--uf-note)] text-uf-ink-2">émis</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
 
             {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-2 px-1">
+              <div className="flex items-center justify-between px-1">
                 <button
+                  type="button"
                   onClick={() => setPage((current) => Math.max(1, current - 1))}
                   disabled={page <= 1}
-                  className="w-9 h-9 rounded-lg border border-border flex items-center justify-center disabled:opacity-40"
                   aria-label="Page précédente"
+                  className={`uf-inset ${ROUND_BUTTON}`}
                 >
-                  <ChevronLeft size={16} className="text-ink" />
+                  <ChevronLeft size={20} aria-hidden="true" />
                 </button>
-                <span className="text-[12px] font-mono text-text-2">
-                  Page {data.page} / {totalPages}
+                <span className="[font:var(--uf-note)] tabular-nums">
+                  Page {data.page} sur {totalPages}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
                   disabled={page >= totalPages}
-                  className="w-9 h-9 rounded-lg border border-border flex items-center justify-center disabled:opacity-40"
                   aria-label="Page suivante"
+                  className={`uf-inset ${ROUND_BUTTON}`}
                 >
-                  <ChevronRight size={16} className="text-ink" />
+                  <ChevronRight size={20} aria-hidden="true" />
                 </button>
               </div>
             )}
           </>
         )}
-      </div>
-    </div>
+      </GlassPanel>
+    </PageShell>
   );
 }

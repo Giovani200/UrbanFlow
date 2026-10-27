@@ -14,14 +14,14 @@ import { HomePanel } from "@/app/components/planner/HomePanel";
 import { NavigationPanel } from "@/app/components/planner/NavigationPanel";
 import { ResultsPanel } from "@/app/components/planner/ResultsPanel";
 import { SearchPanel } from "@/app/components/planner/SearchPanel";
-import { SettingsDrawer } from "@/app/components/settings/SettingsDrawer";
-import { BottomNavigation } from "@/app/components/ui/BottomNavigation";
+import { SettingsPanel } from "@/app/components/settings/SettingsPanel";
 import { BottomSheet } from "@/app/components/ui/BottomSheet";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useRoutingProfile } from "@/app/hooks/useRoutingProfile";
 import { useTripPlanner, type PlannerView } from "@/app/hooks/useTripPlanner";
 import { useUserLocation } from "@/app/hooks/useUserLocation";
 import type { SheetPosition } from "@/app/lib/sheet-position";
+import type { TransitStop } from "@/app/services/transport.service";
 import type { TripRoute } from "@/app/services/trips.service";
 
 const SHEET_POSITION_BY_VIEW: Record<PlannerView, SheetPosition> = {
@@ -42,8 +42,6 @@ const SHEET_LABELS: Record<PlannerView, string> = {
   arrival: "Arrivée",
 };
 
-const BOTTOM_NAVIGATION_SPACE = 90;
-
 const ROUND_GLASS_BUTTON = "uf-glass flex size-11 items-center justify-center rounded-full text-uf-ink";
 
 export default function PlannerPage() {
@@ -55,13 +53,14 @@ export default function PlannerPage() {
   const { location, failure, request, acceptConsent, refuseConsent, dismissAsking, dismissFailure } = useUserLocation();
   const [sheetPosition, setSheetPosition] = useState<SheetPosition>("half");
   const [showSettings, setShowSettings] = useState(false);
+  const [nearbyStops, setNearbyStops] = useState<TransitStop[]>([]);
+  const positionBeforeSettingsRef = useRef<SheetPosition>("half");
 
   const position = location.state === "located" ? location.position : null;
   const { view, selectedRoute } = planner;
 
   useEffect(() => {
     if (!position) return;
-    mapRef.current?.setUserPosition(position.latitude, position.longitude);
     if (recenterPendingRef.current) {
       mapRef.current?.recenterOnUser(position.latitude, position.longitude);
       recenterPendingRef.current = false;
@@ -89,7 +88,7 @@ export default function PlannerPage() {
   }
 
   async function search(origin: GeocodingResult, destination: GeocodingResult, plannedTime?: PlannedTime) {
-    mapRef.current?.setNearbyMarkers([]);
+    setNearbyStops([]);
     setSheetPosition(SHEET_POSITION_BY_VIEW.results);
     showRoute(await planner.search(origin, destination, plannedTime));
   }
@@ -105,6 +104,17 @@ export default function PlannerPage() {
     setSheetPosition(SHEET_POSITION_BY_VIEW.home);
   }
 
+  function openSettings() {
+    positionBeforeSettingsRef.current = sheetPosition;
+    setShowSettings(true);
+    setSheetPosition("half");
+  }
+
+  function closeSettings() {
+    setShowSettings(false);
+    setSheetPosition(positionBeforeSettingsRef.current);
+  }
+
   const onHome = view === "home";
 
   return (
@@ -112,7 +122,7 @@ export default function PlannerPage() {
       <h1 className="sr-only">UrbanFlow, trajets en Île-de-France</h1>
 
       <div className="absolute inset-0">
-        <MapViewDynamic ref={mapRef} />
+        <MapViewDynamic ref={mapRef} userPosition={position} nearbyStops={nearbyStops} />
       </div>
 
       <div className="absolute top-[max(16px,env(safe-area-inset-top))] right-4 z-20 flex flex-col gap-2">
@@ -120,24 +130,25 @@ export default function PlannerPage() {
           <LocateFixed size={20} aria-hidden="true" />
         </button>
         {onHome && (
-          <button type="button" aria-label="Paramètres" onClick={() => setShowSettings(true)} className={ROUND_GLASS_BUTTON}>
+          <button type="button" aria-label="Paramètres" aria-expanded={showSettings} onClick={showSettings ? closeSettings : openSettings} className={ROUND_GLASS_BUTTON}>
             <Settings size={20} aria-hidden="true" />
           </button>
         )}
       </div>
 
       <BottomSheet
-        label={SHEET_LABELS[view]}
+        label={showSettings ? "Paramètres" : SHEET_LABELS[view]}
         position={sheetPosition}
         onPositionChange={setSheetPosition}
-        bottomOffset={onHome ? BOTTOM_NAVIGATION_SPACE : 0}
       >
-        {view === "home" && (
+        {onHome && showSettings && <SettingsPanel onClose={closeSettings} />}
+
+        {onHome && !showSettings && (
           <HomePanel
             location={location}
             onPlanTrip={() => goTo("search")}
             onRequestPosition={locate}
-            onStopsLoaded={(stops) => mapRef.current?.setNearbyMarkers(stops)}
+            onStopsLoaded={setNearbyStops}
           />
         )}
 
@@ -187,8 +198,6 @@ export default function PlannerPage() {
         )}
       </BottomSheet>
 
-      {onHome && <BottomNavigation />}
-
       <GeolocationConsentDialog
         open={location.state === "asking"}
         onOpenChange={(open) => {
@@ -205,8 +214,6 @@ export default function PlannerPage() {
         }}
         variant={failure ?? "unavailable"}
       />
-
-      {showSettings && <SettingsDrawer onClose={() => setShowSettings(false)} />}
     </div>
   );
 }

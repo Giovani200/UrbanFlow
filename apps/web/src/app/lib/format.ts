@@ -8,6 +8,10 @@ export function formatDuration(seconds: number): string {
   return rest > 0 ? `${hours} h ${String(rest).padStart(2, "0")}` : `${hours} h`;
 }
 
+export function formatKilograms(grams: number): string {
+  return (grams / 1000).toFixed(1).replace(".", ",");
+}
+
 export function formatDistance(meters: number): string {
   return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1).replace(".", ",")} km`;
 }

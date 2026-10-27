@@ -10,13 +10,13 @@ const SECTIONS: InfoSection[] = [
   {
     title: "Planifier un trajet",
     paragraphs: [
-      "Saisissez un départ et une destination. L'application propose la marche seule, le vélo seul, et des combinaisons de transport en commun (tram, bus), chacune avec sa durée, ses correspondances et son empreinte carbone.",
+      "Saisissez un départ et une destination. L'application propose la marche seule, le vélo seul, et des trajets en transport en commun d'Île-de-France (métro, RER, Transilien, tram, bus), chacun avec sa durée, ses correspondances et son empreinte carbone.",
     ],
   },
   {
     title: "Comparer les itinéraires",
     paragraphs: [
-      "Les combinaisons de transport sont classées selon un score qui pèse le carbone, le temps et le coût. Avec un compte, ce classement suit vos préférences.",
+      "Les trajets en transport en commun sont classés selon un score qui pèse le temps et le carbone. Avec un compte, ce classement suit vos préférences.",
     ],
   },
   {
