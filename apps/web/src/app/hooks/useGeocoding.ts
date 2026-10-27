@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { ILE_DE_FRANCE_BBOX } from "@/app/config/geolocalisation";
+import { toSuggestions, type MapTilerFeature, type PlaceSuggestion } from "@/app/lib/geocoding-suggestions";
 
 export type GeocodingResult = {
     label: string;
@@ -10,13 +11,15 @@ export type GeocodingResult = {
 
 const MAPTILER_GEOCODING_URL = "https://api.maptiler.com/geocoding";
 
+const SUGGESTION_COUNT = 5;
+
 interface MapTilerGeocodingResponse {
-    features: Array<{ place_name: string; center: [number, number] }>;
+    features: MapTilerFeature[];
 }
 
-// Recherche d'adresses (texte → liste de lieux), débouncée, limitée à l'Île-de-France.
-export function useGeocoding(query: string): GeocodingResult[] {
-    const [results, setResults] = useState<GeocodingResult[]>([]);
+/** Recherche de lieux et d'adresses (texte → suggestions), débouncée, limitée à l'Île-de-France. On demande le double des suggestions affichées, car les doublons d'un même lieu sont retirés. */
+export function useGeocoding(query: string): PlaceSuggestion[] {
+    const [results, setResults] = useState<PlaceSuggestion[]>([]);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
@@ -28,16 +31,11 @@ export function useGeocoding(query: string): GeocodingResult[] {
             if (!key) return;
 
             try {
-                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${ILE_DE_FRANCE_BBOX}&types=poi,address,street&language=fr&limit=5`,
+                const response = await fetch(`${MAPTILER_GEOCODING_URL}/${encodeURIComponent(query)}.json?key=${key}&bbox=${ILE_DE_FRANCE_BBOX}&types=poi,address,street&language=fr&limit=${SUGGESTION_COUNT * 2}`,
                 );
                 if (!response.ok) return;
                 const data = (await response.json()) as MapTilerGeocodingResponse;
-                const items: GeocodingResult[] = (data.features ?? []).map((feature) => ({
-                    label: feature.place_name,
-                    latitude: feature.center[1],
-                    longitude: feature.center[0],
-                }));
-                setResults(items);
+                setResults(toSuggestions(data.features ?? []).slice(0, SUGGESTION_COUNT));
             } catch {
                 /* géocodage : échec silencieux */
             }

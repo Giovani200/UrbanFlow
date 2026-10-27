@@ -147,9 +147,10 @@ export function SearchPanel({ userPosition, onSearch, onRequestPosition, onBack 
               <button
                 type="button"
                 onClick={() => choosePlace(activeField, suggestion)}
-                className="flex min-h-11 w-full items-center rounded-uf-inset px-3 text-left [font:var(--uf-body)]"
+                className="flex min-h-11 w-full flex-col justify-center rounded-uf-inset px-3 py-1.5 text-left"
               >
-                <span className="truncate">{suggestion.label}</span>
+                <span className="truncate [font:var(--uf-body)] font-bold">{suggestion.name}</span>
+                {suggestion.detail && <span className="truncate [font:var(--uf-note)] text-uf-ink-2">{suggestion.detail}</span>}
               </button>
             </li>
           ))}
