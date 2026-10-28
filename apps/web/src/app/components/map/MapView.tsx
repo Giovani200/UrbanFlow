@@ -1,235 +1,264 @@
 "use client";
 
-import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
+import { createElement, forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { TripSegment } from "@/app/services/trips.service";
-import type { SharedVehicle, TransitStop } from "@/app/services/transport.service";
+import type { TransitStop } from "@/app/services/transport.service";
+import { useCurrentAmbiance } from "@/app/components/ambiance/AmbianceContext";
 import { MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM } from "@/app/config/geolocalisation";
+import type { Ambiance } from "@/app/lib/ambiance";
 import { MODE_META } from "@/app/lib/mode-meta";
+import { primaryStopMode } from "@/app/lib/stop-mode";
+import { ambiancePaintOperations, MAP_BASE_STYLE } from "./map-ambiance";
 
 const FALLBACK_COLOR = "#5A6470";
-
-function modeColor(mode: string): string {
-  return MODE_META[mode]?.color ?? FALLBACK_COLOR;
-}
-
-// Glyphes Lucide (viewBox 24) par mode, pour les pins carte façon DA.
-const MODE_ICON_SVG: Record<string, string> = {
-  walk: '<path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/>',
-  bike: '<circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/>',
-  scooter: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
-  tram: '<path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="m9 15-1-1"/><path d="m15 15 1-1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/>',
-  bus: '<path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>',
-};
-const ORIGIN_COLOR = "#138A5E";
-const DESTINATION_COLOR = "#CC1B36";
+const ROUTE_PREFIX = "route-";
+/** Part de l'écran couverte par le panneau à mi-hauteur (48dvh dans BottomSheet) : les arrêts sont cadrés au-dessus. */
+const HALF_SHEET_SHARE = 0.48;
+const NO_STOPS: TransitStop[] = [];
 
 export type MapViewHandle = {
   drawSegments: (segments: TripSegment[]) => void;
   clearSegments: () => void;
   fitToSegments: (segments: TripSegment[]) => void;
   recenterOnUser: (latitude: number, longitude: number) => void;
-  setUserPosition: (latitude: number, longitude: number) => void;
-  setNearbyMarkers: (stops: TransitStop[], vehicles: SharedVehicle[]) => void;
   startFollow: () => void;
 };
+
+interface UserPosition {
+  latitude: number;
+  longitude: number;
+}
 
 interface MapViewProps {
   center?: [number, number];
   zoom?: number;
+  /** Position de l'utilisateur, passée en prop pour qu'elle survive au chargement différé et à une recréation de la carte. */
+  userPosition?: UserPosition | null;
+  /** Arrêts proches à marquer et à cadrer ; en prop pour la même raison que la position. */
+  nearbyStops?: TransitStop[];
   onFollowChange?: (following: boolean) => void;
 }
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function segmentColor(segment: TripSegment): string {
+  return segment.lineColor ?? MODE_META[segment.mode]?.color ?? FALLBACK_COLOR;
+}
+
+function applyAmbiance(map: maplibregl.Map, ambiance: Ambiance): void {
+  const layers = map.getStyle()?.layers ?? [];
+  const baseLayers = layers.filter((layer) => !layer.id.startsWith(ROUTE_PREFIX));
+  for (const { layerId, property, value } of ambiancePaintOperations(baseLayers, ambiance)) {
+    if (map.getLayer(layerId)) map.setPaintProperty(layerId, property, value);
+  }
+}
+
 const MapView = forwardRef<MapViewHandle, MapViewProps>(
-  function MapView({ center = MAP_DEFAULT_CENTER, zoom = MAP_DEFAULT_ZOOM, onFollowChange }, ref) {
+  function MapView({ center = MAP_DEFAULT_CENTER, zoom = MAP_DEFAULT_ZOOM, userPosition = null, nearbyStops = NO_STOPS, onFollowChange }, ref) {
+    const ambiance = useCurrentAmbiance();
     const containerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
-    const layerIdsRef = useRef<string[]>([]);
-    const originMarkerRef = useRef<maplibregl.Marker | null>(null);
-    const destinationMarkerRef = useRef<maplibregl.Marker | null>(null);
+    const ambianceRef = useRef(ambiance);
+    const routeLayerIdsRef = useRef<string[]>([]);
+    const endpointMarkersRef = useRef<maplibregl.Marker[]>([]);
     const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+    const userPositionRef = useRef(userPosition);
     const nearbyMarkersRef = useRef<maplibregl.Marker[]>([]);
+    const nearbyStopsRef = useRef(nearbyStops);
     const followingRef = useRef(false);
     const onFollowChangeRef = useRef(onFollowChange);
 
-    useEffect(() => { onFollowChangeRef.current = onFollowChange; });
+    useEffect(() => {
+      onFollowChangeRef.current = onFollowChange;
+    });
+
+    function placeUserMarker(map: maplibregl.Map) {
+      const position = userPositionRef.current;
+      if (!position) {
+        userMarkerRef.current?.remove();
+        userMarkerRef.current = null;
+        return;
+      }
+      const lngLat: [number, number] = [position.longitude, position.latitude];
+      if (userMarkerRef.current) userMarkerRef.current.setLngLat(lngLat);
+      else userMarkerRef.current = new maplibregl.Marker({ element: buildUserMarker() }).setLngLat(lngLat).addTo(map);
+    }
+
+    /** Remplace les repères d'arrêts, puis cadre les arrêts et la position de l'utilisateur au-dessus du panneau. */
+    function showNearbyStops(map: maplibregl.Map) {
+      const stops = nearbyStopsRef.current;
+      nearbyMarkersRef.current.forEach((marker) => marker.remove());
+      nearbyMarkersRef.current = stops.map((stop) =>
+        new maplibregl.Marker({ element: buildStopPin(stop) })
+          .setLngLat([stop.location.longitude, stop.location.latitude])
+          .addTo(map),
+      );
+      if (stops.length === 0) return;
+
+      const bounds = new maplibregl.LngLatBounds();
+      stops.forEach((stop) => bounds.extend([stop.location.longitude, stop.location.latitude]));
+      const here = userMarkerRef.current?.getLngLat();
+      if (here) bounds.extend(here);
+      const sheetHeight = Math.round(window.innerHeight * HALF_SHEET_SHARE);
+      map.fitBounds(bounds, { padding: { top: 100, bottom: sheetHeight + 24, left: 40, right: 72 }, maxZoom: 17, duration: prefersReducedMotion() ? 0 : 800 });
+    }
+
+    function followUser() {
+      const map = mapRef.current;
+      const here = userMarkerRef.current?.getLngLat();
+      followingRef.current = true;
+      if (!map || !here) return;
+      onFollowChangeRef.current?.(true);
+      if (prefersReducedMotion()) map.jumpTo({ center: here, zoom: Math.max(map.getZoom(), 15) });
+      else if (map.getZoom() < 14) map.flyTo({ center: here, zoom: 15 });
+      else map.easeTo({ center: here, duration: 600 });
+    }
 
     useImperativeHandle(ref, () => ({
       drawSegments(segments: TripSegment[]) {
         const map = mapRef.current;
         if (!map) return;
-
         this.clearSegments();
 
         segments.forEach((segment, index) => {
-          const sourceId = `route-source-${index}`;
-          const layerId = `route-layer-${index}`;
+          const sourceId = `${ROUTE_PREFIX}source-${index}`;
+          const isWalk = segment.mode === "walk";
+          map.addSource(sourceId, { type: "geojson", data: { type: "Feature", properties: {}, geometry: segment.geometry } });
 
-          map.addSource(sourceId, {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              properties: {},
-              geometry: segment.geometry,
-            },
-          });
+          if (!isWalk) {
+            const casingId = `${ROUTE_PREFIX}casing-${index}`;
+            map.addLayer({
+              id: casingId,
+              type: "line",
+              source: sourceId,
+              layout: { "line-join": "round", "line-cap": "round" },
+              paint: { "line-color": "#0F2238", "line-width": 8, "line-opacity": 0.35 },
+            });
+            routeLayerIdsRef.current.push(casingId);
+          }
 
+          const layerId = `${ROUTE_PREFIX}layer-${index}`;
           map.addLayer({
             id: layerId,
             type: "line",
             source: sourceId,
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
-            paint: {
-              "line-color": segment.lineColor ?? modeColor(segment.mode),
-              "line-width": 4,
-              "line-opacity": 0.85,
-            },
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: isWalk
+              ? { "line-color": "#3A4F6B", "line-width": 3, "line-dasharray": [0.5, 2] }
+              : { "line-color": segmentColor(segment), "line-width": 5 },
           });
-
-          layerIdsRef.current.push(layerId);
+          routeLayerIdsRef.current.push(layerId);
         });
 
-        const allCoordinates = segments.flatMap((segment) => segment.geometry.coordinates);
-        if (allCoordinates.length > 0) {
-          const originPoint = allCoordinates[0];
-          const destinationPoint = allCoordinates[allCoordinates.length - 1];
-
-          originMarkerRef.current = new maplibregl.Marker({ element: buildDot(ORIGIN_COLOR) })
-            .setLngLat(originPoint)
-            .addTo(map);
-
-          destinationMarkerRef.current = new maplibregl.Marker({ color: DESTINATION_COLOR, anchor: "bottom" })
-            .setLngLat(destinationPoint)
-            .addTo(map);
+        const coordinates = segments.flatMap((segment) => segment.geometry.coordinates);
+        if (coordinates.length > 0) {
+          endpointMarkersRef.current = [
+            new maplibregl.Marker({ element: buildEndpoint("origin") }).setLngLat(coordinates[0]).addTo(map),
+            new maplibregl.Marker({ element: buildEndpoint("destination") }).setLngLat(coordinates[coordinates.length - 1]).addTo(map),
+          ];
         }
       },
 
       clearSegments() {
         const map = mapRef.current;
         if (!map) return;
-
-        layerIdsRef.current.forEach((id) => {
-          const index = id.replace("route-layer-", "");
-          const sourceId = `route-source-${index}`;
-          if (map.getLayer(id)) map.removeLayer(id);
-          if (map.getSource(sourceId)) map.removeSource(sourceId);
+        routeLayerIdsRef.current.forEach((layerId) => {
+          if (map.getLayer(layerId)) map.removeLayer(layerId);
         });
-        layerIdsRef.current = [];
-
-        originMarkerRef.current?.remove();
-        originMarkerRef.current = null;
-        destinationMarkerRef.current?.remove();
-        destinationMarkerRef.current = null;
+        routeLayerIdsRef.current = [];
+        Object.keys(map.getStyle()?.sources ?? {})
+          .filter((sourceId) => sourceId.startsWith(ROUTE_PREFIX))
+          .forEach((sourceId) => map.removeSource(sourceId));
+        endpointMarkersRef.current.forEach((marker) => marker.remove());
+        endpointMarkersRef.current = [];
       },
 
       fitToSegments(segments: TripSegment[]) {
         const map = mapRef.current;
         if (!map || segments.length === 0) return;
-
         const bounds = new maplibregl.LngLatBounds();
-        segments.forEach((segment) => {
-          segment.geometry.coordinates.forEach(([longitude, latitude]) => {
-            bounds.extend([longitude, latitude]);
-          });
-        });
-
-        map.fitBounds(bounds, { padding: 80, maxZoom: 18 });
+        segments.forEach((segment) => segment.geometry.coordinates.forEach(([longitude, latitude]) => bounds.extend([longitude, latitude])));
+        map.fitBounds(bounds, { padding: { top: 120, bottom: 360, left: 40, right: 40 }, maxZoom: 17, duration: prefersReducedMotion() ? 0 : 800 });
       },
 
       recenterOnUser(latitude: number, longitude: number) {
-        mapRef.current?.flyTo({ center: [longitude, latitude], zoom: 18 });
-      },
-
-      setUserPosition(latitude: number, longitude: number) {
         const map = mapRef.current;
         if (!map) return;
-
-        const lngLat: [number, number] = [longitude, latitude];
-        if (userMarkerRef.current) userMarkerRef.current.setLngLat(lngLat);
-        else userMarkerRef.current = new maplibregl.Marker({ element: buildUserMarker() })
-          .setLngLat(lngLat)
-          .addTo(map);
-
-        if (followingRef.current) this.startFollow();
+        if (prefersReducedMotion()) map.jumpTo({ center: [longitude, latitude], zoom: 17 });
+        else map.flyTo({ center: [longitude, latitude], zoom: 17 });
       },
 
-      startFollow() {
-        const map = mapRef.current;
-        const here = userMarkerRef.current?.getLngLat();
-        followingRef.current = true;
-        if (!map || !here) return;
-        onFollowChangeRef.current?.(true);
-        if (map.getZoom() < 14) map.flyTo({ center: here, zoom: 15 });
-        else map.easeTo({ center: here, duration: 600 });
-      },
-
-      setNearbyMarkers(stops: TransitStop[], vehicles: SharedVehicle[]) {
-        const map = mapRef.current;
-        if (!map) return;
-
-        nearbyMarkersRef.current.forEach((marker) => marker.remove());
-        nearbyMarkersRef.current = [];
-
-        stops.forEach((stop) => {
-          const mode = stop.lines[0]?.mode ?? "bus";
-          const color = modeColor(mode);
-          const marker = new maplibregl.Marker({ element: buildPin(color, mode, 32) })
-            .setLngLat([stop.location.longitude, stop.location.latitude])
-            .addTo(map);
-          nearbyMarkersRef.current.push(marker);
-        });
-
-        vehicles.forEach((vehicle) => {
-          const color = modeColor(vehicle.type === "bike" ? "bike" : "scooter");
-          const iconKey = vehicle.type === "bike" ? "bike" : "scooter";
-          const marker = new maplibregl.Marker({ element: buildPin(color, iconKey, 24) })
-            .setLngLat([vehicle.location.longitude, vehicle.location.latitude])
-            .addTo(map);
-          nearbyMarkersRef.current.push(marker);
-        });
-      },
+      startFollow: followUser,
     }));
 
     useEffect(() => {
       if (!containerRef.current || mapRef.current) return;
-
-      mapRef.current = new maplibregl.Map({
+      const map = new maplibregl.Map({
         container: containerRef.current,
-        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`,
+        style: `https://api.maptiler.com/maps/${MAP_BASE_STYLE}/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`,
         center,
         zoom,
+        attributionControl: { compact: true },
       });
+      mapRef.current = map;
+      placeUserMarker(map);
+      showNearbyStops(map);
 
-      mapRef.current.on("movestart", (event) => {
+      map.on("style.load", () => applyAmbiance(map, ambianceRef.current));
+      map.on("movestart", (event) => {
         if (!event.originalEvent || !followingRef.current) return;
         followingRef.current = false;
         onFollowChangeRef.current?.(false);
       });
-
-      mapRef.current.on("styleimagemissing", (e) => {
-        const id = e.id;
-        if (!mapRef.current?.hasImage(id)) {
-          mapRef.current?.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) });
-        }
+      map.on("styleimagemissing", (event) => {
+        if (!map.hasImage(event.id)) map.addImage(event.id, { width: 1, height: 1, data: new Uint8Array(4) });
       });
 
       return () => {
-        mapRef.current?.remove();
+        map.remove();
         mapRef.current = null;
+        userMarkerRef.current = null;
+        nearbyMarkersRef.current = [];
+        endpointMarkersRef.current = [];
+        routeLayerIdsRef.current = [];
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- la carte est créée une seule fois
     }, []);
 
-    return <div ref={containerRef} className="w-full h-full" />;
+    useEffect(() => {
+      userPositionRef.current = userPosition;
+      const map = mapRef.current;
+      if (!map) return;
+      placeUserMarker(map);
+      if (userPosition && followingRef.current) followUser();
+    }, [userPosition]);
+
+    useEffect(() => {
+      nearbyStopsRef.current = nearbyStops;
+      const map = mapRef.current;
+      if (map) showNearbyStops(map);
+    }, [nearbyStops]);
+
+    useEffect(() => {
+      ambianceRef.current = ambiance;
+      const map = mapRef.current;
+      if (map?.isStyleLoaded()) applyAmbiance(map, ambiance);
+    }, [ambiance]);
+
+    return <div ref={containerRef} className="h-full w-full" />;
   }
 );
 
-function buildDot(color: string, size = 16): HTMLDivElement {
+function buildEndpoint(kind: "origin" | "destination"): HTMLDivElement {
   const element = document.createElement("div");
-  element.style.cssText = `width:${size}px;height:${size}px;border-radius:9999px;background:${color};border:3px solid #fff;box-shadow:0 1px 4px rgba(21,23,28,.3)`;
+  const shape = kind === "origin" ? "border-radius:9999px;background:#FFFFFF;border:4px solid #0F2238" : "border-radius:6px;background:#0F2238;border:3px solid #FFFFFF";
+  element.style.cssText = `width:20px;height:20px;box-sizing:border-box;${shape};box-shadow:0 2px 6px rgba(15,34,56,.35)`;
+  element.setAttribute("aria-hidden", "true");
   return element;
 }
 
@@ -239,13 +268,16 @@ function buildUserMarker(): HTMLDivElement {
   return element;
 }
 
-// Pin carte façon DA : tuile arrondie, couleur de mode, glyphe blanc.
-function buildPin(color: string, iconKey: string, size = 32): HTMLDivElement {
+/** Arrêt proche : pictogramme de son mode le plus structurant (métro, RER, train, tram, bus), sur la couleur du mode. */
+function buildStopPin(stop: TransitStop): HTMLDivElement {
+  const mode = primaryStopMode(stop.lines);
+  const meta = MODE_META[mode] ?? MODE_META.bus;
   const element = document.createElement("div");
-  element.style.cssText = `width:${size}px;height:${size}px;border-radius:11px;background:${color};border:2.5px solid #fff;box-shadow:0 2px 6px rgba(21,23,28,.25);display:flex;align-items:center;justify-content:center`;
-  const glyphSize = Math.round(size * 0.55);
-  const inner = MODE_ICON_SVG[iconKey] ?? "";
-  element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${glyphSize}" height="${glyphSize}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  element.className = "uf-stop-pin";
+  element.style.backgroundColor = meta.color;
+  element.setAttribute("role", "img");
+  element.setAttribute("aria-label", `Arrêt ${stop.name}, ${meta.label}`);
+  element.innerHTML = renderToStaticMarkup(createElement(meta.icon, { size: 15, strokeWidth: 2.25, "aria-hidden": true }));
   return element;
 }
 

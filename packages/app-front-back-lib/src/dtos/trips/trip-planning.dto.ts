@@ -1,7 +1,25 @@
 import { z as zod } from "zod";
 
-export const TripModeSchema = zod.enum(["walk", "bike", "scooter", "tram", "bus", "carpool", "car"]);
+export const TripModeSchema = zod.enum([
+    "walk",
+    "bike",
+    "scooter",
+    "tram",
+    "bus",
+    "metro",
+    "rer",
+    "train",
+    "ter",
+    "carpool",
+    "car",
+]);
 export type TripMode = zod.output<typeof TripModeSchema>;
+
+export const DataFreshnessSchema = zod.enum(["realtime", "scheduled"]);
+export type DataFreshness = zod.output<typeof DataFreshnessSchema>;
+
+export const TransitStatusSchema = zod.enum(["ok", "no_result", "unavailable"]);
+export type TransitStatus = zod.output<typeof TransitStatusSchema>;
 
 export const CoordinatesSchema = zod.object({
     latitude: zod.number().min(-90).max(90),
@@ -35,6 +53,11 @@ export const TripSegmentSchema = zod.object({
     lineColor: zod.string().optional(),
     lineTextColor: zod.string().optional(),
     intermediateStops: zod.array(TransitStopPointSchema).optional(),
+    dataFreshness: DataFreshnessSchema.optional(),
+    scheduledDepartureTime: zod.string().optional(),
+    expectedDepartureTime: zod.string().optional(),
+    departureStopPointRef: zod.string().optional(),
+    arrivalStopPointRef: zod.string().optional(),
 });
 export type TripSegment = zod.output<typeof TripSegmentSchema>;
 
@@ -74,5 +97,6 @@ export const TripPlanningDtoOutSchema = zod.object({
     walk: TripRouteSchema.nullable(),
     bike: TripRouteSchema.nullable(),
     transit: zod.array(TripRouteSchema),
+    transitStatus: TransitStatusSchema.optional(),
 });
 export type TripPlanningDtoOut = zod.output<typeof TripPlanningDtoOutSchema>;

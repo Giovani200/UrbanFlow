@@ -1,31 +1,31 @@
 "use client";
 
-import {useState} from "react";
-import {useAuth} from "@/app/components/auth/AuthProvider";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {Eye, EyeOff, Shield} from "lucide-react";
-import {Logo} from "@/app/components/ui/Logo";
-import {GoogleButton} from "@/app/components/auth/GoogleButton";
+import { useAuth } from "@/app/components/auth/AuthProvider";
+import { GoogleButton } from "@/app/components/auth/GoogleButton";
+import { PasswordVisibilityToggle } from "@/app/components/auth/PasswordVisibilityToggle";
+import { Button } from "@/app/components/ui/Button";
+import { FormField } from "@/app/components/ui/FormField";
+import { GlassPanel } from "@/app/components/ui/GlassPanel";
 
 export default function LoginPage() {
     const router = useRouter();
-    const {login} = useAuth();
-    const [showPassword, setShowPassword] =
-        useState(false);
-    const [error, setError] = useState<string |
-        null>(null);
+    const { login } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         setError(null);
         setLoading(true);
 
-        const form = new FormData(e.currentTarget);
+        const form = new FormData(event.currentTarget);
         const result = await login({
-            email: form.get("email") as string,
-            password: form.get("password") as string,
+            email: String(form.get("email") ?? ""),
+            password: String(form.get("password") ?? ""),
         });
 
         setLoading(false);
@@ -37,101 +37,46 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-dvh bg-bg flex flex-col px-6 pb-8 max-w-sm mx-auto">
-            <div className="pt-8 pb-6">
-                <Logo size="md"/>
+        <GlassPanel as="section" aria-labelledby="titre-connexion" className="flex flex-col gap-5 p-6">
+            <div className="flex flex-col gap-1">
+                <h1 id="titre-connexion" className="[font:var(--uf-title)] tracking-(--uf-title-tracking)">
+                    Bon retour
+                </h1>
+                <p className="[font:var(--uf-body)] font-medium text-uf-ink-2">Connecte-toi à ton espace.</p>
             </div>
 
-            <div className="flex flex-col gap-5 flex-1">
-                <div>
-                    <h1 className="text-2xl font-bold text-ink tracking-tight mb-1">
-                        Bon retour 👋
-                    </h1>
-                    <p className="text-sm text-text-2">
-                        Connectez-vous à votre espace
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <FormField label="Adresse e-mail" name="email" type="email" autoComplete="email" placeholder="toi@exemple.fr" required />
+                <FormField
+                    label="Mot de passe"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    trailing={<PasswordVisibilityToggle visible={showPassword} onToggle={() => setShowPassword(!showPassword)} />}
+                />
+
+                {error && (
+                    <p role="alert" className="[font:var(--uf-body)]">
+                        {error}
                     </p>
-                </div>
+                )}
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="email" className="text-sm font-medium text-ink">
-                            Adresse e-mail
-                        </label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="vous@exemple.fr"
-                            required
-                            className="w-full border border-border rounded-lg px-3.5 py-3 text-sm text-ink outline-none focus:border-primary transition-colors"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <div className="flex justify-between items-center">
-                            <label htmlFor="password"
-                                   className="text-sm font-medium text-ink">
-                                Mot de passe
-                            </label>
-                            <span className="text-sm text-primary font-medium cursor-pointer">
-                  Mot de passe oublié ?
-                </span>
-                        </div>
-                        <div className="relative">
-                            <input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                required
-                                className="w-full border border-border rounded-lg px-3.5 py-3 pr-10 text-sm text-ink outline-none focus:border-primary transition-colors"
-                            />
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2">
-                                {showPassword ? <EyeOff size={16}/> :
-                                    <Eye size={16}/>}
-                            </button>
-                        </div>
-                    </div>
+                <Button type="submit" variant="primary" disabled={loading}>
+                    {loading ? "Connexion…" : "Se connecter"}
+                </Button>
+            </form>
 
-                    {error && (
-                        <p role="alert" className="text-sm text-red-600 font-medium">{error}</p>
-                    )}
+            <p className="text-center [font:var(--uf-note)] text-uf-ink-2">ou</p>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-primary text-white rounded-lg py-3.5 font-semibold text-sm tracking-tight disabled:opacity-60 transition-opacity"
-                    >
-                        {loading ? "Connexion…" : "Se connecter"}
-                    </button>
-                </form>
+            <GoogleButton label="Continuer avec Google" />
 
-                <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px bg-border"/>
-                    <span className="text-xs text-text-2 font-medium">ou</span>
-                    <div className="flex-1 h-px bg-border"/>
-                </div>
-
-                <GoogleButton label="Continuer avec Google"/>
-
-                <p className="text-center text-sm text-text-2">
-                    Pas encore de compte ?{" "}
-                    <Link href="/auth/register" className="text-primary font-semibold">
-                        S&apos; inscrire
-                    </Link>
-                </p>
-
-                <div className="flex items-center justify-center gap-2 mt-auto">
-                    <Shield size={13}
-                            className="text-text-2"/>
-                    <span className="text-xs text-text-2">
-                        Connexion sécurisée, chiffrement TLS 1.3
-                    </span>
-                </div>
-            </div>
-        </div>
+            <p className="text-center [font:var(--uf-body)] font-medium">
+                Pas encore de compte ?{" "}
+                <Link href="/auth/register" className="underline underline-offset-4">
+                    S&apos;inscrire
+                </Link>
+            </p>
+        </GlassPanel>
     );
 }

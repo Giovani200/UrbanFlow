@@ -6,6 +6,9 @@ const TransportModeSchema = zod.enum([
     "tram",
     "bus",
     "walk",
+    "metro",
+    "rer",
+    "train",
 ]);
 
 export const UpdatePreferencesDtoInSchema = zod.object({

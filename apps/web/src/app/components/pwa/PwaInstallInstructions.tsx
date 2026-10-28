@@ -1,5 +1,6 @@
 "use client";
 import { Share } from "lucide-react";
+import { Button } from "@/app/components/ui/Button";
 import { Modal } from "@/app/components/ui/Modal";
 
 interface PwaInstallInstructionsProps {
@@ -21,23 +22,20 @@ export function PwaInstallInstructions({ open, onOpenChange }: PwaInstallInstruc
             title="Installer UrbanFlow"
             description="Ajoutez UrbanFlow à votre écran d'accueil pour un accès rapide, hors-ligne et en plein écran."
         >
-            <ol className="flex flex-col gap-3 mb-4">
+            <ol className="mb-5 flex flex-col gap-3">
                 {STEPS.map((step, i) => (
                     <li key={step} className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-bg text-ink text-xs font-bold flex items-center justify-center shrink-0">
+                        <span className="uf-inset flex size-7 shrink-0 items-center justify-center rounded-full [font:var(--uf-note)] tabular-nums">
                             {i + 1}
                         </span>
-                        <span className="flex-1 text-sm text-ink">{step}</span>
-                        {i === 0 && <Share size={18} strokeWidth={1.75} className="shrink-0 text-text-2" />}
+                        <span className="flex-1 [font:var(--uf-body)] font-medium">{step}</span>
+                        {i === 0 && <Share size={18} strokeWidth={1.75} aria-hidden="true" className="shrink-0" />}
                     </li>
                 ))}
             </ol>
-            <button
-                onClick={() => onOpenChange(false)}
-                className="w-full rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
-            >
+            <Button variant="primary" onClick={() => onOpenChange(false)} className="w-full">
                 J&apos;ai compris
-            </button>
+            </Button>
         </Modal>
     );
 }

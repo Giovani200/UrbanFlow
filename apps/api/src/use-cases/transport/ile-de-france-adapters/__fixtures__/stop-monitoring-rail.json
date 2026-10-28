@@ -1,0 +1,4007 @@
+{
+ "Siri": {
+  "ServiceDelivery": {
+   "ResponseTimestamp": "2026-10-14T09:28:23.646Z",
+   "ProducerRef": "IVTR_HET",
+   "ResponseMessageIdentifier": "IVTR_HET:ResponseMessage:891c406c-8f4f-4753-8a1a-cd476a67dcbe:LOC:",
+   "StopMonitoringDelivery": [
+    {
+     "ResponseTimestamp": "2026-10-14T09:28:23.665Z",
+     "Version": "2.0",
+     "Status": "true",
+     "MonitoredStopVisit": [
+      {
+       "RecordedAtTime": "2026-10-14T09:28:18.282Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-f23d109c-1716-44fd-9afa-61befb1755ea:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::f23d109c-1716-44fd-9afa-61befb1755ea:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153636-153637"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T09:36:19.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T09:34:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153636"
+          },
+          {
+           "value": "153637"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.560Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-17-3f9e98bf-84b9-462b-8da7-6772f9a9bfe1:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::3f9e98bf-84b9-462b-8da7-6772f9a9bfe1:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "150314"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "DECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T09:39:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 17,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T09:39:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "150314"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:20.994Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-17-15ec299b-1ae0-453b-afdd-4dcc0925a49c:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::15ec299b-1ae0-453b-afdd-4dcc0925a49c:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:411482:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montargis"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151823"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "GAMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montargis"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T09:43:14.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T09:44:14.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 17,
+         "AimedArrivalTime": "2026-10-14T09:43:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T09:44:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151823"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:27:19.772Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-10-ab1d0323-cebd-40be-a08f-947c27fa9e58:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::ab1d0323-cebd-40be-a08f-947c27fa9e58:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152938"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "PUMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T09:44:56.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T09:45:56.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 10,
+         "AimedArrivalTime": "2026-10-14T09:44:50.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T09:45:50.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152938"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:24:45.986Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-11-d009b1a3-1881-46f5-930e-270730bb9e4d:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::d009b1a3-1881-46f5-930e-270730bb9e4d:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151431"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KOHO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T09:48:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 11,
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "AimedDepartureTime": "2026-10-14T09:48:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151431"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:07.006Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-b99dd846-f86d-40ae-9d5a-f4d11b6c4d66:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::b99dd846-f86d-40ae-9d5a-f4d11b6c4d66:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153638-153639"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T09:49:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T09:49:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153638"
+          },
+          {
+           "value": "153639"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.522Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-17-c829a514-5694-4530-bfb2-7b02894b1dd0:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::c829a514-5694-4530-bfb2-7b02894b1dd0:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "150316"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "DECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T09:54:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 17,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T09:54:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "150316"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:27:11.758Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-cd0e7504-b84f-4dec-8072-a3115ec0e2cf:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::cd0e7504-b84f-4dec-8072-a3115ec0e2cf:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153640-153641"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:04:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T10:04:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153640"
+          },
+          {
+           "value": "153641"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T03:59:46.011Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-20-b411ba45-7393-46c8-95d9-aea23f4d7f29:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::b411ba45-7393-46c8-95d9-aea23f4d7f29:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151536"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOHA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:05:30.000Z",
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 20,
+         "AimedArrivalTime": "2026-10-14T10:05:30.000Z",
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151536"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T08:53:36.022Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-16-51d6fcfe-8693-4492-b270-2b564d6d63c1:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::51d6fcfe-8693-4492-b270-2b564d6d63c1:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:45739:"
+        },
+        "DestinationName": [
+         {
+          "value": "Juvisy"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "158702"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "JUVA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Juvisy"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:05:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 16,
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "AimedDepartureTime": "2026-10-14T10:05:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "158702"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.623Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-20-ef7b59d0-ce99-4d54-9d1a-797f2e2c52fd:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::ef7b59d0-ce99-4d54-9d1a-797f2e2c52fd:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:43204:"
+        },
+        "DestinationName": [
+         {
+          "value": "Stade de France Saint-Denis"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "122306-122307"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "UECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Stade de France Saint-Denis"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:09:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 20,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T10:09:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "122306"
+          },
+          {
+           "value": "122307"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:20:15.728Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-35-c33702aa-1957-43bc-91ee-b452d6785a55:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::c33702aa-1957-43bc-91ee-b452d6785a55:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152843"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KUMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:13:00.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:14:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 35,
+         "AimedArrivalTime": "2026-10-14T10:13:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T10:14:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152843"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:08.760Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-16-a4b0389e-ae02-4425-b4ac-f35c2c0b3790:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::a4b0389e-ae02-4425-b4ac-f35c2c0b3790:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151944"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "POMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:17:17.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:18:17.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 16,
+         "AimedArrivalTime": "2026-10-14T10:16:20.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T10:17:20.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151944"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:14.219Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-4a88e5f9-44aa-4fff-8267-5f1fdca35434:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::4a88e5f9-44aa-4fff-8267-5f1fdca35434:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153642-153643"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:19:55.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T10:19:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153642"
+          },
+          {
+           "value": "153643"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.504Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-30-04cc6c9c-be68-4088-9b49-94507e53c63b:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::04cc6c9c-be68-4088-9b49-94507e53c63b:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "157807"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOVO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:24:20.000Z",
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 30,
+         "AimedArrivalTime": "2026-10-14T10:24:20.000Z",
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "157807"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.671Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-17-355d6822-6a3a-4d33-bfad-d5af9470ea95:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::355d6822-6a3a-4d33-bfad-d5af9470ea95:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "150318"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "DECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:24:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 17,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T10:24:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "150318"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:20.526Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-82e638d3-05b6-4520-bba3-86808e3e8501:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::82e638d3-05b6-4520-bba3-86808e3e8501:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153644-153645"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:35:12.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T10:34:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153644"
+          },
+          {
+           "value": "153645"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.609Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-0990ad28-7067-4ae6-9a06-109cab90b310:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::0990ad28-7067-4ae6-9a06-109cab90b310:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127260-127261"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:39:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T10:39:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127260"
+          },
+          {
+           "value": "127261"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T04:14:13.912Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-709c41e4-62c2-48a2-85f2-21e00f33f215:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::709c41e4-62c2-48a2-85f2-21e00f33f215:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152950"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "PUMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:43:00.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:44:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T10:43:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T10:44:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152950"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.635Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-41-62c94021-f679-4eb6-930f-f3693dad66bb:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::62c94021-f679-4eb6-930f-f3693dad66bb:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:411482:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montargis"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151841"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "GAMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montargis"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:43:00.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:44:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 41,
+         "AimedArrivalTime": "2026-10-14T10:43:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T10:44:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151841"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:13:47.511Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-11-57a7e43a-9603-4f9b-accb-cc9b05c46f09:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::57a7e43a-9603-4f9b-accb-cc9b05c46f09:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151433"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KOHO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:48:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 11,
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "AimedDepartureTime": "2026-10-14T10:48:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151433"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:28:21.224Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-d6119390-c79e-47ba-b7c7-3fc8d8b9f1a9:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::d6119390-c79e-47ba-b7c7-3fc8d8b9f1a9:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153646-153647"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T10:54:39.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T10:49:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153646"
+          },
+          {
+           "value": "153647"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.659Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-baf8d8f1-b98d-4e3c-a38a-7e475e81d2bd:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::baf8d8f1-b98d-4e3c-a38a-7e475e81d2bd:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127262-127263"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T10:54:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T10:54:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127262"
+          },
+          {
+           "value": "127263"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.515Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-168be6e1-d9c6-4cf2-a8b9-5d9b2b1ac744:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::168be6e1-d9c6-4cf2-a8b9-5d9b2b1ac744:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153648-153649"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471852:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:04:40.000Z",
+         "DeparturePlatformName": {
+          "value": "1B"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T11:04:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "1B"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153648"
+          },
+          {
+           "value": "153649"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T04:29:14.300Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-20-49e5c784-e313-4cd0-b833-6b0caffe6aa2:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::49e5c784-e313-4cd0-b833-6b0caffe6aa2:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151538"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOHA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:05:30.000Z",
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 20,
+         "AimedArrivalTime": "2026-10-14T11:05:30.000Z",
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151538"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.825Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-16-160378b7-b531-4405-af01-3d20209ca7d9:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::160378b7-b531-4405-af01-3d20209ca7d9:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:45739:"
+        },
+        "DestinationName": [
+         {
+          "value": "Juvisy"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "158704"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "JUVA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Juvisy"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:05:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 16,
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "AimedDepartureTime": "2026-10-14T11:05:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "158704"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.750Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-e2a339e5-16ee-41dd-9c3b-214812e30b1b:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::e2a339e5-16ee-41dd-9c3b-214812e30b1b:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127264-127265"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:09:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "AimedDepartureTime": "2026-10-14T11:09:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127264"
+          },
+          {
+           "value": "127265"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T03:18:15.721Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-35-3b1c3401-1bfa-4327-ab42-607e3a5c2e30:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::3b1c3401-1bfa-4327-ab42-607e3a5c2e30:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152845"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KUMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:13:00.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:14:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 35,
+         "AimedArrivalTime": "2026-10-14T11:13:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T11:14:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152845"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.632Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-39-daf21d37-ac9e-4308-a9cd-45fd797a1b1f:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::daf21d37-ac9e-4308-a9cd-45fd797a1b1f:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151950"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "POMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:14:00.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:15:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 39,
+         "AimedArrivalTime": "2026-10-14T11:14:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T11:15:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151950"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.497Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-becfa9cb-bbfe-42f3-9b15-c62f8f50f4c1:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::becfa9cb-bbfe-42f3-9b15-c62f8f50f4c1:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153650-153651"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:19:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T11:19:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153650"
+          },
+          {
+           "value": "153651"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.712Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-30-ab0e5d72-ecab-4801-841b-909074b734d2:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::ab0e5d72-ecab-4801-841b-909074b734d2:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "157809"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOVO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:24:20.000Z",
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 30,
+         "AimedArrivalTime": "2026-10-14T11:24:20.000Z",
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "157809"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.775Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-3238388c-a7c1-492e-823c-082d2a1f9d18:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::3238388c-a7c1-492e-823c-082d2a1f9d18:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127266-127267"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:24:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T11:24:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127266"
+          },
+          {
+           "value": "127267"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.656Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-2e597fdf-c074-43a4-ae52-64b621be8210:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::2e597fdf-c074-43a4-ae52-64b621be8210:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153652-153653"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:34:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T11:34:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153652"
+          },
+          {
+           "value": "153653"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.743Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-ec6f8f4d-79a1-4de5-8e5d-6f8331c3abe4:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::ec6f8f4d-79a1-4de5-8e5d-6f8331c3abe4:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127268-127269"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:39:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T11:39:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127268"
+          },
+          {
+           "value": "127269"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T09:24:47.457Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-27-ade5e3dd-0abd-49a0-a3bb-e4e60808f033:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::ade5e3dd-0abd-49a0-a3bb-e4e60808f033:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152952"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "PUMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:41:50.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:42:50.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 27,
+         "AimedArrivalTime": "2026-10-14T11:41:50.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T11:42:50.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152952"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.739Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-41-011e4bd2-e342-4d14-aa32-99f682099339:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::011e4bd2-e342-4d14-aa32-99f682099339:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:411482:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montargis"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151843"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "GAMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montargis"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:43:00.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:44:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 41,
+         "AimedArrivalTime": "2026-10-14T11:43:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T11:44:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151843"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T04:03:45.164Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-11-5e5f4ff7-80fd-4319-9f71-5728472999a2:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::5e5f4ff7-80fd-4319-9f71-5728472999a2:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151435"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KOHO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:48:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 11,
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "AimedDepartureTime": "2026-10-14T11:48:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151435"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.608Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-8738fa7c-bbbe-4aa4-b25b-5d3b6e4d96bd:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::8738fa7c-bbbe-4aa4-b25b-5d3b6e4d96bd:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153654-153655"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T11:49:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T11:49:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153654"
+          },
+          {
+           "value": "153655"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.738Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-a7b3ec67-33b6-4706-aaf4-f561049636db:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::a7b3ec67-33b6-4706-aaf4-f561049636db:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127270-127271"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T11:54:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T11:54:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127270"
+          },
+          {
+           "value": "127271"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.646Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-735a8a2a-465e-4030-a924-a6b75becb737:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::735a8a2a-465e-4030-a924-a6b75becb737:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153656-153657"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:04:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T12:04:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153656"
+          },
+          {
+           "value": "153657"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T04:52:45.629Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-20-1245404c-fff8-46a0-9ed6-35838b63478c:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::1245404c-fff8-46a0-9ed6-35838b63478c:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151550"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOHA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472568:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:05:30.000Z",
+         "DeparturePlatformName": {
+          "value": "2C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 20,
+         "AimedArrivalTime": "2026-10-14T12:05:30.000Z",
+         "ArrivalPlatformName": {
+          "value": "2C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151550"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.947Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-16-a2afccae-c220-4743-84c7-f3930f59f561:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::a2afccae-c220-4743-84c7-f3930f59f561:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:45739:"
+        },
+        "DestinationName": [
+         {
+          "value": "Juvisy"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "158706"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "JUVA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Juvisy"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "ExpectedDepartureTime": "2026-10-14T12:05:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 16,
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "AimedDepartureTime": "2026-10-14T12:05:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "158706"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.926Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-97bcbb61-2083-4577-a5ab-6f547d20221f:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::97bcbb61-2083-4577-a5ab-6f547d20221f:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127272-127273"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T12:09:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T12:09:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127272"
+          },
+          {
+           "value": "127273"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T04:17:46.713Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-35-f8f9a4b0-9355-4ab3-934d-32daef1cf137:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::f8f9a4b0-9355-4ab3-934d-32daef1cf137:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47910:"
+        },
+        "DestinationName": [
+         {
+          "value": "Montereau"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "152851"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "KUMO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Montereau"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472714:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:13:00.000Z",
+         "DeparturePlatformName": {
+          "value": "1"
+         },
+         "ExpectedDepartureTime": "2026-10-14T12:14:00.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 35,
+         "AimedArrivalTime": "2026-10-14T12:13:00.000Z",
+         "ArrivalPlatformName": {
+          "value": "1"
+         },
+         "AimedDepartureTime": "2026-10-14T12:14:00.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "152851"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.833Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-38-430ec2e8-5ddf-4ad9-b7fc-74ba44c7e99d:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01731:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::430ec2e8-5ddf-4ad9-b7fc-74ba44c7e99d:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:470195:"
+        },
+        "DestinationName": [
+         {
+          "value": "Paris Gare de Lyon"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "151954"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "POMA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Paris Gare de Lyon"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:472572:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:16:30.000Z",
+         "DeparturePlatformName": {
+          "value": "2"
+         },
+         "ExpectedDepartureTime": "2026-10-14T12:17:30.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 38,
+         "AimedArrivalTime": "2026-10-14T12:16:30.000Z",
+         "ArrivalPlatformName": {
+          "value": "2"
+         },
+         "AimedDepartureTime": "2026-10-14T12:17:30.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "151954"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.706Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-48-d6e230c7-64a4-483f-89d6-ce42f6756aac:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::d6e230c7-64a4-483f-89d6-ce42f6756aac:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "153658-153659"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZECO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471708:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:19:40.000Z",
+         "DeparturePlatformName": {
+          "value": "A"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 48,
+         "AimedArrivalTime": "2026-10-14T12:19:40.000Z",
+         "ArrivalPlatformName": {
+          "value": "A"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "153658"
+          },
+          {
+           "value": "153659"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.809Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-30-c6597f43-8c74-4ec7-b0ad-c0798556b377:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::c6597f43-8c74-4ec7-b0ad-c0798556b377:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47909:"
+        },
+        "DestinationName": [
+         {
+          "value": "Melun"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "157811"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "ZOVO"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "ArrivalStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471941:"
+          }
+         },
+         "ExpectedArrivalTime": "2026-10-14T12:24:20.000Z",
+         "DeparturePlatformName": {
+          "value": "1C"
+         },
+         "DepartureStatus": "onTime",
+         "Order": 30,
+         "AimedArrivalTime": "2026-10-14T12:24:20.000Z",
+         "ArrivalPlatformName": {
+          "value": "1C"
+         },
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "157811"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "shortTrain"
+        ],
+        "DirectionRef": {
+         "value": "Aller"
+        }
+       }
+      },
+      {
+       "RecordedAtTime": "2026-10-14T01:00:46.859Z",
+       "ItemIdentifier": "SNCF_MAGENTA_PRD:Item::47909-25-aa0ed60a-7562-46f2-8d54-4265aa44a16b:",
+       "MonitoringRef": {
+        "value": "STIF:StopArea:SP:47909:"
+       },
+       "MonitoredVehicleJourney": {
+        "LineRef": {
+         "value": "STIF:Line::C01728:"
+        },
+        "OperatorRef": {},
+        "FramedVehicleJourneyRef": {
+         "DataFrameRef": {
+          "value": "any"
+         },
+         "DatedVehicleJourneyRef": "SNCF_MAGENTA_PRD:VehicleJourney::aa0ed60a-7562-46f2-8d54-4265aa44a16b:LOC"
+        },
+        "DirectionName": [],
+        "DestinationRef": {
+         "value": "STIF:StopArea:SP:47876:"
+        },
+        "DestinationName": [
+         {
+          "value": "Goussainville"
+         }
+        ],
+        "VehicleJourneyName": [
+         {
+          "value": "127274-127275"
+         }
+        ],
+        "JourneyNote": [
+         {
+          "value": "FECA"
+         }
+        ],
+        "MonitoredCall": {
+         "StopPointName": [
+          {
+           "value": "Melun"
+          }
+         ],
+         "VehicleAtStop": false,
+         "DestinationDisplay": [
+          {
+           "value": "Goussainville"
+          }
+         ],
+         "DepartureStopAssignment": {
+          "ExpectedQuayRef": {
+           "value": "STIF:StopPoint:Q:471039:"
+          }
+         },
+         "DeparturePlatformName": {
+          "value": "2B"
+         },
+         "ExpectedDepartureTime": "2026-10-14T12:24:40.000Z",
+         "DepartureStatus": "onTime",
+         "Order": 25,
+         "ArrivalPlatformName": {
+          "value": "2B"
+         },
+         "AimedDepartureTime": "2026-10-14T12:24:40.000Z",
+         "ArrivalStatus": "onTime"
+        },
+        "TrainNumbers": {
+         "TrainNumberRef": [
+          {
+           "value": "127274"
+          },
+          {
+           "value": "127275"
+          }
+         ]
+        },
+        "VehicleFeatureRef": [
+         "longTrain"
+        ],
+        "DirectionRef": {
+         "value": "Retour"
+        }
+       }
+      }
+     ],
+     "StopLineNotice": [],
+     "ServiceException": []
+    }
+   ]
+  }
+ }
+}

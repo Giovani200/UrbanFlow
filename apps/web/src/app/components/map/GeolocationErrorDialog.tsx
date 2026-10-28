@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/app/components/ui/Button";
 import { Modal } from "@/app/components/ui/Modal";
 
 type GeolocationErrorVariant = "denied" | "unavailable";
@@ -16,7 +17,7 @@ const MESSAGES: Record<GeolocationErrorVariant, { title: string; description: st
     },
     unavailable: {
         title: "Position indisponible",
-        description: "Votre appareil n'a pas pu déterminer votre position pour le moment. Vérifiez votre connexion ou réessayez dans un instant. Vous pouvez inscrire directement votre dresse",
+        description: "Votre appareil n'a pas pu déterminer votre position pour le moment. Vérifiez votre connexion ou réessayez dans un instant. Vous pouvez aussi saisir directement votre adresse.",
     },
 };
 
@@ -25,11 +26,9 @@ export function GeolocationErrorDialog({open, onOpenChange, variant }: Geolocati
 
     return (
         <Modal open={open} onOpenChange={onOpenChange} title={title} description={description}>
-            <button
-                onClick={() => onOpenChange(false)} className="w-full rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
-            >
+            <Button variant="primary" onClick={() => onOpenChange(false)} className="w-full">
                 Compris
-            </button>
+            </Button>
         </Modal>
     );
 }

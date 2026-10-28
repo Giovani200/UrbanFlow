@@ -3,23 +3,30 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Check } from "lucide-react";
-import { Logo } from "@/app/components/ui/Logo";
-import { usersService } from "@/app/services/users.service";
 import { GoogleButton } from "@/app/components/auth/GoogleButton";
+import { PasswordVisibilityToggle } from "@/app/components/auth/PasswordVisibilityToggle";
+import { Button } from "@/app/components/ui/Button";
+import { FormField } from "@/app/components/ui/FormField";
+import { GlassPanel } from "@/app/components/ui/GlassPanel";
+import { usersService } from "@/app/services/users.service";
 
+const STRENGTH_RULES = [/.{8,}/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/];
+const STRENGTH_LABELS = ["Faible", "Faible", "Moyen", "Bon", "Fort"];
+
+/** Force du mot de passe : segments pleins et un mot, jamais la couleur seule. */
 function PasswordStrength({ password }: { password: string }) {
-  const score = [/.{8,}/, /[A-Z]/, /[0-9]/, /[^A-Za-z0-9]/].filter((r) => r.test(password)).length;
-  const labels = ["", "Faible", "Moyen", "Bon", "Fort"];
-  const colors = ["", "bg-red-500", "bg-amber-500", "bg-blue-500", "bg-green-500"];
-  const textColors = ["", "text-red-500", "text-amber-500", "text-blue-500", "text-green-500"];
   if (!password) return null;
+  const score = STRENGTH_RULES.filter((rule) => rule.test(password)).length;
   return (
-    <div className="flex items-center gap-1 mt-1">
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className={`flex-1 h-1 rounded-full ${i <= score ? colors[score] : "bg-border"}`} />
+    <div className="flex items-center gap-1 px-1">
+      {STRENGTH_RULES.map((_, index) => (
+        <span
+          key={index}
+          aria-hidden="true"
+          className={`h-1.5 flex-1 rounded-full ${index < score ? "bg-uf-ink" : "uf-inset"}`}
+        />
       ))}
-      <span className={`text-xs ml-1 ${textColors[score]}`}>{labels[score]}</span>
+      <span className="ml-1 [font:var(--uf-note)]">Sécurité : {STRENGTH_LABELS[score]}</span>
     </div>
   );
 }
@@ -28,24 +35,24 @@ export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [rgpd, setRgpd] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!rgpd) {
-      setError("Vous devez accepter la politique de confidentialité");
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!acceptedTerms) {
+      setError("Tu dois accepter la politique de confidentialité");
       return;
     }
     setError(null);
     setLoading(true);
 
-    const form = new FormData(e.currentTarget);
+    const form = new FormData(event.currentTarget);
     const result = await usersService.register({
-      email: form.get("email") as string,
-      name: form.get("name") as string,
-      password: form.get("password") as string,
+      email: String(form.get("email") ?? ""),
+      name: String(form.get("name") ?? ""),
+      password: String(form.get("password") ?? ""),
       acceptedTerms: true,
     });
 
@@ -58,78 +65,68 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-surface flex flex-col px-6 pb-8 max-w-sm mx-auto">
-      <div className="pt-8 pb-6">
-        <Logo size="md" />
+    <GlassPanel as="section" aria-labelledby="titre-inscription" className="flex flex-col gap-5 p-6">
+      <div className="flex flex-col gap-1">
+        <h1 id="titre-inscription" className="[font:var(--uf-title)] tracking-(--uf-title-tracking)">
+          Créer un compte
+        </h1>
+        <p className="[font:var(--uf-body)] font-medium text-uf-ink-2">Pour retrouver tes adresses, tes trajets et tes réglages.</p>
       </div>
 
-      <div className="flex flex-col gap-5 flex-1">
-        <div>
-          <h1 className="text-2xl font-bold text-ink tracking-tight mb-1">Créer un compte</h1>
-          <p className="text-sm text-text-2">Rejoignez la communauté UrbanFlow</p>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <FormField label="Prénom et nom" name="name" type="text" autoComplete="name" placeholder="Thomas Dupont" required />
+        <FormField label="Adresse e-mail" name="email" type="email" autoComplete="email" placeholder="toi@exemple.fr" required />
+        <div className="flex flex-col gap-2">
+          <FormField
+            label="Mot de passe, 8 caractères minimum"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            required
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            trailing={<PasswordVisibilityToggle visible={showPassword} onToggle={() => setShowPassword(!showPassword)} />}
+          />
+          <PasswordStrength password={password} />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className="text-sm font-medium text-ink">Prénom et nom</label>
-            <input id="name" name="name" type="text" placeholder="Thomas Dupont" required
-              className="w-full border border-border rounded-lg px-3.5 py-3 text-sm text-ink outline-none focus:border-primary transition-colors" />
-          </div>
+        <label className="uf-inset flex items-start gap-3 rounded-uf-inset p-4 [font:var(--uf-note)]">
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(event) => setAcceptedTerms(event.target.checked)}
+            className="mt-0.5 size-5 shrink-0 accent-(--uf-ink)"
+          />
+          <span>
+            J&apos;accepte la{" "}
+            <Link href="/confidentialite" className="underline underline-offset-4">
+              politique de confidentialité
+            </Link>{" "}
+            et le traitement de mes données personnelles conformément au RGPD.
+          </span>
+        </label>
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-sm font-medium text-ink">Adresse e-mail</label>
-            <input id="email" name="email" type="email" placeholder="vous@exemple.fr" required
-              className="w-full border border-border rounded-lg px-3.5 py-3 text-sm text-ink outline-none focus:border-primary transition-colors" />
-          </div>
+        {error && (
+          <p role="alert" className="[font:var(--uf-body)]">
+            {error}
+          </p>
+        )}
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-ink">Mot de passe</label>
-            <div className="relative">
-              <input id="password" name="password" type={showPassword ? "text" : "password"}
-                placeholder="8 caractères minimum" required value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-border rounded-lg px-3.5 py-3 pr-10 text-sm text-ink outline-none focus:border-primary transition-colors" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2">
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            <PasswordStrength password={password} />
-          </div>
+        <Button type="submit" variant="primary" disabled={loading}>
+          {loading ? "Inscription…" : "S'inscrire"}
+        </Button>
+      </form>
 
-          <div className="flex items-start gap-3 p-3.5 bg-bg rounded-xl border border-border">
-            <button type="button" onClick={() => setRgpd(!rgpd)}
-              className={`w-5 h-5 rounded flex items-center justify-center shrink-0 mt-0.5 border-2 transition-colors ${rgpd ? "bg-primary border-primary" : "bg-white border-border"}`}>
-              {rgpd && <Check size={11} color="white" strokeWidth={3} />}
-            </button>
-            <p className="text-sm text-text-2 leading-relaxed">
-              J&apos;accepte la{" "}
-              <Link href="/confidentialite" className="text-primary font-medium">politique de confidentialité</Link>{" "}
-              et le traitement de mes données personnelles conformément au RGPD.
-            </p>
-          </div>
+      <p className="text-center [font:var(--uf-note)] text-uf-ink-2">ou</p>
 
-          {error && <p role="alert" className="text-sm text-red-600 font-medium">{error}</p>}
+      <GoogleButton label="S'inscrire avec Google" />
 
-          <button type="submit" disabled={loading}
-            className="w-full bg-primary text-white rounded-lg py-3.5 font-semibold text-sm tracking-tight disabled:opacity-60 transition-opacity">
-            {loading ? "Inscription…" : "S'inscrire"}
-          </button>
-        </form>
-
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-text-2 font-medium">ou</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <GoogleButton label="S'inscrire avec Google" />
-
-        <p className="text-center text-sm text-text-2">
-          Déjà un compte ?{" "}
-          <Link href="/auth/login" className="text-primary font-semibold">Se connecter</Link>
-        </p>
-      </div>
-    </div>
+      <p className="text-center [font:var(--uf-body)] font-medium">
+        Déjà un compte ?{" "}
+        <Link href="/auth/login" className="underline underline-offset-4">
+          Se connecter
+        </Link>
+      </p>
+    </GlassPanel>
   );
 }

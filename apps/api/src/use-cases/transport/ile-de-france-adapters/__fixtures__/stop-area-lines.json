@@ -1,0 +1,929 @@
+{
+ "pagination": {
+  "total_result": 2,
+  "start_page": 0,
+  "items_per_page": 25,
+  "items_on_page": 2
+ },
+ "feed_publishers": [
+  {
+   "id": "IDFM:idfm_netex",
+   "name": "idfm_netex",
+   "url": "",
+   "license": "private"
+  },
+  {
+   "id": "IDFM:transilien_netex",
+   "name": "transilien_netex",
+   "url": "",
+   "license": "private"
+  }
+ ],
+ "disruptions": [
+  {
+   "id": "0d129169-5e72-4b45-870c-a836ba5c91fa",
+   "disruption_id": "8acaa967-8d57-4295-9dff-02c7bc78a44d",
+   "impact_id": "0d129169-5e72-4b45-870c-a836ba5c91fa",
+   "application_periods": [
+    {
+     "begin": "20260922T040000",
+     "end": "20261231T230000"
+    }
+   ],
+   "publication_period": {
+    "begin": "20260921T100000",
+    "end": "20261231T233000"
+   },
+   "status": "active",
+   "updated_at": "20260918T143011",
+   "cause": "perturbation",
+   "category": "Incidents",
+   "severity": {
+    "name": "information",
+    "effect": "OTHER_EFFECT",
+    "color": "#43B77A",
+    "priority": 60
+   },
+   "messages": [
+    {
+     "text": "Melun_arrêt Thiers Pouillot Supprimé",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+      "name": "titre",
+      "types": [
+       "title"
+      ]
+     }
+    },
+    {
+     "text": "Melun_arrêt Thiers Pouillot Supprimé",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "17eac900-7a07-11e8-a990-005056a47b86",
+      "name": "notification",
+      "types": [
+       "notification"
+      ]
+     }
+    },
+    {
+     "text": "<p>En raison des travaux sur l'avenue Thiers<br>A compter du mardi 22 septembre, <br>l'arrêt Thiers Pouillot est supprimé.<br>Merci de votre compréhension</p>",
+     "channel": {
+      "content_type": "text/html",
+      "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+      "name": "moteur",
+      "types": [
+       "web"
+      ]
+     }
+    }
+   ],
+   "impacted_objects": [
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00881",
+      "name": "Grand Melun Bus 3601",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00881",
+       "name": "3601",
+       "code": "3601",
+       "color": "FF5A00",
+       "text_color": "000000",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518024"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00881:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "045400",
+       "closing_time": "232300",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    },
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00875",
+      "name": "Grand Melun Bus 3604",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00875",
+       "name": "3604",
+       "code": "3604",
+       "color": "FF1400",
+       "text_color": "FFFFFF",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518020"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00875:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "044600",
+       "closing_time": "232700",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    }
+   ],
+   "uri": "0d129169-5e72-4b45-870c-a836ba5c91fa",
+   "disruption_uri": "8acaa967-8d57-4295-9dff-02c7bc78a44d",
+   "contributor": "shortterm.tr_idfm"
+  },
+  {
+   "id": "94bb8673-c06a-48dd-9541-fa79c271535f",
+   "disruption_id": "574b8146-ee00-46c8-b4d6-e4d2e6195499",
+   "impact_id": "94bb8673-c06a-48dd-9541-fa79c271535f",
+   "application_periods": [
+    {
+     "begin": "20260925T040000",
+     "end": "20261231T230000"
+    }
+   ],
+   "publication_period": {
+    "begin": "20260924T170000",
+    "end": "20261231T233000"
+   },
+   "status": "active",
+   "updated_at": "20260924T170013",
+   "cause": "perturbation",
+   "category": "Incidents",
+   "severity": {
+    "name": "information",
+    "effect": "OTHER_EFFECT",
+    "color": "#43B77A",
+    "priority": 60
+   },
+   "messages": [
+    {
+     "text": "<p>Information voyageurs<br>Dans le cadre des travaux réalisés avenue Thiers, l'accès PMR à l'arrêt Gare Thiers direction Melun, ne pourra plus être assuré temporairement.<br>Nous invitons les personnes à mobilité réduite à se reporter vers l'arrêt accessible le plus proche durant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée</p>",
+     "channel": {
+      "content_type": "text/html",
+      "id": "fccd7438-7a06-11e8-ab20-005056a47b86",
+      "name": "email",
+      "types": [
+       "email"
+      ]
+     }
+    },
+    {
+     "text": "Accès PMR temporairement indisponible",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "17eac900-7a07-11e8-a990-005056a47b86",
+      "name": "notification",
+      "types": [
+       "notification"
+      ]
+     }
+    },
+    {
+     "text": "Accès PMR temporairement indisponible",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+      "name": "titre",
+      "types": [
+       "title"
+      ]
+     }
+    },
+    {
+     "text": "<p>Information voyageurs<br>Dans le cadre des travaux réalisés avenue Thiers, l'accès PMR à l'arrêt Gare Thiers direction Melun, ne pourra plus être assuré temporairement.<br>Nous invitons les personnes à mobilité réduite à se reporter vers l'arrêt accessible le plus proche durant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée</p>",
+     "channel": {
+      "content_type": "text/html",
+      "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+      "name": "moteur",
+      "types": [
+       "web"
+      ]
+     }
+    }
+   ],
+   "impacted_objects": [
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00881",
+      "name": "Grand Melun Bus 3601",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00881",
+       "name": "3601",
+       "code": "3601",
+       "color": "FF5A00",
+       "text_color": "000000",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518024"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00881:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "045400",
+       "closing_time": "232300",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    },
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00875",
+      "name": "Grand Melun Bus 3604",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00875",
+       "name": "3604",
+       "code": "3604",
+       "color": "FF1400",
+       "text_color": "FFFFFF",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518020"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00875:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "044600",
+       "closing_time": "232700",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    }
+   ],
+   "uri": "94bb8673-c06a-48dd-9541-fa79c271535f",
+   "disruption_uri": "574b8146-ee00-46c8-b4d6-e4d2e6195499",
+   "contributor": "shortterm.tr_idfm"
+  },
+  {
+   "id": "0391f43a-c653-4f9c-919b-808b89810c74",
+   "disruption_id": "a8096415-f229-438e-99bd-36bfcd22c837",
+   "impact_id": "0391f43a-c653-4f9c-919b-808b89810c74",
+   "application_periods": [
+    {
+     "begin": "20260928T040000",
+     "end": "20261030T230000"
+    }
+   ],
+   "publication_period": {
+    "begin": "20260926T100000",
+    "end": "20261030T233000"
+   },
+   "status": "active",
+   "updated_at": "20260924T174014",
+   "cause": "perturbation",
+   "category": "Incidents",
+   "severity": {
+    "name": "information",
+    "effect": "OTHER_EFFECT",
+    "color": "#43B77A",
+    "priority": 60
+   },
+   "messages": [
+    {
+     "text": "<p>À compter du lundi 28 septembre et jusqu'au 30 octobre, dans le cadre des travaux du réseau de chaleur, l'arrêt Porte de Paris ne sera plus desservi à son emplacement habituel.<br>Un arrêt provisoire est mis en place en bas de la rue, sur un poteau temporaire, afin d'assurer la prise en charge et la dépose des voyageurs pendant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée.</p>",
+     "channel": {
+      "content_type": "text/html",
+      "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+      "name": "moteur",
+      "types": [
+       "web"
+      ]
+     }
+    },
+    {
+     "text": "Travaux Réseau de Chaleur – Arrêt Porte de Paris",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+      "name": "titre",
+      "types": [
+       "title"
+      ]
+     }
+    },
+    {
+     "text": "<p>À compter du lundi 28 septembre et jusqu'au 30 octobre, dans le cadre des travaux du réseau de chaleur, l'arrêt Porte de Paris ne sera plus desservi à son emplacement habituel.<br>Un arrêt provisoire est mis en place en bas de la rue, sur un poteau temporaire, afin d'assurer la prise en charge et la dépose des voyageurs pendant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée.</p>",
+     "channel": {
+      "content_type": "text/html",
+      "id": "fccd7438-7a06-11e8-ab20-005056a47b86",
+      "name": "email",
+      "types": [
+       "email"
+      ]
+     }
+    },
+    {
+     "text": "Travaux Réseau de Chaleur – Arrêt Porte de Paris",
+     "channel": {
+      "content_type": "text/plain",
+      "id": "17eac900-7a07-11e8-a990-005056a47b86",
+      "name": "notification",
+      "types": [
+       "notification"
+      ]
+     }
+    }
+   ],
+   "impacted_objects": [
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00880",
+      "name": "Grand Melun Bus 3603",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00880",
+       "name": "3603",
+       "code": "3603",
+       "color": "FF82B4",
+       "text_color": "000000",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518123"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00880:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "045100",
+       "closing_time": "232200",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    },
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00891",
+      "name": "Grand Melun Bus 3611",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00891",
+       "name": "3611",
+       "code": "3611",
+       "color": "00A092",
+       "text_color": "FFFFFF",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518036"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00891:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "051100",
+       "closing_time": "215900",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    },
+    {
+     "pt_object": {
+      "id": "line:IDFM:C01753",
+      "name": "Grand Melun Bus 3655",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C01753",
+       "name": "3655",
+       "code": "3655",
+       "color": "00643C",
+       "text_color": "FFFFFF",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518056"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C01753:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "121500",
+       "closing_time": "172200",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    },
+    {
+     "pt_object": {
+      "id": "line:IDFM:C00875",
+      "name": "Grand Melun Bus 3604",
+      "quality": 0,
+      "line": {
+       "id": "line:IDFM:C00875",
+       "name": "3604",
+       "code": "3604",
+       "color": "FF1400",
+       "text_color": "FFFFFF",
+       "codes": [
+        {
+         "type": "Netex_PrivateCode",
+         "value": "518518020"
+        },
+        {
+         "type": "source",
+         "value": "FR1:Line:C00875:"
+        }
+       ],
+       "physical_modes": [
+        {
+         "id": "physical_mode:Bus",
+         "name": "Bus",
+         "co2_emission_rate": {
+          "value": 92.0,
+          "unit": "gCO₂e/passenger-km"
+         }
+        }
+       ],
+       "commercial_mode": {
+        "id": "commercial_mode:Bus",
+        "name": "Bus"
+       },
+       "network": {
+        "id": "network:IDFM:1050",
+        "name": "Grand Melun",
+        "links": [],
+        "codes": [
+         {
+          "type": "source",
+          "value": "FR1:Network:1050:LOC"
+         }
+        ]
+       },
+       "opening_time": "044600",
+       "closing_time": "232700",
+       "geojson": {
+        "type": "MultiLineString",
+        "coordinates": []
+       },
+       "links": []
+      },
+      "embedded_type": "line"
+     }
+    }
+   ],
+   "uri": "0391f43a-c653-4f9c-919b-808b89810c74",
+   "disruption_uri": "a8096415-f229-438e-99bd-36bfcd22c837",
+   "contributor": "shortterm.tr_idfm"
+  }
+ ],
+ "context": {
+  "current_datetime": "20261014T112719",
+  "timezone": "Europe/Paris"
+ },
+ "lines": [
+  {
+   "id": "line:IDFM:C00881",
+   "name": "3601",
+   "code": "3601",
+   "color": "FF5A00",
+   "text_color": "000000",
+   "codes": [
+    {
+     "type": "Netex_PrivateCode",
+     "value": "518518024"
+    },
+    {
+     "type": "source",
+     "value": "FR1:Line:C00881:"
+    }
+   ],
+   "physical_modes": [
+    {
+     "id": "physical_mode:Bus",
+     "name": "Bus",
+     "co2_emission_rate": {
+      "value": 92.0,
+      "unit": "gCO₂e/passenger-km"
+     }
+    }
+   ],
+   "commercial_mode": {
+    "id": "commercial_mode:Bus",
+    "name": "Bus"
+   },
+   "network": {
+    "id": "network:IDFM:1050",
+    "name": "Grand Melun",
+    "links": [],
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR1:Network:1050:LOC"
+     }
+    ]
+   },
+   "opening_time": "045400",
+   "closing_time": "232300",
+   "geojson": {
+    "type": "MultiLineString",
+    "coordinates": []
+   },
+   "links": [
+    {
+     "templated": false,
+     "rel": "disruptions",
+     "internal": true,
+     "type": "disruption",
+     "id": "0d129169-5e72-4b45-870c-a836ba5c91fa"
+    },
+    {
+     "templated": false,
+     "rel": "disruptions",
+     "internal": true,
+     "type": "disruption",
+     "id": "94bb8673-c06a-48dd-9541-fa79c271535f"
+    }
+   ]
+  },
+  {
+   "id": "line:IDFM:C00875",
+   "name": "3604",
+   "code": "3604",
+   "color": "FF1400",
+   "text_color": "FFFFFF",
+   "codes": [
+    {
+     "type": "Netex_PrivateCode",
+     "value": "518518020"
+    },
+    {
+     "type": "source",
+     "value": "FR1:Line:C00875:"
+    }
+   ],
+   "physical_modes": [
+    {
+     "id": "physical_mode:Bus",
+     "name": "Bus",
+     "co2_emission_rate": {
+      "value": 92.0,
+      "unit": "gCO₂e/passenger-km"
+     }
+    }
+   ],
+   "commercial_mode": {
+    "id": "commercial_mode:Bus",
+    "name": "Bus"
+   },
+   "network": {
+    "id": "network:IDFM:1050",
+    "name": "Grand Melun",
+    "links": [],
+    "codes": [
+     {
+      "type": "source",
+      "value": "FR1:Network:1050:LOC"
+     }
+    ]
+   },
+   "opening_time": "044600",
+   "closing_time": "232700",
+   "geojson": {
+    "type": "MultiLineString",
+    "coordinates": []
+   },
+   "links": [
+    {
+     "templated": false,
+     "rel": "disruptions",
+     "internal": true,
+     "type": "disruption",
+     "id": "0d129169-5e72-4b45-870c-a836ba5c91fa"
+    },
+    {
+     "templated": false,
+     "rel": "disruptions",
+     "internal": true,
+     "type": "disruption",
+     "id": "0391f43a-c653-4f9c-919b-808b89810c74"
+    },
+    {
+     "templated": false,
+     "rel": "disruptions",
+     "internal": true,
+     "type": "disruption",
+     "id": "94bb8673-c06a-48dd-9541-fa79c271535f"
+    }
+   ]
+  }
+ ],
+ "links": [
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{line.id}",
+   "templated": true,
+   "rel": "lines",
+   "type": "line"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/networks/{network.id}",
+   "templated": true,
+   "rel": "networks",
+   "type": "network"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}",
+   "templated": true,
+   "rel": "lines",
+   "type": "lines"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/disruptions/{disruption.id}",
+   "templated": true,
+   "rel": "disruptions",
+   "type": "disruption"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/disruptions/{disruptions.id}",
+   "templated": true,
+   "rel": "disruptions",
+   "type": "disruptions"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/physical_modes/{physical_modes.id}",
+   "templated": true,
+   "rel": "physical_modes",
+   "type": "physical_modes"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/commercial_modes/{commercial_mode.id}",
+   "templated": true,
+   "rel": "commercial_modes",
+   "type": "commercial_mode"
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/route_schedules",
+   "rel": "route_schedules",
+   "type": "route_schedules",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/stop_schedules",
+   "rel": "stop_schedules",
+   "type": "stop_schedules",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/arrivals",
+   "rel": "arrivals",
+   "type": "arrivals",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/departures",
+   "rel": "departures",
+   "type": "departures",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/places_nearby",
+   "rel": "places_nearby",
+   "type": "places_nearby",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/calendars",
+   "rel": "calendars",
+   "type": "calendar",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/lines/{lines.id}/traffic_reports",
+   "rel": "disruptions",
+   "type": "disruption",
+   "templated": true
+  },
+  {
+   "href": "https://api-idfm.go.navitia.io/v1/coverage/idfm/stop_areas/stop_area:IDFM:61901/lines?depth=0",
+   "type": "first",
+   "templated": false
+  }
+ ]
+}

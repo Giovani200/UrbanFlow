@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Schibsted_Grotesk } from "next/font/google";
+import { Figtree, Sora } from "next/font/google";
+import { AmbianceScript } from "@/app/components/ambiance/AmbianceScript";
 import { Providers } from "@/app/components/Providers";
+import { AMBIANCE_THEME_COLORS } from "@/app/lib/ambiance";
 import "./css/globals.css";
 
-const schibstedGrotesk = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const fraunces = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
+const figtree = Figtree({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-sans", display: "swap" });
+const sora = Sora({ subsets: ["latin"], variable: "--font-display", display: "swap" });
 
 export const metadata: Metadata = {
   applicationName: "UrbanFlow",
   title: {
-    default: "UrbanFlow, Mobilité urbaine Grenoble",
+    default: "UrbanFlow, mobilité en Île-de-France",
     template: "%s · UrbanFlow",
   },
-  description: "Planificateur multimodal pour la métropole grenobloise",
+  description: "Trajets, correspondances et temps réel en Île-de-France",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#CC1B36",
+  themeColor: AMBIANCE_THEME_COLORS.jour,
 };
 
 export default function RootLayout({
@@ -30,11 +32,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${schibstedGrotesk.variable} ${fraunces.variable} h-full`}>
+    <html lang="fr" className={`${figtree.variable} ${sora.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <AmbianceScript />
+      </head>
       <body className="min-h-full flex flex-col">
         <a
           href="#contenu"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-uf-ink focus:px-5 focus:py-3 focus:text-[15px] focus:font-bold focus:text-uf-on-ink"
         >
           Aller au contenu principal
         </a>

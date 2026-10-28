@@ -1,7 +1,7 @@
-import type { NearbyTransportDtoOut, SharedVehicle, TransitStop } from "@urbanflow/app-front-back-lib";
+import type { NearbyTransportDtoOut, TransitStop } from "@urbanflow/app-front-back-lib";
 import { handleResponse } from "@/app/services/lib/http";
 
-export type { NearbyTransportDtoOut, SharedVehicle, TransitStop };
+export type { NearbyTransportDtoOut, TransitStop };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 

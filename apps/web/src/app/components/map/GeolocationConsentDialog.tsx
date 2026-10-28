@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/app/components/ui/Button";
 import { Modal } from "@/app/components/ui/Modal";
 
 interface GeolocationConsentDialogProps {
@@ -24,18 +25,12 @@ export function GeolocationConsentDialog(
             description="UrbanFlow utilise votre position pour centrer la carte et calculer vos itinéraires depuis l'endroit où vous êtes. Elle reste sur votre appareil et n'est jamais enregistrée sur nos serveurs."
         >
             <div className="flex gap-2.5">
-                <button
-                    onClick={onRefuse}
-                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm border border-border text-ink"
-                >
+                <Button variant="inset" onClick={onRefuse} className="h-[52px] flex-1">
                     Refuser
-                </button>
-                <button
-                    onClick={onAccept}
-                    className="flex-1 rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
-                >
+                </Button>
+                <Button variant="primary" onClick={onAccept} className="flex-1">
                     Accepter
-                </button>
+                </Button>
             </div>
         </Modal>
     );

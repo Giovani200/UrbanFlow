@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import {
     TripPlanningDtoIn,
     TripPlanningDtoInSchema,
@@ -7,11 +7,17 @@ import {
     TripMode,
     TripRoute,
     TripSegment,
+    TransitStatus,
 } from "@urbanflow/app-front-back-lib";
 import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
 import { CARBON_FACTORS } from "../../../shared/constants";
+import { isInIleDeFrance } from "../../../shared/geo/ile-de-france";
 import { OrsProfile, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
-import { OtpItinerary, OtpRoutingAdapter } from "../../transport/openTripPlanner-routing.adapter";
+import {
+    TRANSIT_ROUTING_PROVIDER,
+    type TransitItinerary,
+    type TransitRoutingProvider,
+} from "../../transport/transit.providers";
 
 // Pondérations par défaut si l'utilisateur n'a pas de profil.
 const DEFAULT_WEIGHTS = { weightCarbon: 50, weightTime: 30};
@@ -28,7 +34,7 @@ function normalize(value: number, min: number, max: number): number {
 export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, TripPlanningDtoOut> {
     constructor(
         private readonly orsRoutingAdapter: OrsRoutingAdapter,
-        private readonly otpRoutingAdapter: OtpRoutingAdapter,
+        @Inject(TRANSIT_ROUTING_PROVIDER) private readonly transitRoutingProvider: TransitRoutingProvider,
     ) {
         super(TripPlanningDtoInSchema, TripPlanningDtoOutSchema);
     }
@@ -37,16 +43,20 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
         const wheelchairAccess = dataIn.profile?.wheelchairAccess ?? false;
         const walkProfile: OrsProfile = wheelchairAccess ? "wheelchair" : "foot-walking";
 
+        const transitCovered = isInIleDeFrance(dataIn.origin) && isInIleDeFrance(dataIn.destination);
+
         const [walkResult, bikeResult, transitResult] = await Promise.allSettled([
             this.buildActiveRoute("walk", walkProfile, dataIn),
             this.buildActiveRoute("bike", "cycling-regular", dataIn),
-            this.buildTransitRoutes(dataIn, wheelchairAccess),
+            transitCovered ? this.buildTransitRoutes(dataIn, wheelchairAccess) : Promise.resolve([]),
         ]);
 
+        const transit = transitResult.status === "fulfilled" ? this.rankRoutes(transitResult.value, dataIn) : [];
         return {
             walk: walkResult.status === "fulfilled" ? walkResult.value : null,
             bike: bikeResult.status === "fulfilled" ? bikeResult.value : null,
-            transit: transitResult.status === "fulfilled" ? this.rankRoutes(transitResult.value, dataIn) : [],
+            transit,
+            transitStatus: this.transitStatusOf(transitResult.status, transit.length),
         };
     }
 
@@ -84,7 +94,7 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
         dataIn: TripPlanningDtoIn,
         wheelchairAccess: boolean,
     ): Promise<TripRoute[]> {
-        const itineraries = await this.otpRoutingAdapter.getItineraries(
+        const itineraries = await this.transitRoutingProvider.getItineraries(
             dataIn.origin,
             dataIn.destination,
             wheelchairAccess,
@@ -96,7 +106,14 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
             .map((itinerary) => this.toTransitRoute(itinerary));
     }
 
-    private toTransitRoute(itinerary: OtpItinerary): TripRoute {
+    private transitStatusOf(settlement: PromiseSettledResult<unknown>["status"], routeCount: number): TransitStatus {
+        if (settlement === "rejected") {
+            return "unavailable";
+        }
+        return routeCount > 0 ? "ok" : "no_result";
+    }
+
+    private toTransitRoute(itinerary: TransitItinerary): TripRoute {
         const segments: TripSegment[] = itinerary.legs.map((leg) => {
             const carbonGrams = this.segmentCarbon(leg.mode, leg.distanceMeters);
             return {
@@ -112,6 +129,11 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
                 lineColor: leg.lineColor,
                 lineTextColor: leg.lineTextColor,
                 intermediateStops: leg.intermediateStops,
+                dataFreshness: leg.dataFreshness,
+                scheduledDepartureTime: leg.scheduledDepartureTime,
+                expectedDepartureTime: leg.expectedDepartureTime,
+                departureStopPointRef: leg.departureStopPointRef,
+                arrivalStopPointRef: leg.arrivalStopPointRef,
             };
         });
 

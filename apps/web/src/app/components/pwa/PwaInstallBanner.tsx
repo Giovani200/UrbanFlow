@@ -1,28 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Download, X } from "lucide-react";
+import { Button } from "@/app/components/ui/Button";
+import { GlassPanel } from "@/app/components/ui/GlassPanel";
 import { usePwaInstall } from "@/app/hooks/usePwaInstall";
 import { PwaInstallInstructions } from "./PwaInstallInstructions";
 
+/** Proposition d'installation, posée en bas de l'écran sans animation (le design n'en garde qu'une par écran). */
 export function PwaInstallBanner() {
     const { shouldShowBanner, isIOS, promptInstall, dismiss } = usePwaInstall();
-    const [visible, setVisible] = useState(false);
     const [showInstructions, setShowInstructions] = useState(false);
 
-    useEffect(() => {
-        if (!shouldShowBanner) return;
-        const id = requestAnimationFrame(() =>
-            requestAnimationFrame(() => setVisible(true))
-        );
-        return () => cancelAnimationFrame(id);
-    }, [shouldShowBanner]);
-
     if (!shouldShowBanner) return null;
-
-    function close() {
-        setVisible(false);
-        setTimeout(dismiss, 280);
-    }
 
     async function handleInstall() {
         if (isIOS) {
@@ -34,55 +23,37 @@ export function PwaInstallBanner() {
 
     return (
         <>
-            <div
-                role="region"
-                aria-label="Installer l'application"
-                className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border rounded-t-2xl shadow-2xl px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
-                style={{
-                    transform: visible ? "translateY(0)" : "translateY(100%)",
-                    transition: "transform 280ms cubic-bezier(0.32,0.72,0,1)",
-                }}
-            >
-                <div className="mx-auto w-full max-w-md">
+            <div className="fixed right-0 bottom-0 left-0 z-40 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+                <GlassPanel as="aside" aria-label="Installer l'application" className="mx-auto flex w-full max-w-md flex-col gap-3 p-4">
                     <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                            <Download size={20} strokeWidth={1.75} color="white" />
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-uf-avatar bg-uf-ink text-uf-on-ink">
+                            <Download size={20} strokeWidth={1.75} aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                            <p className="[font:var(--uf-time)]">Installer UrbanFlow</p>
+                            <p className="[font:var(--uf-note)] text-uf-ink-2">Accès rapide, hors ligne, plein écran.</p>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[15px] font-bold text-ink">Installer UrbanFlow</p>
-                            <p className="mt-0.5 text-xs text-text-2">Accès rapide, hors-ligne, plein écran.</p>
-                        </div>
-                        <button
-                            onClick={close}
-                            aria-label="Fermer"
-                            className="-mr-1 -mt-1 flex h-8 w-8 items-center justify-center rounded-lg text-text-2 shrink-0"
-                        >
-                            <X size={18} strokeWidth={1.75} />
+                        <button type="button" onClick={dismiss} aria-label="Fermer" className="-mt-1 -mr-1 flex size-11 shrink-0 items-center justify-center rounded-full">
+                            <X size={18} strokeWidth={1.75} aria-hidden="true" />
                         </button>
                     </div>
 
-                    <div className="mt-3 flex gap-2.5">
-                        <button
-                            onClick={close}
-                            className="flex-1 rounded-lg py-2.5 font-semibold text-sm border border-border text-ink"
-                        >
+                    <div className="flex gap-2.5">
+                        <Button variant="inset" onClick={dismiss} className="flex-1">
                             Plus tard
-                        </button>
-                        <button
-                            onClick={handleInstall}
-                            className="flex-1 rounded-lg py-2.5 font-semibold text-sm bg-primary text-white"
-                        >
+                        </Button>
+                        <Button variant="primary" onClick={handleInstall} className="h-11 flex-1">
                             Installer
-                        </button>
+                        </Button>
                     </div>
-                </div>
+                </GlassPanel>
             </div>
 
             <PwaInstallInstructions
                 open={showInstructions}
                 onOpenChange={(open) => {
                     setShowInstructions(open);
-                    if (!open) close();
+                    if (!open) dismiss();
                 }}
             />
         </>

@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Leaf, Target } from "lucide-react";
+import Link from "next/link";
+import { Leaf, Target } from "lucide-react";
 import type { CarbonSummaryDtoOut, Period } from "@urbanflow/app-front-back-lib";
+import { buttonClassName } from "@/app/components/ui/Button";
+import { ChoiceChip } from "@/app/components/ui/ChoiceChip";
+import { GlassPanel } from "@/app/components/ui/GlassPanel";
+import { PageShell } from "@/app/components/ui/PageShell";
 import { useCarbonSummary } from "@/app/hooks/useCarbonSummary";
+import { formatKilograms } from "@/app/lib/format";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 
 const PERIODS: { id: Period; label: string; savedLabel: string }[] = [
@@ -13,220 +18,189 @@ const PERIODS: { id: Period; label: string; savedLabel: string }[] = [
   { id: "year", label: "Année", savedLabel: "cette année" },
 ];
 
-function formatKg(grams: number): string {
-  return (grams / 1000).toFixed(1).replace(".", ",");
-}
+const SOLID_BAR = "bg-uf-ink";
+const HATCHED_BAR = "border border-uf-ink bg-[repeating-linear-gradient(135deg,var(--uf-ink)_0_2px,transparent_2px_6px)]";
 
 function formatCarbon(grams: number): string {
-  if (grams < 1000) return `${Math.round(grams)} g`;
-  return `${(grams / 1000).toFixed(1).replace(".", ",")} kg`;
+  return grams < 1000 ? `${Math.round(grams)} g` : `${formatKilograms(grams)} kg`;
 }
 
 export default function CarbonPage() {
   const [period, setPeriod] = useState<Period>("month");
-  const router = useRouter();
   const { summary, loading, isAnonymous } = useCarbonSummary(period);
   const periodMeta = PERIODS.find((entry) => entry.id === period) ?? PERIODS[1];
+  const hasTrips = summary !== null && summary.tripCount > 0;
 
   return (
-    <div className="flex flex-col h-dvh bg-bg font-sans">
-      <div className="bg-white border-b border-border px-5 pt-12 pb-3.5 flex items-center gap-3 shrink-0">
-        <button
-          onClick={() => router.push("/")}
-          className="w-9 h-9 rounded-lg border border-border flex items-center justify-center"
-        >
-          <ArrowLeft size={16} className="text-ink" />
-        </button>
-        <h1 className="flex-1 text-[17px] font-semibold text-ink">Mon empreinte</h1>
-        <Leaf size={18} className="text-success" />
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8 flex flex-col gap-3">
-        <div className="flex bg-white rounded-[10px] p-1 border border-border">
+    <PageShell title="Mon empreinte">
+      <GlassPanel as="section" aria-label="Bilan" className="flex flex-col gap-4 p-5">
+        <div className="flex flex-wrap gap-2">
           {PERIODS.map((entry) => (
-            <button
-              key={entry.id}
-              onClick={() => setPeriod(entry.id)}
-              className={`flex-1 py-2 rounded-lg text-[13px] transition-colors ${
-                period === entry.id ? "bg-primary text-white font-semibold" : "text-text-2"
-              }`}
-            >
+            <ChoiceChip key={entry.id} selected={period === entry.id} onClick={() => setPeriod(entry.id)}>
               {entry.label}
-            </button>
+            </ChoiceChip>
           ))}
         </div>
 
-        {loading ? (
-          <Placeholder text="Chargement…" />
-        ) : !summary || summary.tripCount === 0 ? (
-          <EmptyState isAnonymous={isAnonymous} />
-        ) : (
-          <>
-            {isAnonymous && (
-              <AnonymousBanner tripCount={summary.tripCount} onLogin={() => router.push("/auth/login")} />
-            )}
+        {loading && (
+          <p role="status" className="[font:var(--uf-body)] font-medium text-uf-ink-2">
+            Chargement…
+          </p>
+        )}
 
-            <div className="bg-white rounded-xl px-5 py-5 text-center">
-              <p className="text-[12px] font-semibold text-text-2 mb-2">
-                CO₂ économisé {periodMeta.savedLabel}
+        {!loading && !hasTrips && <EmptyState isAnonymous={isAnonymous} />}
+
+        {!loading && hasTrips && (
+          <>
+            {isAnonymous && <AnonymousNotice tripCount={summary.tripCount} />}
+            <div className="flex flex-col items-center gap-1 text-center">
+              <p className="[font:var(--uf-note)] text-uf-ink-2">CO₂ économisé {periodMeta.savedLabel}</p>
+              <p className="[font:var(--uf-title)] text-[54px] leading-none tabular-nums">{formatKilograms(summary.totalSavedGrams)}</p>
+              <p className="[font:var(--uf-body)] text-uf-ink-2">kg CO₂e</p>
+              <p className="uf-inset mt-2 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 [font:var(--uf-note)]">
+                <Leaf size={16} aria-hidden="true" />
+                {Math.round(summary.savedPercent)} % de moins qu&apos;en voiture
               </p>
-              <p className="font-mono text-[54px] font-bold text-ink leading-none tracking-tight">
-                {formatKg(summary.totalSavedGrams)}
-              </p>
-              <p className="text-[14px] text-text-2 mt-1 mb-3.5">kg CO₂eq</p>
-              <div className="inline-flex items-center gap-1.5 bg-green-50 rounded-[10px] px-3.5 py-1.5">
-                <Leaf size={14} className="text-success" />
-                <span className="text-[13px] font-semibold text-success">
-                  {Math.round(summary.savedPercent)}% de moins qu&apos;en voiture
-                </span>
-              </div>
-              <p className="text-[12px] text-text-2 mt-2.5">
-                Comme si tu avais évité{" "}
-                <span className="font-semibold text-ink">{Math.round(summary.equivalentCarKm)} km</span> en voiture.
+              <p className="mt-1 [font:var(--uf-note)] text-uf-ink-2">
+                Comme si tu avais évité <span className="text-uf-ink tabular-nums">{Math.round(summary.equivalentCarKm)} km</span> en
+                voiture.
               </p>
             </div>
-
-            <BucketChart buckets={summary.buckets} />
-
-            {summary.byMode.length > 0 && <ModeBreakdown byMode={summary.byMode} />}
-
-            {summary.goal && <GoalCard goal={summary.goal} />}
           </>
         )}
-      </div>
-    </div>
-  );
-}
+      </GlassPanel>
 
-function Placeholder({ text }: { text: string }) {
-  return <div className="bg-white rounded-xl px-5 py-10 text-center text-[13px] text-text-2">{text}</div>;
+      {!loading && hasTrips && (
+        <>
+          <BucketChart buckets={summary.buckets} />
+          {summary.byMode.length > 0 && <ModeBreakdown byMode={summary.byMode} />}
+          {summary.goal && <GoalCard goal={summary.goal} />}
+        </>
+      )}
+    </PageShell>
+  );
 }
 
 function EmptyState({ isAnonymous }: { isAnonymous: boolean }) {
   return (
-    <div className="bg-white rounded-xl px-5 py-10 text-center flex flex-col items-center gap-3">
-      <Leaf size={28} className="text-text-2" />
-      <p className="text-[15px] font-semibold text-ink">Aucun trajet enregistré</p>
-      <p className="text-[13px] text-text-2 leading-relaxed max-w-[280px]">
+    <div className="flex flex-col items-center gap-3 py-6 text-center">
+      <Leaf size={28} aria-hidden="true" />
+      <p className="[font:var(--uf-time)]">Aucun trajet enregistré</p>
+      <p className="max-w-[280px] [font:var(--uf-body)] font-medium text-uf-ink-2">
         Planifie un trajet, suis-le, et marque-le comme fait à l&apos;arrivée pour suivre ton empreinte carbone.
       </p>
       {isAnonymous && (
-        <p className="text-[12px] text-text-2">
-          Tes trajets sont gardés sur cet appareil (10 max). Connecte-toi pour l&apos;historique complet.
+        <p className="[font:var(--uf-note)] text-uf-ink-2">
+          Tes trajets sont gardés sur cet appareil (10 au plus). Connecte-toi pour l&apos;historique complet.
         </p>
       )}
     </div>
   );
 }
 
-function AnonymousBanner({ tripCount, onLogin }: { tripCount: number; onLogin: () => void }) {
+function AnonymousNotice({ tripCount }: { tripCount: number }) {
   return (
-    <button
-      onClick={onLogin}
-      className="bg-white border border-border rounded-xl px-4 py-3 text-left flex items-center gap-3"
-    >
+    <div className="uf-inset flex items-center gap-3 rounded-uf-inset py-2 pr-2 pl-4">
       <div className="flex-1">
-        <p className="text-[12px] font-semibold text-ink">Tes {tripCount} derniers trajets sur cet appareil</p>
-        <p className="text-[11px] text-text-2 mt-0.5">Connecte-toi pour l&apos;historique complet et tes objectifs.</p>
+        <p className="[font:var(--uf-note)]">Tes {tripCount} derniers trajets sur cet appareil</p>
+        <p className="[font:var(--uf-note)] text-uf-ink-2">Connecte-toi pour l&apos;historique complet et tes objectifs.</p>
       </div>
-      <span className="text-[12px] font-semibold text-primary shrink-0">Se connecter</span>
-    </button>
+      <Link href="/auth/login" className={buttonClassName("text", "shrink-0")}>
+        Se connecter
+      </Link>
+    </div>
   );
 }
 
 function BucketChart({ buckets }: { buckets: CarbonSummaryDtoOut["buckets"] }) {
   const max = Math.max(...buckets.map((bucket) => bucket.carbonGrams), 1);
   return (
-    <div className="bg-white rounded-xl p-4">
-      <p className="text-[13px] font-semibold text-ink mb-0.5">Ce que tes trajets ont émis</p>
-      <p className="text-[11px] text-text-2 mb-3">Plus la barre est basse, moins tu as émis.</p>
-      <div className="flex items-end gap-1.5 h-20">
+    <GlassPanel as="section" aria-labelledby="emissions" className="flex flex-col gap-3 p-5">
+      <div>
+        <h2 id="emissions" className="[font:var(--uf-time)]">Ce que tes trajets ont émis</h2>
+        <p className="[font:var(--uf-note)] text-uf-ink-2">Plus la barre est basse, moins tu as émis.</p>
+      </div>
+      <ul className="flex h-24 items-end gap-1.5">
         {buckets.map((bucket, index) => {
-          const good = bucket.carbonGrams <= bucket.savedGrams;
+          const performing = bucket.carbonGrams <= bucket.savedGrams;
           return (
-            <div key={index} className="flex-1 flex flex-col items-center gap-1">
-              <span className="text-[8px] font-mono text-text-2">{formatCarbon(bucket.carbonGrams)}</span>
-              <div
-                className="w-full rounded-t-[3px] min-h-[4px]"
-                style={{ height: `${(bucket.carbonGrams / max) * 60}px`, background: good ? "#16A34A" : "#B91C1C" }}
+            <li key={index} className="flex flex-1 flex-col items-center gap-1">
+              <span className="text-[11px] font-semibold text-uf-ink-2 tabular-nums">{formatCarbon(bucket.carbonGrams)}</span>
+              <span
+                aria-hidden="true"
+                className={`min-h-1 w-full rounded-t-[3px] ${performing ? SOLID_BAR : HATCHED_BAR}`}
+                style={{ height: `${(bucket.carbonGrams / max) * 60}px` }}
               />
-              <span className="text-[9px] font-medium text-text-2">{bucket.label}</span>
-            </div>
+              <span className="text-[11px] font-semibold">{bucket.label}</span>
+              <span className="sr-only">{performing ? "performant" : "à améliorer"}</span>
+            </li>
           );
         })}
+      </ul>
+      <div className="flex gap-4 [font:var(--uf-note)]">
+        <span className="flex items-center gap-1.5">
+          <span aria-hidden="true" className={`size-3 rounded-[2px] ${SOLID_BAR}`} />
+          Performant
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span aria-hidden="true" className={`size-3 rounded-[2px] ${HATCHED_BAR}`} />
+          À améliorer
+        </span>
       </div>
-      <div className="flex gap-3.5 mt-2.5">
-        <Legend className="bg-success" label="Performant" />
-        <Legend className="bg-primary" label="À améliorer" />
-      </div>
-    </div>
+    </GlassPanel>
   );
 }
 
 function ModeBreakdown({ byMode }: { byMode: CarbonSummaryDtoOut["byMode"] }) {
   return (
-    <div className="bg-white rounded-xl p-4">
-      <p className="text-[13px] font-semibold text-ink mb-0.5">D&apos;où viennent tes émissions</p>
-      <p className="text-[11px] text-text-2 mb-3">Marche et vélo n&apos;émettent rien : ils restent à 0 %.</p>
-      <div className="flex flex-col gap-2.5">
+    <GlassPanel as="section" aria-labelledby="origine" className="flex flex-col gap-3 p-5">
+      <div>
+        <h2 id="origine" className="[font:var(--uf-time)]">D&apos;où viennent tes émissions</h2>
+        <p className="[font:var(--uf-note)] text-uf-ink-2">Marche et vélo n&apos;émettent rien : ils restent à 0 %.</p>
+      </div>
+      <ul className="flex flex-col gap-3">
         {byMode.map((entry) => {
           const meta = MODE_META[entry.mode] ?? MODE_FALLBACK;
           const Icon = meta.icon;
           const percent = Math.round(entry.percent);
           return (
-            <div key={entry.mode}>
-              <div className="flex justify-between items-center mb-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Icon size={12} style={{ color: meta.color }} />
-                  <span className="text-[12px] text-ink">{meta.label}</span>
-                </div>
-                <span className="text-[12px] font-mono font-semibold" style={{ color: meta.color }}>
-                  {percent}%
+            <li key={entry.mode} className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between [font:var(--uf-note)]">
+                <span className="flex items-center gap-1.5">
+                  <Icon size={16} aria-hidden="true" style={{ color: meta.color }} />
+                  {meta.label}
                 </span>
+                <span className="tabular-nums">{percent} %</span>
               </div>
-              <div className="h-1.5 bg-bg rounded-full overflow-hidden">
+              <div className="uf-inset h-2 overflow-hidden rounded-full" aria-hidden="true">
                 <div className="h-full rounded-full" style={{ width: `${percent}%`, background: meta.color }} />
               </div>
-            </div>
+            </li>
           );
         })}
-      </div>
-    </div>
+      </ul>
+    </GlassPanel>
   );
 }
 
 function GoalCard({ goal }: { goal: NonNullable<CarbonSummaryDtoOut["goal"]> }) {
   const percent = Math.round(goal.percent);
   return (
-    <div className="bg-white rounded-xl p-4">
-      <div className="flex justify-between items-center mb-2.5">
-        <p className="text-[13px] font-semibold text-ink">Objectif du mois</p>
-        <div className="flex items-center gap-1">
-          <Target size={12} className="text-primary" />
-          <span className="text-[12px] font-semibold text-primary font-mono">{goal.targetKg} kg à économiser</span>
-        </div>
-      </div>
-      <div className="h-2.5 bg-bg rounded-full overflow-hidden mb-1.5">
-        <div
-          className="h-full rounded-full"
-          style={{ width: `${percent}%`, background: "linear-gradient(90deg, #16A34A, #B91C1C)" }}
-        />
-      </div>
-      <div className="flex justify-between">
-        <span className="text-[11px] text-text-2 font-mono">
-          {goal.achievedKg.toFixed(1).replace(".", ",")} kg économisés
+    <GlassPanel as="section" aria-labelledby="objectif" className="flex flex-col gap-2.5 p-5">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="objectif" className="[font:var(--uf-time)]">Objectif du mois</h2>
+        <span className="flex items-center gap-1 [font:var(--uf-note)] tabular-nums">
+          <Target size={16} aria-hidden="true" />
+          {goal.targetKg} kg à économiser
         </span>
-        <span className="text-[11px] font-semibold text-success">{percent}% atteint</span>
       </div>
-    </div>
-  );
-}
-
-function Legend({ className, label }: { className: string; label: string }) {
-  return (
-    <div className="flex items-center gap-1">
-      <span className={`w-2 h-2 rounded-[2px] inline-block ${className}`} />
-      <span className="text-[10px] text-text-2">{label}</span>
-    </div>
+      <div className="uf-inset h-2.5 overflow-hidden rounded-full" aria-hidden="true">
+        <div className="h-full rounded-full bg-uf-ink" style={{ width: `${Math.min(percent, 100)}%` }} />
+      </div>
+      <div className="flex justify-between [font:var(--uf-note)] tabular-nums">
+        <span className="text-uf-ink-2">{goal.achievedKg.toFixed(1).replace(".", ",")} kg économisés</span>
+        <span>{percent} % atteint</span>
+      </div>
+    </GlassPanel>
   );
 }

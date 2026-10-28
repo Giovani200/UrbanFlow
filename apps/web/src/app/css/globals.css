@@ -1,64 +1,44 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
+/* Les polices du design system sont servies par next/font (layout.tsx) : on y raccorde les tokens. */
 :root {
+  --uf-font-display: var(--font-display), sans-serif;
+  --uf-font-text: var(--font-sans), sans-serif;
   color-scheme: light;
-
-  /* Surfaces et texte */
-  --ink: #15171C;
-  --bg: #F6F4F0;
-  --surface: #FFFFFF;
-  --border: #E4E1DA;
-  --text-2: #535A63;
-
-  /* Marque et action */
-  --primary: #CC1B36;
-  --primary-tint: #FBEAED;
-  --success: #15803D;
-
-  /* Couleur par mode, contrastes >= 4.5:1 sur fond clair */
-  --walk: #5A6470;
-  --bike: #11805A;
-  --tram: #2F62E6;
-  --bus: #B45309;
-  --car: #9A1B2F;
-  --eco: #11805A;
-
-  /* Rayons */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-pill: 999px;
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
-  --color-text-2: var(--text-2);
-  --color-primary: var(--primary);
-  --color-primary-tint: var(--primary-tint);
-  --color-success: var(--success);
-  --color-walk: var(--walk);
-  --color-bike: var(--bike);
-  --color-tram: var(--tram);
-  --color-bus: var(--bus);
-  --color-car: var(--car);
-  --color-eco: var(--eco);
+  --color-uf-ink: var(--uf-ink);
+  --color-uf-ink-2: var(--uf-ink-2);
+  --color-uf-on-ink: var(--uf-on-ink);
+  --color-uf-glass: var(--uf-glass);
+  --color-uf-glass-edge: var(--uf-glass-edge);
+  --color-uf-glass-opaque: var(--uf-glass-opaque);
+  --color-uf-inset: var(--uf-inset);
+  --color-uf-plate-ink: var(--uf-plate-ink);
+  --color-uf-line-3601: var(--uf-line-3601);
+  --color-uf-line-r: var(--uf-line-r);
+  --color-uf-line-a: var(--uf-line-a);
+  --color-uf-line-d: var(--uf-line-d);
+  --color-uf-line-m1: var(--uf-line-m1);
+  --color-uf-line-b: var(--uf-line-b);
+  --color-uf-line-m14: var(--uf-line-m14);
 
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
+  --font-uf-display: var(--uf-font-display);
+  --font-uf-text: var(--uf-font-text);
 
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-pill: var(--radius-pill);
+  --radius-uf-panel: var(--uf-radius-panel);
+  --radius-uf-inset: var(--uf-radius-inset);
+  --radius-uf-chip: var(--uf-radius-chip);
+  --radius-uf-plate: var(--uf-radius-plate);
+  --radius-uf-avatar: var(--uf-radius-avatar);
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--uf-bg);
+  color: var(--uf-ink);
+  font-family: var(--uf-font-text), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
 }
@@ -100,6 +80,68 @@ body {
   border: 3px solid #fff;
   box-shadow: 0 1px 4px rgba(21, 23, 28, 0.3);
   animation: user-pulse 2s ease-out infinite;
+}
+
+/* Repère d'arrêt sur la carte : pictogramme blanc sur la couleur du mode (fond posé par MapView) */
+.uf-stop-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 34, 56, 0.3);
+}
+
+/* Verre du design system : 4 panneaux au plus par écran, jamais de flou sur du flou */
+.uf-glass {
+  background: var(--uf-glass);
+  border: 1px solid var(--uf-glass-edge);
+  box-shadow: var(--uf-glass-shadow);
+  backdrop-filter: blur(var(--uf-glass-blur)) saturate(var(--uf-glass-saturate));
+}
+
+.uf-inset {
+  background: var(--uf-inset);
+  border: 1px solid color-mix(in srgb, var(--uf-ink) 18%, transparent);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .uf-glass {
+    background: var(--uf-glass-opaque);
+    backdrop-filter: none;
+  }
+}
+
+/* Reflet du temps réel : la seule animation du design system (coupée par « réduire les animations » plus haut) */
+.uf-reflet-horizontal::after,
+.uf-reflet-vertical::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.uf-reflet-horizontal::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: uf-reflet-horizontal var(--uf-reflet);
+}
+
+.uf-reflet-vertical::after {
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: uf-reflet-vertical var(--uf-reflet);
+}
+
+@keyframes uf-reflet-horizontal {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes uf-reflet-vertical {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
 }
 
 @keyframes user-pulse {

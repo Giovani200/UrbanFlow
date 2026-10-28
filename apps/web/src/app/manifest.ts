@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "UrbanFlow, mobilité urbaine",
     short_name: "UrbanFlow",
-    description: "Planificateur multimodal, empreinte carbone et transports en commun à Grenoble.",
+    description: "Planificateur multimodal, empreinte carbone et transports en commun en Île-de-France.",
     start_url: "/",
     display: "standalone",
     background_color: "#F6F4F0",
