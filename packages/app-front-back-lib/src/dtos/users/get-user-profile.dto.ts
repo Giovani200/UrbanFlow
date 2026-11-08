@@ -1,4 +1,5 @@
 import { z as zod } from "zod";
+import { StoredPreferencesSchema } from "./update-preferences.dto";
 
 export const GetUserProfileDtoInSchema = zod.object({});
 export type GetUserProfileDtoIn = zod.output<typeof GetUserProfileDtoInSchema>;
@@ -8,17 +9,7 @@ export const GetUserProfileDtoOutSchema = zod.object({
     email: zod.string(),
     name: zod.string().nullable(),
     hasPassword: zod.boolean(),
-    preferences: zod
-        .object({
-            weightCarbon: zod.number(),
-            weightTime: zod.number(),
-            weightCost: zod.number(),
-            wheelchairAccess: zod.boolean(),
-            avoidStairs: zod.boolean(),
-            preferredModes: zod.array(zod.string()),
-            monthlyGoalKg: zod.number().nullable(),
-        })
-        .nullable(),
+    preferences: StoredPreferencesSchema.nullable(),
 });
 
 export type GetUserProfileDtoOut = zod.output<typeof GetUserProfileDtoOutSchema>;

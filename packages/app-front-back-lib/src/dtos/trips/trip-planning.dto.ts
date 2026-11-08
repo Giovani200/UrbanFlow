@@ -68,6 +68,8 @@ export const TripRouteSchema = zod.object({
     totalCarbonGrams: zod.number(),
     totalSavedGrams: zod.number(),
     score: zod.number(),
+    departureTime: zod.string().optional(),
+    arrivalTime: zod.string().optional(),
 });
 export type TripRoute = zod.output<typeof TripRouteSchema>;
 

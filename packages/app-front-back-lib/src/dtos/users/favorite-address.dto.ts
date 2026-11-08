@@ -6,6 +6,7 @@ export const FavoriteAddressSchema = zod.object({
     address: zod.string(),
     latitude: zod.number(),
     longitude: zod.number(),
+    isHome: zod.boolean(),
 });
 export type FavoriteAddress = zod.output<typeof FavoriteAddressSchema>;
 
@@ -30,3 +31,11 @@ export type DeleteFavoriteAddressDtoIn = zod.output<typeof DeleteFavoriteAddress
 
 export const DeleteFavoriteAddressDtoOutSchema = zod.object({ success: zod.literal(true) });
 export type DeleteFavoriteAddressDtoOut = zod.output<typeof DeleteFavoriteAddressDtoOutSchema>;
+
+export const SetHomeAddressDtoInSchema = zod.object({
+    id: zod.string().min(1),
+});
+export type SetHomeAddressDtoIn = zod.output<typeof SetHomeAddressDtoInSchema>;
+
+export const SetHomeAddressDtoOutSchema = FavoriteAddressSchema;
+export type SetHomeAddressDtoOut = zod.output<typeof SetHomeAddressDtoOutSchema>;

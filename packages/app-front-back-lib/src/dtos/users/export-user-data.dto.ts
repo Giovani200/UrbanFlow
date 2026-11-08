@@ -1,4 +1,5 @@
 import { z as zod } from "zod";
+import { StoredPreferencesSchema } from "./update-preferences.dto";
 
 export const ExportUserDataDtoOutSchema = zod.object({
     exportedAt: zod.string(),
@@ -6,23 +7,14 @@ export const ExportUserDataDtoOutSchema = zod.object({
         email: zod.string(),
         name: zod.string().nullable(),
     }),
-    preferences: zod
-        .object({
-            weightCarbon: zod.number(),
-            weightTime: zod.number(),
-            weightCost: zod.number(),
-            wheelchairAccess: zod.boolean(),
-            avoidStairs: zod.boolean(),
-            preferredModes: zod.array(zod.string()),
-            monthlyGoalKg: zod.number().nullable(),
-        })
-        .nullable(),
+    preferences: StoredPreferencesSchema.nullable(),
     favoriteAddresses: zod.array(
         zod.object({
             label: zod.string(),
             address: zod.string(),
             latitude: zod.number(),
             longitude: zod.number(),
+            isHome: zod.boolean(),
             createdAt: zod.string(),
         }),
     ),
