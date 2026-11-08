@@ -15,6 +15,7 @@ describe("CreateFavoriteAddressUseCase", () => {
             address: "12 rue X, Grenoble",
             latitude: 45.18,
             longitude: 5.72,
+            isHome: false,
         }));
         const prisma = { favoriteAddress: { create } } as unknown as PrismaService;
 

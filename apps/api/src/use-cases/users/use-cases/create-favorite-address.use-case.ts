@@ -8,6 +8,7 @@ import {
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
+import { FAVORITE_ADDRESS_SELECT } from "../users.selects";
 
 @Injectable()
 export class CreateFavoriteAddressUseCase extends AbstractAuthenticatedUseCase<
@@ -24,7 +25,7 @@ export class CreateFavoriteAddressUseCase extends AbstractAuthenticatedUseCase<
     ): Promise<CreateFavoriteAddressDtoOut> {
         return this.prisma.favoriteAddress.create({
             data: { userId: authenticatedUser.userId, ...dataIn },
-            select: { id: true, label: true, address: true, latitude: true, longitude: true },
+            select: FAVORITE_ADDRESS_SELECT,
         });
     }
 }

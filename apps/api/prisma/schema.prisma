@@ -44,6 +44,9 @@ model Preferences {
   preferredModes   String[]
   monthlyGoalKg    Int?
 
+  lastDepartureDistanceMeters Int @default(1000)
+  lastDepartureWindowMinutes  Int @default(120)
+
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -58,6 +61,7 @@ model FavoriteAddress {
   address   String
   latitude  Float
   longitude Float
+  isHome    Boolean @default(false)
 
   createdAt DateTime @default(now())
 

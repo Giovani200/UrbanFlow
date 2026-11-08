@@ -7,6 +7,7 @@ import {
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
+import { STORED_PREFERENCES_SELECT } from "../users.selects";
 
 @Injectable()
 export class GetUserProfileUseCase extends AbstractAuthenticatedUseCase<void, GetUserProfileDtoOut> {
@@ -23,15 +24,7 @@ export class GetUserProfileUseCase extends AbstractAuthenticatedUseCase<void, Ge
                 name: true,
                 passwordHash: true,
                 preferences: {
-                    select: {
-                        weightCarbon: true,
-                        weightTime: true,
-                        weightCost: true,
-                        wheelchairAccess: true,
-                        avoidStairs: true,
-                        preferredModes: true,
-                        monthlyGoalKg: true,
-                    },
+                    select: STORED_PREFERENCES_SELECT,
                 },
             },
         });

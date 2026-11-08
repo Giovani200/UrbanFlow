@@ -4,6 +4,7 @@ import { ExportUserDataDtoOut, ExportUserDataDtoOutSchema } from "@urbanflow/app
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
+import { STORED_PREFERENCES_SELECT } from "../users.selects";
 
 @Injectable()
 export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, ExportUserDataDtoOut> {
@@ -18,18 +19,10 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                 email: true,
                 name: true,
                 preferences: {
-                    select: {
-                        weightCarbon: true,
-                        weightTime: true,
-                        weightCost: true,
-                        wheelchairAccess: true,
-                        avoidStairs: true,
-                        preferredModes: true,
-                        monthlyGoalKg: true,
-                    },
+                    select: STORED_PREFERENCES_SELECT,
                 },
                 favoriteAddresses: {
-                    select: { label: true, address: true, latitude: true, longitude: true, createdAt: true },
+                    select: { label: true, address: true, latitude: true, longitude: true, isHome: true, createdAt: true },
                     orderBy: { createdAt: "asc" },
                 },
                 trips: {
@@ -64,6 +57,7 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                 address: address.address,
                 latitude: address.latitude,
                 longitude: address.longitude,
+                isHome: address.isHome,
                 createdAt: address.createdAt.toISOString(),
             })),
             trips: user.trips.map((trip) => ({

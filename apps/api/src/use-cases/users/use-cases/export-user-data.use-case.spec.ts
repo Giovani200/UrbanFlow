@@ -19,9 +19,11 @@ describe("ExportUserDataUseCase", () => {
                 avoidStairs: false,
                 preferredModes: ["bike"],
                 monthlyGoalKg: null,
+                lastDepartureDistanceMeters: 1000,
+                lastDepartureWindowMinutes: 120,
             },
             favoriteAddresses: [
-                { label: "Domicile", address: "12 rue X", latitude: 45.18, longitude: 5.72, createdAt: now },
+                { label: "Domicile", address: "12 rue X", latitude: 45.18, longitude: 5.72, isHome: true, createdAt: now },
             ],
             trips: [
                 {
@@ -46,6 +48,8 @@ describe("ExportUserDataUseCase", () => {
         expect(result.account.email).toBe("user-1@test.fr");
         expect(result.trips[0].destinationLabel).toBe("B");
         expect(result.favoriteAddresses[0].createdAt).toBe(now.toISOString());
+        expect(result.favoriteAddresses[0].isHome).toBe(true);
+        expect(result.preferences?.lastDepartureWindowMinutes).toBe(120);
         expect(typeof result.exportedAt).toBe("string");
     });
 

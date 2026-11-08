@@ -8,6 +8,7 @@ import {
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { PrismaService } from "../../../shared/database/prisma.service";
+import { STORED_PREFERENCES_SELECT } from "../users.selects";
 
 @Injectable()
 export class UpdatePreferencesUseCase extends AbstractAuthenticatedUseCase<
@@ -26,15 +27,7 @@ export class UpdatePreferencesUseCase extends AbstractAuthenticatedUseCase<
             where: { userId: authenticatedUser.userId },
             create: { userId: authenticatedUser.userId, ...dataIn },
             update: dataIn,
-            select: {
-                weightCarbon: true,
-                weightTime: true,
-                weightCost: true,
-                wheelchairAccess: true,
-                avoidStairs: true,
-                preferredModes: true,
-                monthlyGoalKg: true,
-            },
+            select: STORED_PREFERENCES_SELECT,
         });
     }
 }
