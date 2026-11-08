@@ -1,24 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import { LAST_DEPARTURE_SETTINGS } from "@urbanflow/app-front-back-lib";
 import { Button } from "@/app/components/ui/Button";
 import { ChoiceChip } from "@/app/components/ui/ChoiceChip";
 import { GlassPanel } from "@/app/components/ui/GlassPanel";
+import { formatDistance, formatDuration } from "@/app/lib/format";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 import { DEFAULT_PREFERRED_MODES, PREFERRED_MODES, keepKnownModes, type PreferredMode } from "@/app/lib/preferred-modes";
-import { usersService, type GetUserProfileDtoOut } from "@/app/services/users.service";
-
-type StoredPreferences = GetUserProfileDtoOut["preferences"];
+import { usersService, type StoredPreferences } from "@/app/services/users.service";
 
 /** Part du temps dans le couple temps et carbone, en pourcentage (50 si les deux poids sont nuls). */
-function timeShareOf(preferences: StoredPreferences): number {
+function timeShareOf(preferences: StoredPreferences | null): number {
   if (!preferences) return 50;
   const total = preferences.weightTime + preferences.weightCarbon;
   return total === 0 ? 50 : Math.round((preferences.weightTime / total) * 100);
 }
 
-/** Façon de se déplacer : rapidité contre écologie, modes préférés, accessibilité, objectif carbone. Un seul enregistrement pour tout. */
-export function TravelPreferencesSection({ preferences }: { preferences: StoredPreferences }) {
+interface LastDepartureSettingProps {
+  label: string;
+  shownValue: string;
+  editing: boolean;
+  value: number;
+  range: { min: number; max: number; step: number };
+  onChange: (value: number) => void;
+}
+
+/** Un réglage du dernier départ : curseur borné en modification (une valeur refusée par l'API est impossible), valeur seule sinon. */
+function LastDepartureSetting({ label, shownValue, editing, value, range, onChange }: LastDepartureSettingProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex justify-between gap-3 [font:var(--uf-note)]">
+        <span>{label}</span>
+        <span className="shrink-0 tabular-nums">{shownValue}</span>
+      </div>
+      {editing && (
+        <input
+          type="range"
+          min={range.min}
+          max={range.max}
+          step={range.step}
+          aria-label={label}
+          aria-valuetext={shownValue}
+          value={value}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className="h-11 w-full cursor-pointer accent-(--uf-ink)"
+        />
+      )}
+    </div>
+  );
+}
+
+/** Façon de se déplacer : rapidité contre écologie, modes préférés, accessibilité, objectif carbone, dernier retour. Un seul enregistrement pour tout. */
+export function TravelPreferencesSection({ preferences }: { preferences: StoredPreferences | null }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [timeShare, setTimeShare] = useState(() => timeShareOf(preferences));
@@ -28,6 +62,12 @@ export function TravelPreferencesSection({ preferences }: { preferences: StoredP
     preferences ? keepKnownModes(preferences.preferredModes) : DEFAULT_PREFERRED_MODES,
   );
   const [monthlyGoalKg, setMonthlyGoalKg] = useState<number | null>(preferences?.monthlyGoalKg ?? null);
+  const [distanceMeters, setDistanceMeters] = useState<number>(
+    preferences?.lastDepartureDistanceMeters ?? LAST_DEPARTURE_SETTINGS.distanceMeters.default,
+  );
+  const [windowMinutes, setWindowMinutes] = useState<number>(
+    preferences?.lastDepartureWindowMinutes ?? LAST_DEPARTURE_SETTINGS.windowMinutes.default,
+  );
 
   const weights = [
     { key: "time", label: "Rapidité", value: timeShare, onChange: (value: number) => setTimeShare(value) },
@@ -47,6 +87,8 @@ export function TravelPreferencesSection({ preferences }: { preferences: StoredP
       avoidStairs,
       preferredModes,
       monthlyGoalKg,
+      lastDepartureDistanceMeters: distanceMeters,
+      lastDepartureWindowMinutes: windowMinutes,
     });
     setSaving(false);
     if (result.isOk) setEditing(false);
@@ -169,6 +211,26 @@ export function TravelPreferencesSection({ preferences }: { preferences: StoredP
             {monthlyGoalKg != null ? `${monthlyGoalKg} kg` : "Non défini"}
           </span>
         )}
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <p className="[font:var(--uf-note)] font-bold">Dernier retour le soir</p>
+        <LastDepartureSetting
+          label="À partir de cette distance de chez moi"
+          shownValue={formatDistance(distanceMeters)}
+          editing={editing}
+          value={distanceMeters}
+          range={LAST_DEPARTURE_SETTINGS.distanceMeters}
+          onChange={setDistanceMeters}
+        />
+        <LastDepartureSetting
+          label="Affiché avant le départ"
+          shownValue={formatDuration(windowMinutes * 60)}
+          editing={editing}
+          value={windowMinutes}
+          range={LAST_DEPARTURE_SETTINGS.windowMinutes}
+          onChange={setWindowMinutes}
+        />
       </div>
     </GlassPanel>
   );

@@ -9,6 +9,8 @@ import type {
   CreateFavoriteAddressDtoOut,
   ListFavoriteAddressesDtoOut,
   DeleteFavoriteAddressDtoOut,
+  SetHomeAddressDtoOut,
+  StoredPreferences,
   UpdateAccountDtoIn,
   UpdateAccountDtoOut,
   ChangePasswordDtoIn,
@@ -26,6 +28,7 @@ export type {
   UpdatePreferencesDtoOut,
   FavoriteAddress,
   CreateFavoriteAddressDtoIn,
+  StoredPreferences,
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -76,6 +79,14 @@ export const usersService = {
       credentials: "include",
     });
     return handleResponse<DeleteFavoriteAddressDtoOut>(res);
+  },
+
+  async setHomeAddress(id: string) {
+    const res = await fetch(`${API_URL}/users/me/addresses/${id}/home`, {
+      method: "PUT",
+      credentials: "include",
+    });
+    return handleResponse<SetHomeAddressDtoOut>(res);
   },
 
   async updateAccount(input: UpdateAccountDtoIn) {
