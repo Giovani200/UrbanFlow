@@ -1,4 +1,5 @@
 import { z as zod } from "zod";
+import { LabeledCoordinatesSchema } from "../trips/record-trip.dto";
 import { StoredPreferencesSchema } from "./update-preferences.dto";
 
 export const ExportUserDataDtoOutSchema = zod.object({
@@ -36,6 +37,26 @@ export const ExportUserDataDtoOutSchema = zod.object({
             carbonGrams: zod.number(),
             savedVsCar: zod.number(),
             createdAt: zod.string(),
+        }),
+    ),
+    routines: zod.array(
+        zod.object({
+            name: zod.string(),
+            origin: LabeledCoordinatesSchema,
+            destination: LabeledCoordinatesSchema,
+            arrivalTime: zod.string(),
+            usualDepartureTime: zod.string(),
+            weekdays: zod.array(zod.number()),
+            lineIds: zod.array(zod.string()),
+            createdAt: zod.string(),
+            dayPlan: zod
+                .object({
+                    serviceDay: zod.string(),
+                    planOrigin: zod.string(),
+                    itinerary: zod.unknown(),
+                    updatedAt: zod.string(),
+                })
+                .nullable(),
         }),
     ),
 });

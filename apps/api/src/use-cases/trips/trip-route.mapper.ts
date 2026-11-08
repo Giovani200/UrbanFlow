@@ -26,12 +26,16 @@ export function toTransitTripRoute(itinerary: TransitItinerary): TripRoute {
             departureStopName: leg.departureStopName,
             arrivalStopName: leg.arrivalStopName,
             lineShortName: leg.lineShortName,
+            lineId: leg.lineId,
             lineColor: leg.lineColor,
             lineTextColor: leg.lineTextColor,
             intermediateStops: leg.intermediateStops,
             dataFreshness: leg.dataFreshness,
             scheduledDepartureTime: leg.scheduledDepartureTime,
             expectedDepartureTime: leg.expectedDepartureTime,
+            scheduledArrivalTime: leg.scheduledArrivalTime,
+            expectedArrivalTime: leg.expectedArrivalTime,
+            platform: leg.platform,
             departureStopPointRef: leg.departureStopPointRef,
             arrivalStopPointRef: leg.arrivalStopPointRef,
         };
@@ -51,4 +55,29 @@ export function toTransitTripRoute(itinerary: TransitItinerary): TripRoute {
 
 export function hasTransitLeg(itinerary: TransitItinerary): boolean {
     return itinerary.legs.some((leg) => leg.mode !== "walk");
+}
+
+export type DatedItinerary = TransitItinerary & { departureTime: string; arrivalTime: string };
+
+export function datedTransitItineraries(itineraries: TransitItinerary[]): DatedItinerary[] {
+    return itineraries.filter(
+        (itinerary): itinerary is DatedItinerary =>
+            hasTransitLeg(itinerary) && itinerary.departureTime !== undefined && itinerary.arrivalTime !== undefined,
+    );
+}
+
+export function latestDeparture(itineraries: DatedItinerary[]): DatedItinerary | null {
+    return itineraries.reduce<DatedItinerary | null>(
+        (latest, itinerary) =>
+            !latest || Date.parse(itinerary.departureTime) > Date.parse(latest.departureTime) ? itinerary : latest,
+        null,
+    );
+}
+
+export function earliestArrival(itineraries: DatedItinerary[]): DatedItinerary | null {
+    return itineraries.reduce<DatedItinerary | null>(
+        (earliest, itinerary) =>
+            !earliest || Date.parse(itinerary.arrivalTime) < Date.parse(earliest.arrivalTime) ? itinerary : earliest,
+        null,
+    );
 }

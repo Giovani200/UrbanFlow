@@ -28,6 +28,7 @@ model User {
   trips           Trip[]
   carbonEntries   CarbonEntry[]
   favoriteAddresses FavoriteAddress[]
+  routines        Routine[]
 
   @@map("users")
 }
@@ -68,6 +69,55 @@ model FavoriteAddress {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("favorite_addresses")
+}
+
+// ─── MODULE ROUTINES ────────────────────────────────────────
+
+model Routine {
+  id     String @id @default(cuid())
+  userId String
+
+  name        String
+  originLat   Float
+  originLng   Float
+  originLabel String
+  destLat     Float
+  destLng     Float
+  destLabel   String
+
+  arrivalTime        String
+  usualDepartureTime String
+  weekdays           Int[]
+  lineIds            String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayPlan RoutineDayPlan?
+
+  @@index([userId])
+  @@map("routines")
+}
+
+/// Le trajet du jour d'une routine : une seule ligne, écrasée chaque jour, donc aucun historique.
+model RoutineDayPlan {
+  routineId String @id
+
+  serviceDay   String
+  itinerary    Json
+  planB        Json?
+  planBStatus  String
+  alternatives Json?
+  planOrigin   String
+  disrupted    Boolean @default(false)
+  notices      Json?
+
+  updatedAt DateTime @updatedAt
+
+  routine Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+
+  @@map("routine_day_plans")
 }
 
 // ─── MODULE TRIPS ───────────────────────────────────────────

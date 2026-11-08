@@ -1,0 +1,48 @@
+{
+  "departures": [
+    {
+      "stop_date_time": {
+        "departure_date_time": "20261109T080041",
+        "arrival_date_time": "20261109T075951",
+        "data_freshness": "base_schedule"
+      },
+      "display_informations": {
+        "direction": "Saint-Germain-en-Laye (Saint-Germain-en-Laye)",
+        "code": "A"
+      }
+    },
+    {
+      "stop_date_time": {
+        "departure_date_time": "20261109T080521",
+        "arrival_date_time": "20261109T080431",
+        "data_freshness": "base_schedule"
+      },
+      "display_informations": {
+        "direction": "Rueil-Malmaison (Rueil-Malmaison)",
+        "code": "A"
+      }
+    },
+    {
+      "stop_date_time": {
+        "departure_date_time": "20261109T080741",
+        "arrival_date_time": "20261109T080651",
+        "data_freshness": "base_schedule"
+      },
+      "display_informations": {
+        "direction": "Saint-Germain-en-Laye (Saint-Germain-en-Laye)",
+        "code": "A"
+      }
+    },
+    {
+      "stop_date_time": {
+        "departure_date_time": "20261109T081221",
+        "arrival_date_time": "20261109T081131",
+        "data_freshness": "base_schedule"
+      },
+      "display_informations": {
+        "direction": "Saint-Germain-en-Laye (Saint-Germain-en-Laye)",
+        "code": "A"
+      }
+    }
+  ]
+}

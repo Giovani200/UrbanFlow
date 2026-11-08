@@ -36,6 +36,9 @@ function makeUseCase(
         getItineraries,
         getItinerariesArrivingBefore: async () => [],
         getItinerariesDepartingFrom: async () => [],
+        getItinerariesOnLines: async () => [],
+        getItinerariesWithNotices: async () => ({ itineraries: [], notices: [] }),
+        getScheduledDepartures: async () => [],
     };
     return new TripPlanningUseCase(orsRoutingAdapter, transitRoutingProvider);
 }

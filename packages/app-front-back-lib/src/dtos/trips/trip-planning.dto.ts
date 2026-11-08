@@ -50,12 +50,18 @@ export const TripSegmentSchema = zod.object({
     departureStopName: zod.string().optional(),
     arrivalStopName: zod.string().optional(),
     lineShortName: zod.string().optional(),
+    /** Identifiant IDFM de la ligne (`C01731`), seule clé fiable : les noms « R » ou « A » existent aussi en bus. */
+    lineId: zod.string().optional(),
     lineColor: zod.string().optional(),
     lineTextColor: zod.string().optional(),
     intermediateStops: zod.array(TransitStopPointSchema).optional(),
     dataFreshness: DataFreshnessSchema.optional(),
     scheduledDepartureTime: zod.string().optional(),
     expectedDepartureTime: zod.string().optional(),
+    scheduledArrivalTime: zod.string().optional(),
+    expectedArrivalTime: zod.string().optional(),
+    /** La voie du train au départ, quand SIRI la donne. */
+    platform: zod.string().optional(),
     departureStopPointRef: zod.string().optional(),
     arrivalStopPointRef: zod.string().optional(),
 });

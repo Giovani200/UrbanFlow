@@ -8,7 +8,13 @@ import { IdfmJourneysAdapter } from "./idfm-journeys.adapter";
 import { PrimHttpClient } from "./prim-http-client";
 import { PrimQuotas } from "./prim-quotas";
 
-const journeysFixture: unknown = JSON.parse(readFileSync(join(__dirname, "__fixtures__", "journeys.json"), "utf-8"));
+function readFixture(name: string): unknown {
+    return JSON.parse(readFileSync(join(__dirname, "__fixtures__", name), "utf-8"));
+}
+
+const journeysFixture = readFixture("journeys.json");
+const disruptionsFixture = readFixture("journey-disruptions.json") as object;
+const routeDeparturesFixture = readFixture("route-departures.json");
 const origin = { latitude: 48.5244, longitude: 2.6437 };
 const destination = { latitude: 48.892, longitude: 2.238 };
 
@@ -118,6 +124,149 @@ describe("IdfmJourneysAdapter", () => {
         stubFetch(500, {});
 
         await expect(makeAdapter().getItineraries(origin, destination, false)).rejects.toBeInstanceOf(ServiceUnavailableException);
+    });
+
+    describe("trajets limités à certaines lignes", () => {
+        const arrivalLimit = "2026-11-09T09:00";
+
+        it("demande chaque ligne, dans l'ordre, en mode arrivée", async () => {
+            const fetchMock = stubFetch(200, journeysFixture);
+
+            await makeAdapter().getItinerariesOnLines(origin, destination, true, arrivalLimit, ["C00881", "C01731"]);
+            const parameters = requestedParameters(fetchMock);
+
+            expect(parameters.getAll("allowed_id[]")).toEqual(["line:IDFM:C00881", "line:IDFM:C01731"]);
+            expect(parameters.get("datetime")).toBe("20261109T090000");
+            expect(parameters.get("datetime_represents")).toBe("arrival");
+            expect(parameters.get("wheelchair")).toBe("true");
+        });
+
+        it("renvoie une liste vide quand une ligne manque (404)", async () => {
+            stubFetch(404, { error: { id: "no_solution" } });
+
+            const itineraries = await makeAdapter().getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881"]);
+
+            expect(itineraries).toEqual([]);
+        });
+
+        it("lève une indisponibilité sur une erreur serveur", async () => {
+            stubFetch(503, {});
+
+            await expect(
+                makeAdapter().getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881"]),
+            ).rejects.toThrow(ServiceUnavailableException);
+        });
+
+        it("ne partage pas le cache entre deux listes de lignes différentes", async () => {
+            const fetchMock = stubFetch(200, journeysFixture);
+            const adapter = makeAdapter();
+
+            await adapter.getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881"]);
+            await adapter.getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C01731"]);
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        it("garde en cache une même liste de lignes", async () => {
+            const fetchMock = stubFetch(200, journeysFixture);
+            const adapter = makeAdapter();
+
+            await adapter.getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881", "C01731"]);
+            await adapter.getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881", "C01731"]);
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+
+        it("ne partage pas le cache avec une recherche sans limite de lignes", async () => {
+            const fetchMock = stubFetch(200, journeysFixture);
+            const adapter = makeAdapter();
+
+            await adapter.getItinerariesOnLines(origin, destination, false, arrivalLimit, ["C00881"]);
+            await adapter.getItinerariesArrivingBefore(origin, destination, false, arrivalLimit, []);
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+    });
+
+    describe("trajets avec les messages IDFM", () => {
+        const arrivalLimit = "2026-11-09T09:00";
+
+        it("renvoie les trajets et les messages, sans limite de lignes", async () => {
+            const fetchMock = stubFetch(200, { ...(journeysFixture as object), ...disruptionsFixture });
+
+            const result = await makeAdapter().getItinerariesWithNotices(origin, destination, false, arrivalLimit);
+            const parameters = requestedParameters(fetchMock);
+
+            expect(result.itineraries).toHaveLength(2);
+            expect(result.notices.map((notice) => notice.text)).toContain("Melun - Travaux rue Saint Liesne");
+            expect(parameters.getAll("allowed_id[]")).toEqual([]);
+            expect(parameters.get("datetime_represents")).toBe("arrival");
+            expect(parameters.has("disable_disruption")).toBe(false);
+        });
+
+        it("renvoie deux listes vides sans solution (404)", async () => {
+            stubFetch(404, { error: { id: "no_solution" } });
+
+            const result = await makeAdapter().getItinerariesWithNotices(origin, destination, false, arrivalLimit);
+
+            expect(result).toEqual({ itineraries: [], notices: [] });
+        });
+
+        it("lève une indisponibilité sur une erreur serveur", async () => {
+            stubFetch(503, {});
+
+            await expect(
+                makeAdapter().getItinerariesWithNotices(origin, destination, false, arrivalLimit),
+            ).rejects.toThrow(ServiceUnavailableException);
+        });
+    });
+
+    describe("départs prévus par arrêt et par direction", () => {
+        const stopPointId = "stop_point:IDFM:monomodalStopPlace:470195";
+        const routeId = "route:IDFM:SNCF:815e8dfa-b488-47ad-a039-47e78322bf92";
+
+        it("demande les 4 prochains départs prévus de cette direction", async () => {
+            const fetchMock = stubFetch(200, routeDeparturesFixture);
+
+            await makeAdapter().getScheduledDepartures(stopPointId, routeId, "2026-11-09T08:00");
+            const [url] = fetchMock.mock.calls[0] as [string];
+            const requested = new URL(url);
+
+            expect(requested.pathname).toContain(`/stop_points/${encodeURIComponent(stopPointId)}/routes/${encodeURIComponent(routeId)}/departures`);
+            expect(requested.searchParams.get("from_datetime")).toBe("20261109T080000");
+            expect(requested.searchParams.get("count")).toBe("4");
+            expect(requested.searchParams.get("data_freshness")).toBe("base_schedule");
+            expect(requested.searchParams.get("depth")).toBe("0");
+        });
+
+        it("renvoie les heures à l'heure de Paris", async () => {
+            stubFetch(200, routeDeparturesFixture);
+
+            const departures = await makeAdapter().getScheduledDepartures(stopPointId, routeId, "2026-11-09T08:00");
+
+            expect(departures).toEqual([
+                "2026-11-09T08:00:41+01:00",
+                "2026-11-09T08:05:21+01:00",
+                "2026-11-09T08:07:41+01:00",
+                "2026-11-09T08:12:21+01:00",
+            ]);
+        });
+
+        it("renvoie une liste vide sans départ (404)", async () => {
+            stubFetch(404, { error: { id: "no_solution" } });
+
+            const departures = await makeAdapter().getScheduledDepartures(stopPointId, routeId, "2026-11-09T08:00");
+
+            expect(departures).toEqual([]);
+        });
+
+        it("lève une indisponibilité sur une erreur serveur", async () => {
+            stubFetch(503, {});
+
+            await expect(makeAdapter().getScheduledDepartures(stopPointId, routeId, "2026-11-09T08:00")).rejects.toThrow(
+                ServiceUnavailableException,
+            );
+        });
     });
 
     it("ne rappelle pas PRIM pour la même demande dans la minute", async () => {

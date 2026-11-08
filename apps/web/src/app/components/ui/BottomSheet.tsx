@@ -36,6 +36,7 @@ interface BottomSheetProps {
 /**
  * Panneau de verre qui glisse sur la carte : replié (la carte est libre), à mi-hauteur, déplié. Un bouton fait la même chose sans glisser.
  * Sa hauteur suit son contenu, dans la limite de 86 % de l'écran : déplié, il ne laisse jamais de vide sous le contenu.
+ * À mi-hauteur, il ne dépasse pas la partie visible : sinon la fin de son contenu resterait sous l'écran, hors d'atteinte.
  */
 export function BottomSheet({ label, position, onPositionChange, children }: BottomSheetProps) {
   const [dragDeltaY, setDragDeltaY] = useState(0);
@@ -72,9 +73,9 @@ export function BottomSheet({ label, position, onPositionChange, children }: Bot
   return (
     <section
       aria-label={label}
-      className="uf-glass fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-uf-panel text-uf-ink motion-safe:transition-transform motion-safe:duration-300"
+      className="uf-glass fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-uf-panel text-uf-ink motion-safe:transition-[transform,max-height] motion-safe:duration-300"
       style={{
-        maxHeight: MAX_SHEET_HEIGHT,
+        maxHeight: position === "half" && !dragging ? VISIBLE_HEIGHTS.half : MAX_SHEET_HEIGHT,
         transform: `translateY(${translateFor(position, dragDeltaY)})`,
         transitionDuration: dragging ? "0ms" : undefined,
       }}

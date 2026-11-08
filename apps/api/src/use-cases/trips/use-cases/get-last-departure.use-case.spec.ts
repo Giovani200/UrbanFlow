@@ -52,6 +52,9 @@ function makeUseCase(setup: Setup = {}) {
         getItineraries: async () => [],
         getItinerariesArrivingBefore,
         getItinerariesDepartingFrom,
+        getItinerariesOnLines: async () => [],
+        getItinerariesWithNotices: async () => ({ itineraries: [], notices: [] }),
+        getScheduledDepartures: async () => [],
     };
     const getNightLineIds = vi.fn(setup.nightLineIds ?? (async () => ["C01415", "C01633"]));
 

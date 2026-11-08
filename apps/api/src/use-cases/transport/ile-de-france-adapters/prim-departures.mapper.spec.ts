@@ -26,6 +26,8 @@ describe("mapStopMonitoring", () => {
             expectedTime: "2026-10-14T11:32:17+02:00",
             delaySeconds: 77,
             dataFreshness: "realtime",
+            scheduledArrivalTime: "2026-10-14T11:31:00+02:00",
+            expectedArrivalTime: "2026-10-14T11:32:17+02:00",
         });
     });
 
@@ -35,6 +37,27 @@ describe("mapStopMonitoring", () => {
         expect(departure?.dataFreshness).toBe("scheduled");
         expect(departure?.expectedTime).toBe("2026-10-14T11:31:00+02:00");
         expect(departure?.delaySeconds).toBe(0);
+    });
+
+    it("rétrograde aussi l'heure d'arrivée estimée d'une donnée de plus de 2 minutes", () => {
+        const departure = departureAt(busResponse, BUS_RECORDED_AT + 3 * 60_000, "2026-10-14T11:31:00+02:00");
+
+        expect(departure?.expectedArrivalTime).toBe("2026-10-14T11:31:00+02:00");
+    });
+
+    it("ne donne pas de voie au bus", () => {
+        const departure = departureAt(busResponse, BUS_RECORDED_AT + 30_000, "2026-10-14T11:31:00+02:00");
+
+        expect(departure?.platform).toBeUndefined();
+    });
+
+    it("donne la voie et l'heure d'arrivée estimée d'un train", () => {
+        const now = Date.parse("2026-10-14T09:28:48.282Z");
+        const terminus = departureAt(railResponse, now, "2026-10-14T11:34:40+02:00");
+
+        expect(terminus?.platform).toBe("A");
+        expect(terminus?.scheduledArrivalTime).toBe("2026-10-14T11:34:40+02:00");
+        expect(terminus?.expectedArrivalTime).toBe("2026-10-14T11:36:19+02:00");
     });
 
     it("prend l'heure d'arrivée au terminus, sans heure de départ", () => {

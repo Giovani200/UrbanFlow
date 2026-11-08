@@ -14,15 +14,18 @@ import { HomePanel } from "@/app/components/planner/HomePanel";
 import { LastDepartureCard } from "@/app/components/planner/LastDepartureCard";
 import { NavigationPanel } from "@/app/components/planner/NavigationPanel";
 import { ResultsPanel } from "@/app/components/planner/ResultsPanel";
+import { RoutineCard } from "@/app/components/planner/RoutineCard";
 import { SearchPanel } from "@/app/components/planner/SearchPanel";
 import { SettingsPanel } from "@/app/components/settings/SettingsPanel";
 import { BottomSheet } from "@/app/components/ui/BottomSheet";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useLastDeparture } from "@/app/hooks/useLastDeparture";
+import { useRoutineToday } from "@/app/hooks/useRoutineToday";
 import { useRoutingProfile } from "@/app/hooks/useRoutingProfile";
 import { useTripPlanner, type PlannerView } from "@/app/hooks/useTripPlanner";
 import { useUserLocation } from "@/app/hooks/useUserLocation";
 import { dismissTonight, isDismissedTonight, isShownStatus } from "@/app/lib/last-departure";
+import { chooseHomeBlock } from "@/app/lib/routine";
 import type { SheetPosition } from "@/app/lib/sheet-position";
 import type { TransitStop } from "@/app/services/transport.service";
 import type { TripRoute } from "@/app/services/trips.service";
@@ -66,6 +69,17 @@ export default function PlannerPage() {
   const lastDeparture = useLastDeparture({
     enabled: authStatus === "authenticated" && view === "home" && !lastDepartureDismissed,
     position,
+  });
+  const {
+    today: routineToday,
+    isDismissed: routineDismissed,
+    dismiss: dismissTodayRoutine,
+    refresh: refreshRoutineToday,
+  } = useRoutineToday({ enabled: authStatus === "authenticated" && view === "home" });
+  const homeBlock = chooseHomeBlock({
+    routine: routineToday,
+    routineDismissed,
+    lastDepartureShown: lastDeparture !== null && isShownStatus(lastDeparture.status),
   });
 
   useEffect(() => {
@@ -168,7 +182,9 @@ export default function PlannerPage() {
         {onHome && !showSettings && (
           <HomePanel
             header={
-              lastDeparture && isShownStatus(lastDeparture.status) ? (
+              homeBlock === "routine" && routineToday ? (
+                <RoutineCard today={routineToday} position={position} onDismiss={dismissTodayRoutine} onChanged={refreshRoutineToday} />
+              ) : homeBlock === "last_departure" && lastDeparture ? (
                 <LastDepartureCard result={lastDeparture} onGo={goLastDeparture} onDismiss={dismissLastDeparture} />
               ) : null
             }

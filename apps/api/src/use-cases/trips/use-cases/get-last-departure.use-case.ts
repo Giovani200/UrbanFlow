@@ -8,7 +8,6 @@ import {
     LastDepartureDtoOut,
     LastDepartureDtoOutSchema,
     LastDepartureStatus,
-    TransitStatus,
 } from "@urbanflow/app-front-back-lib";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { CACHE_STORE, type CacheStore } from "../../../shared/cache/cache-store";
@@ -19,16 +18,20 @@ import {
     navitiaLocalToParisIso,
     serviceDayArrivalLimit,
     toNavitiaDateTime,
-    toParisLocalMinute,
 } from "../../../shared/time/paris-time";
 import {
     NIGHT_LINES_PROVIDER,
     TRANSIT_ROUTING_PROVIDER,
     type NightLinesProvider,
-    type TransitItinerary,
     type TransitRoutingProvider,
 } from "../../transport/transit.providers";
-import { hasTransitLeg, toTransitTripRoute } from "../trip-route.mapper";
+import { findPlanB } from "../plan-b";
+import {
+    datedTransitItineraries,
+    latestDeparture,
+    toTransitTripRoute,
+    type DatedItinerary,
+} from "../trip-route.mapper";
 
 const DEFAULT_SETTINGS = {
     lastDepartureDistanceMeters: LAST_DEPARTURE_SETTINGS.distanceMeters.default,
@@ -44,31 +47,6 @@ interface LastDepartureSearch {
     home: Coordinates;
     wheelchairAccess: boolean;
     arrivalLimit: string;
-}
-
-type DatedItinerary = TransitItinerary & { departureTime: string; arrivalTime: string };
-
-function datedTransitItineraries(itineraries: TransitItinerary[]): DatedItinerary[] {
-    return itineraries.filter(
-        (itinerary): itinerary is DatedItinerary =>
-            hasTransitLeg(itinerary) && itinerary.departureTime !== undefined && itinerary.arrivalTime !== undefined,
-    );
-}
-
-function latestDeparture(itineraries: DatedItinerary[]): DatedItinerary | null {
-    return itineraries.reduce<DatedItinerary | null>(
-        (latest, itinerary) =>
-            !latest || Date.parse(itinerary.departureTime) > Date.parse(latest.departureTime) ? itinerary : latest,
-        null,
-    );
-}
-
-function earliestArrival(itineraries: DatedItinerary[]): DatedItinerary | null {
-    return itineraries.reduce<DatedItinerary | null>(
-        (earliest, itinerary) =>
-            !earliest || Date.parse(itinerary.arrivalTime) < Date.parse(earliest.arrivalTime) ? itinerary : earliest,
-        null,
-    );
 }
 
 function roundForDepartureTime(coordinates: Coordinates): string {
@@ -163,7 +141,13 @@ export class GetLastDepartureUseCase extends AbstractAuthenticatedUseCase<LastDe
             return this.silent(timing, home);
         }
 
-        const planB = await this.findPlanB(dataIn.position, home, settings.wheelchairAccess, lastDeparture);
+        const planB = await findPlanB(
+            this.transitRoutingProvider,
+            dataIn.position,
+            home,
+            settings.wheelchairAccess,
+            lastDeparture,
+        );
         return {
             status: "ok",
             home,
@@ -200,31 +184,6 @@ export class GetLastDepartureUseCase extends AbstractAuthenticatedUseCase<LastDe
             nightLineIds,
         );
         return latestDeparture(datedTransitItineraries(itineraries));
-    }
-
-    private async findPlanB(
-        position: LastDepartureDtoIn["position"],
-        home: { latitude: number; longitude: number },
-        wheelchairAccess: boolean,
-        lastDeparture: DatedItinerary,
-    ): Promise<{ status: TransitStatus; itinerary: DatedItinerary | null }> {
-        const lastDepartureTime = Date.parse(lastDeparture.departureTime);
-        const departureFrom = toParisLocalMinute(new Date(lastDepartureTime + MILLISECONDS_PER_MINUTE));
-        try {
-            const itineraries = await this.transitRoutingProvider.getItinerariesDepartingFrom(
-                position,
-                home,
-                wheelchairAccess,
-                departureFrom,
-            );
-            const laterItineraries = datedTransitItineraries(itineraries).filter(
-                (itinerary) => Date.parse(itinerary.departureTime) > lastDepartureTime,
-            );
-            const itinerary = earliestArrival(laterItineraries);
-            return { status: itinerary ? "ok" : "no_result", itinerary };
-        } catch {
-            return { status: "unavailable", itinerary: null };
-        }
     }
 
     private silent(status: LastDepartureStatus, home: LabeledCoordinates | null): LastDepartureDtoOut {

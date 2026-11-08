@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Clock, Database, Download, HelpCircle, Leaf, Lock, LogIn, LogOut, User, X } from "lucide-react";
+import { ChevronRight, Clock, Database, Download, HelpCircle, Leaf, Lock, LogIn, LogOut, Repeat, User, X } from "lucide-react";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { PwaInstallInstructions } from "@/app/components/pwa/PwaInstallInstructions";
 import { useEscapeKey } from "@/app/hooks/useEscapeKey";
@@ -12,6 +12,7 @@ import { usePwaInstall } from "@/app/hooks/usePwaInstall";
 const SIGNED_IN_ITEMS = [
   { icon: User, label: "Compte", href: "/profile" },
   { icon: Leaf, label: "Mon empreinte", href: "/carbon" },
+  { icon: Repeat, label: "Mes routines", href: "/routines" },
   { icon: Clock, label: "Mes trajets", href: "/trips" },
   { icon: Database, label: "Mes données", href: "/mes-donnees" },
   { icon: Lock, label: "Confidentialité", href: "/confidentialite" },

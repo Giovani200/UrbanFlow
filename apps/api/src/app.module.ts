@@ -11,6 +11,7 @@ import { TripsModule } from "./use-cases/trips/trips.module";
 import { CarbonModule } from "./use-cases/carbon/carbon.module";
 import { AuthModule } from "./use-cases/auth/auth.module";
 import { TransportModule } from "./use-cases/transport/transport.module";
+import { RoutinesModule } from "./use-cases/routines/routines.module";
 
 function trackerFromRequest(request: Request): string {
     const cloudflareClientIp = request.headers["cf-connecting-ip"];
@@ -33,6 +34,7 @@ function trackerFromRequest(request: Request): string {
         CarbonModule,
         AuthModule,
         TransportModule,
+        RoutinesModule,
     ],
     controllers: [HealthController],
     providers: [

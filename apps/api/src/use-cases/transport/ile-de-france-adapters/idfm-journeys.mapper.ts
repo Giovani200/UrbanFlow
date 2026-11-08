@@ -24,6 +24,8 @@ const NavitiaSectionSchema = zod.object({
     duration: zod.number(),
     departure_date_time: zod.string().optional(),
     base_departure_date_time: zod.string().optional(),
+    arrival_date_time: zod.string().optional(),
+    base_arrival_date_time: zod.string().optional(),
     data_freshness: zod.string().optional(),
     from: NavitiaPlaceSchema.optional(),
     to: NavitiaPlaceSchema.optional(),
@@ -60,7 +62,7 @@ export const NavitiaJourneysResponseSchema = zod.object({
 export type NavitiaJourneysResponse = zod.output<typeof NavitiaJourneysResponseSchema>;
 
 const WALKING_SECTION_TYPES = new Set(["street_network", "transfer", "crow_fly"]);
-const NAVITIA_LINE_ID_PREFIX = "line:IDFM:";
+export const NAVITIA_LINE_ID_PREFIX = "line:IDFM:";
 
 function geometryOf(section: NavitiaSection): GeoJsonLineString {
     return { type: "LineString", coordinates: section.geojson?.coordinates ?? [] };
@@ -121,9 +123,27 @@ function toTransitLeg(section: NavitiaSection): TransitLeg | null {
         dataFreshness: section.data_freshness === "realtime" ? "realtime" : "scheduled",
         scheduledDepartureTime: toLocalIso(section.base_departure_date_time ?? section.departure_date_time),
         expectedDepartureTime: toLocalIso(section.departure_date_time),
+        scheduledArrivalTime: toLocalIso(section.base_arrival_date_time ?? section.arrival_date_time),
+        expectedArrivalTime: toLocalIso(section.arrival_date_time),
         departureStopPointRef: monitoringRefOf(section.from?.stop_point?.id),
         arrivalStopPointRef: monitoringRefOf(section.to?.stop_point?.id),
+        departureStopPointId: section.from?.stop_point?.id,
+        routeId: section.links?.find((link) => link.type === "route")?.id,
     };
+}
+
+export const NavitiaRouteDeparturesResponseSchema = zod.object({
+    departures: zod
+        .array(zod.object({ stop_date_time: zod.object({ departure_date_time: zod.string().optional() }) }))
+        .optional(),
+});
+export type NavitiaRouteDeparturesResponse = zod.output<typeof NavitiaRouteDeparturesResponseSchema>;
+
+export function mapRouteDepartures(response: NavitiaRouteDeparturesResponse): string[] {
+    return (response.departures ?? []).flatMap(({ stop_date_time: stopDateTime }) => {
+        const departureTime = toLocalIso(stopDateTime.departure_date_time);
+        return departureTime ? [departureTime] : [];
+    });
 }
 
 /** Traduit un itinéraire Navitia. `null` si une section emprunte un mode non pris en charge. */

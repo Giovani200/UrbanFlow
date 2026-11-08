@@ -1,0 +1,515 @@
+{
+  "disruptions": [
+    {
+      "id": "f87cfdb7-6701-45a3-a871-c84a3b0ff920",
+      "status": "active",
+      "severity": {
+        "effect": "OTHER_EFFECT",
+        "name": "information"
+      },
+      "application_periods": [
+        {
+          "begin": "20261029T105200",
+          "end": "20261130T235500"
+        }
+      ],
+      "messages": [
+        {
+          "text": "Melun - Travaux rue Saint Liesne",
+          "channel": {
+            "id": "17eac900-7a07-11e8-a990-005056a47b86",
+            "name": "notification",
+            "content_type": "text/plain",
+            "types": [
+              "notification"
+            ]
+          }
+        },
+        {
+          "text": "Melun - Travaux rue Saint Liesne",
+          "channel": {
+            "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+            "name": "titre",
+            "content_type": "text/plain",
+            "types": [
+              "title"
+            ]
+          }
+        },
+        {
+          "text": "<p>Du jeudi 29 octobre au lundi 30 novembre 2026<br>En raison de travaux rue Saint-Liesne, l'arrêt Saint-Liesne, (direction C.Cial Almont) ne sera pas desservi.<br>Après l'arrêt Gare Routière Mail, les véhicules seront déviés par L'avenue de Meaux puis la Rte D605 et rejoindront l'arrêt Docteur Roux.<br>Nous vous invitons à anticiper vos déplacements et vous remercions de votre compréhension.</p>",
+          "channel": {
+            "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+            "name": "moteur",
+            "content_type": "text/html",
+            "types": [
+              "web"
+            ]
+          }
+        }
+      ],
+      "impacted_objects": [
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00881",
+            "name": "Grand Melun Bus 3601",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00881",
+              "code": "3601"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "fd06cfc4-f86e-4437-abb1-2a2936a7d013",
+      "status": "active",
+      "severity": {
+        "effect": "OTHER_EFFECT",
+        "name": "information"
+      },
+      "application_periods": [
+        {
+          "begin": "20261026T040000",
+          "end": "20261231T235500"
+        }
+      ],
+      "messages": [
+        {
+          "text": "Ligne 3604 et 3601 : changement d'horaires",
+          "channel": {
+            "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+            "name": "titre",
+            "content_type": "text/plain",
+            "types": [
+              "title"
+            ]
+          }
+        },
+        {
+          "text": "<p>Bonjour,<br>Nous vous informons qu'à compter du lundi 26 octobre 2026, les horaires de votre ligne seront modifiés.<br>Nous vous remercions de votre compréhension</p>",
+          "channel": {
+            "id": "fccd7438-7a06-11e8-ab20-005056a47b86",
+            "name": "email",
+            "content_type": "text/html",
+            "types": [
+              "email"
+            ]
+          }
+        },
+        {
+          "text": "Ligne 3604 et 3601 : changement d'horaires",
+          "channel": {
+            "id": "17eac900-7a07-11e8-a990-005056a47b86",
+            "name": "notification",
+            "content_type": "text/plain",
+            "types": [
+              "notification"
+            ]
+          }
+        },
+        {
+          "text": "<p>Bonjour,<br>Nous vous informons qu'à compter du lundi 26 octobre 2026, les horaires de votre ligne seront modifiés.<br>Nous vous remercions de votre compréhension</p>",
+          "channel": {
+            "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+            "name": "moteur",
+            "content_type": "text/html",
+            "types": [
+              "web"
+            ]
+          }
+        }
+      ],
+      "impacted_objects": [
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00881",
+            "name": "Grand Melun Bus 3601",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00881",
+              "code": "3601"
+            }
+          }
+        },
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00875",
+            "name": "Grand Melun Bus 3604",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00875",
+              "code": "3604"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "94bb8673-c06a-48dd-9541-fa79c271535f",
+      "status": "active",
+      "severity": {
+        "effect": "OTHER_EFFECT",
+        "name": "information"
+      },
+      "application_periods": [
+        {
+          "begin": "20260925T040000",
+          "end": "20261231T230000"
+        }
+      ],
+      "messages": [
+        {
+          "text": "<p>Information voyageurs<br>Dans le cadre des travaux réalisés avenue Thiers, l'accès PMR à l'arrêt Gare Thiers direction Melun, ne pourra plus être assuré temporairement.<br>Nous invitons les personnes à mobilité réduite à se reporter vers l'arrêt accessible le plus proche durant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée</p>",
+          "channel": {
+            "id": "fccd7438-7a06-11e8-ab20-005056a47b86",
+            "name": "email",
+            "content_type": "text/html",
+            "types": [
+              "email"
+            ]
+          }
+        },
+        {
+          "text": "Accès PMR temporairement indisponible",
+          "channel": {
+            "id": "17eac900-7a07-11e8-a990-005056a47b86",
+            "name": "notification",
+            "content_type": "text/plain",
+            "types": [
+              "notification"
+            ]
+          }
+        },
+        {
+          "text": "Accès PMR temporairement indisponible",
+          "channel": {
+            "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+            "name": "titre",
+            "content_type": "text/plain",
+            "types": [
+              "title"
+            ]
+          }
+        },
+        {
+          "text": "<p>Information voyageurs<br>Dans le cadre des travaux réalisés avenue Thiers, l'accès PMR à l'arrêt Gare Thiers direction Melun, ne pourra plus être assuré temporairement.<br>Nous invitons les personnes à mobilité réduite à se reporter vers l'arrêt accessible le plus proche durant toute la durée des travaux.<br>Nous vous remercions de votre compréhension et vous prions de nous excuser pour la gêne occasionnée</p>",
+          "channel": {
+            "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+            "name": "moteur",
+            "content_type": "text/html",
+            "types": [
+              "web"
+            ]
+          }
+        }
+      ],
+      "impacted_objects": [
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00881",
+            "name": "Grand Melun Bus 3601",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00881",
+              "code": "3601"
+            }
+          }
+        },
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00875",
+            "name": "Grand Melun Bus 3604",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00875",
+              "code": "3604"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "0d129169-5e72-4b45-870c-a836ba5c91fa",
+      "status": "active",
+      "severity": {
+        "effect": "OTHER_EFFECT",
+        "name": "information"
+      },
+      "application_periods": [
+        {
+          "begin": "20260922T040000",
+          "end": "20261231T230000"
+        }
+      ],
+      "messages": [
+        {
+          "text": "Melun_arrêt Thiers Pouillot Supprimé",
+          "channel": {
+            "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+            "name": "titre",
+            "content_type": "text/plain",
+            "types": [
+              "title"
+            ]
+          }
+        },
+        {
+          "text": "Melun_arrêt Thiers Pouillot Supprimé",
+          "channel": {
+            "id": "17eac900-7a07-11e8-a990-005056a47b86",
+            "name": "notification",
+            "content_type": "text/plain",
+            "types": [
+              "notification"
+            ]
+          }
+        },
+        {
+          "text": "<p>En raison des travaux sur l'avenue Thiers<br>A compter du mardi 22 septembre, <br>l'arrêt Thiers Pouillot est supprimé.<br>Merci de votre compréhension</p>",
+          "channel": {
+            "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+            "name": "moteur",
+            "content_type": "text/html",
+            "types": [
+              "web"
+            ]
+          }
+        }
+      ],
+      "impacted_objects": [
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00881",
+            "name": "Grand Melun Bus 3601",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00881",
+              "code": "3601"
+            }
+          }
+        },
+        {
+          "pt_object": {
+            "id": "line:IDFM:C00875",
+            "name": "Grand Melun Bus 3604",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C00875",
+              "code": "3604"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "29816313-a262-4a19-95d6-0dcf1e063fca",
+      "status": "active",
+      "severity": {
+        "effect": "SIGNIFICANT_DELAYS",
+        "name": "perturbée"
+      },
+      "application_periods": [
+        {
+          "begin": "20261116T030000",
+          "end": "20261117T030000"
+        },
+        {
+          "begin": "20261104T030000",
+          "end": "20261105T030000"
+        },
+        {
+          "begin": "20261110T030000",
+          "end": "20261111T030000"
+        },
+        {
+          "begin": "20261103T030000",
+          "end": "20261104T030000"
+        },
+        {
+          "begin": "20261201T030000",
+          "end": "20261202T030000"
+        },
+        {
+          "begin": "20261126T030000",
+          "end": "20261127T030000"
+        },
+        {
+          "begin": "20261124T030000",
+          "end": "20261125T030000"
+        },
+        {
+          "begin": "20261128T030000",
+          "end": "20261129T030000"
+        },
+        {
+          "begin": "20261203T030000",
+          "end": "20261204T030000"
+        },
+        {
+          "begin": "20261118T030000",
+          "end": "20261119T030000"
+        },
+        {
+          "begin": "20261119T030000",
+          "end": "20261120T030000"
+        },
+        {
+          "begin": "20261111T030000",
+          "end": "20261112T030000"
+        },
+        {
+          "begin": "20261112T030000",
+          "end": "20261113T030000"
+        },
+        {
+          "begin": "20261121T030000",
+          "end": "20261122T030000"
+        },
+        {
+          "begin": "20261115T030000",
+          "end": "20261116T030000"
+        },
+        {
+          "begin": "20261114T030000",
+          "end": "20261115T030000"
+        },
+        {
+          "begin": "20261120T030000",
+          "end": "20261121T030000"
+        },
+        {
+          "begin": "20261123T030000",
+          "end": "20261124T030000"
+        },
+        {
+          "begin": "20261117T030000",
+          "end": "20261118T030000"
+        },
+        {
+          "begin": "20261204T030000",
+          "end": "20261205T030000"
+        },
+        {
+          "begin": "20261127T030000",
+          "end": "20261128T030000"
+        },
+        {
+          "begin": "20261122T030000",
+          "end": "20261123T030000"
+        },
+        {
+          "begin": "20261202T030000",
+          "end": "20261203T030000"
+        },
+        {
+          "begin": "20261130T030000",
+          "end": "20261201T030000"
+        },
+        {
+          "begin": "20261105T030000",
+          "end": "20261106T030000"
+        },
+        {
+          "begin": "20261129T030000",
+          "end": "20261130T030000"
+        },
+        {
+          "begin": "20261109T030000",
+          "end": "20261110T030000"
+        },
+        {
+          "begin": "20261107T030000",
+          "end": "20261108T030000"
+        },
+        {
+          "begin": "20261125T030000",
+          "end": "20261126T030000"
+        },
+        {
+          "begin": "20261113T030000",
+          "end": "20261114T030000"
+        },
+        {
+          "begin": "20261108T030000",
+          "end": "20261109T030000"
+        },
+        {
+          "begin": "20261106T030000",
+          "end": "20261107T030000"
+        }
+      ],
+      "messages": [
+        {
+          "text": "<p>P&#233;riode : Du lundi au dimanche.<br><br>Dates : du 1er au 30 novembre.<br><br>Les horaires de d&#233;part, d'arriv&#233;e ou de passage en gare de certains trains de la ligne R peuvent &#234;tre avanc&#233;s et vos temps de trajet peuvent &#234;tre impact&#233;s.<br><br>Les horaires du calculateur d'itin&#233;raire tiennent compte des travaux.<br><br>Motif : travaux de maintenance et de cr&#233;ation du r&#233;seau</p>",
+          "channel": {
+            "id": "3ae8df3e-7488-11e8-ac3b-005056a47b86",
+            "name": "moteur",
+            "content_type": "text/html",
+            "types": [
+              "web"
+            ]
+          }
+        },
+        {
+          "text": "Ligne R : modification des horaires des trains novembre.",
+          "channel": {
+            "id": "d9dbc5a6-7a06-11e8-8b8c-005056a44da2",
+            "name": "titre",
+            "content_type": "text/plain",
+            "types": [
+              "title"
+            ]
+          }
+        },
+        {
+          "text": "Ligne R : modification des horaires des trains novembre.",
+          "channel": {
+            "id": "17eac900-7a07-11e8-a990-005056a47b86",
+            "name": "notification",
+            "content_type": "text/plain",
+            "types": [
+              "notification"
+            ]
+          }
+        },
+        {
+          "text": "Trafic perturbé",
+          "channel": {
+            "id": "a4be1e42-d27d-11ef-abd9-0a58a9feac02",
+            "name": "cbiv",
+            "content_type": "text/plain",
+            "types": [
+              "pids"
+            ]
+          }
+        },
+        {
+          "text": "<p>P&#233;riode : Du lundi au dimanche.<br><br>Dates : du 1er au 30 novembre.<br><br>Les horaires de d&#233;part, d'arriv&#233;e ou de passage en gare de certains trains de la ligne R peuvent &#234;tre avanc&#233;s et vos temps de trajet peuvent &#234;tre impact&#233;s.<br><br>Les horaires du calculateur d'itin&#233;raire tiennent compte des travaux.<br><br>Motif : travaux de maintenance et de cr&#233;ation du r&#233;seau</p>",
+          "channel": {
+            "id": "fccd7438-7a06-11e8-ab20-005056a47b86",
+            "name": "email",
+            "content_type": "text/html",
+            "types": [
+              "email"
+            ]
+          }
+        }
+      ],
+      "impacted_objects": [
+        {
+          "pt_object": {
+            "id": "line:IDFM:C01731",
+            "name": "Transilien Train Transilien R",
+            "embedded_type": "line",
+            "line": {
+              "id": "line:IDFM:C01731",
+              "code": "R"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

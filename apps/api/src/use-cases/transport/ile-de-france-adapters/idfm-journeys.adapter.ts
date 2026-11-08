@@ -2,13 +2,22 @@ import { Inject, Injectable } from "@nestjs/common";
 import type { Coordinates, PlannedTime } from "@urbanflow/app-front-back-lib";
 import { CACHE_STORE, type CacheStore } from "../../../shared/cache/cache-store";
 import { toNavitiaDateTime } from "../../../shared/time/paris-time";
-import type { TransitItinerary, TransitRoutingProvider } from "../transit.providers";
-import { mapJourney, NavitiaJourneysResponseSchema } from "./idfm-journeys.mapper";
+import type { LineNotice, TransitItinerary, TransitRoutingProvider } from "../transit.providers";
+import { mapLineNotices, NavitiaJourneysWithDisruptionsResponseSchema } from "./idfm-disruptions.mapper";
+import {
+    mapJourney,
+    mapRouteDepartures,
+    NAVITIA_LINE_ID_PREFIX,
+    NavitiaJourneysResponseSchema,
+    NavitiaRouteDeparturesResponseSchema,
+    type NavitiaJourneysResponse,
+} from "./idfm-journeys.mapper";
 import { PrimHttpClient } from "./prim-http-client";
 import { PrimQuotas } from "./prim-quotas";
 
 const ITINERARY_COUNT = "5";
 const LATE_ITINERARY_COUNT = "3";
+const SCHEDULED_DEPARTURES_COUNT = "4";
 const ITINERARY_CACHE_TTL_MILLISECONDS = 60_000;
 const LATE_ITINERARY_CACHE_TTL_MILLISECONDS = 120_000;
 const CACHE_GRID_STEPS_PER_DEGREE = 2000;
@@ -40,6 +49,12 @@ function baseParameters(
         disable_disruption: "true",
         wheelchair: String(wheelchairAccess),
     });
+}
+
+function toItineraries(response: NavitiaJourneysResponse): TransitItinerary[] {
+    return (response.journeys ?? [])
+        .map(mapJourney)
+        .filter((itinerary): itinerary is TransitItinerary => itinerary !== null);
 }
 
 @Injectable()
@@ -107,6 +122,73 @@ export class IdfmJourneysAdapter implements TransitRoutingProvider {
         return this.fetchItineraries(parameters, cacheKey, LATE_ITINERARY_CACHE_TTL_MILLISECONDS);
     }
 
+    async getItinerariesOnLines(
+        origin: Coordinates,
+        destination: Coordinates,
+        wheelchairAccess: boolean,
+        arrivalLimit: string,
+        allowedLineIds: string[],
+    ): Promise<TransitItinerary[]> {
+        const parameters = baseParameters(origin, destination, wheelchairAccess, LATE_ITINERARY_COUNT);
+        parameters.set("datetime", toNavitiaDateTime(arrivalLimit));
+        parameters.set("datetime_represents", "arrival");
+        for (const lineId of allowedLineIds) {
+            parameters.append("allowed_id[]", `${NAVITIA_LINE_ID_PREFIX}${lineId}`);
+        }
+
+        const cacheKey = [
+            "journeys-on-lines",
+            roundForCache(origin),
+            roundForCache(destination),
+            wheelchairAccess,
+            arrivalLimit,
+            allowedLineIds.join(","),
+        ].join(":");
+        return this.fetchItineraries(parameters, cacheKey, LATE_ITINERARY_CACHE_TTL_MILLISECONDS);
+    }
+
+    async getItinerariesWithNotices(
+        origin: Coordinates,
+        destination: Coordinates,
+        wheelchairAccess: boolean,
+        arrivalLimit: string,
+    ): Promise<{ itineraries: TransitItinerary[]; notices: LineNotice[] }> {
+        const parameters = baseParameters(origin, destination, wheelchairAccess, LATE_ITINERARY_COUNT);
+        parameters.delete("disable_disruption");
+        parameters.set("datetime", toNavitiaDateTime(arrivalLimit));
+        parameters.set("datetime_represents", "arrival");
+
+        const cacheKey = ["journeys-notices", roundForCache(origin), roundForCache(destination), wheelchairAccess, arrivalLimit].join(":");
+        const response = await this.cacheStore.getOrLoad(cacheKey, LATE_ITINERARY_CACHE_TTL_MILLISECONDS, () =>
+            this.primHttpClient.getJson(
+                `v2/navitia/journeys?${parameters.toString()}`,
+                NavitiaJourneysWithDisruptionsResponseSchema,
+                this.primQuotas.navitia,
+                "IDFM_JOURNEYS_FAILED",
+                [NAVITIA_NO_SOLUTION_STATUS],
+            ),
+        );
+
+        return { itineraries: toItineraries(response), notices: mapLineNotices(response.disruptions ?? []) };
+    }
+
+    async getScheduledDepartures(stopPointId: string, routeId: string, fromLocalMinute: string): Promise<string[]> {
+        const parameters = new URLSearchParams({
+            from_datetime: toNavitiaDateTime(fromLocalMinute),
+            count: SCHEDULED_DEPARTURES_COUNT,
+            data_freshness: "base_schedule",
+            depth: "0",
+        });
+        const response = await this.primHttpClient.getJson(
+            `v2/navitia/stop_points/${encodeURIComponent(stopPointId)}/routes/${encodeURIComponent(routeId)}/departures?${parameters.toString()}`,
+            NavitiaRouteDeparturesResponseSchema,
+            this.primQuotas.navitia,
+            "IDFM_DEPARTURES_FAILED",
+            [NAVITIA_NO_SOLUTION_STATUS],
+        );
+        return mapRouteDepartures(response);
+    }
+
     private async fetchItineraries(
         parameters: URLSearchParams,
         cacheKey: string,
@@ -122,8 +204,6 @@ export class IdfmJourneysAdapter implements TransitRoutingProvider {
             ),
         );
 
-        return (response.journeys ?? [])
-            .map(mapJourney)
-            .filter((itinerary): itinerary is TransitItinerary => itinerary !== null);
+        return toItineraries(response);
     }
 }

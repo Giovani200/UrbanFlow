@@ -16,6 +16,8 @@ const SiriVisitSchema = zod.object({
             AimedArrivalTime: zod.string().optional(),
             ExpectedArrivalTime: zod.string().optional(),
             DestinationDisplay: SiriTextSchema.optional(),
+            ArrivalPlatformName: zod.object({ value: zod.string() }).optional(),
+            DeparturePlatformName: zod.object({ value: zod.string() }).optional(),
         }),
     }),
 });
@@ -50,6 +52,8 @@ function toDeparture(visit: SiriVisit, now: Date): Departure | null {
     const isFresh = Number.isFinite(recordedAt) && now.getTime() - recordedAt <= STALE_AFTER_MILLISECONDS;
     const estimated = call.ExpectedDepartureTime ?? call.ExpectedArrivalTime ?? scheduled;
     const expected = isFresh ? estimated : scheduled;
+    const scheduledArrival = call.AimedArrivalTime;
+    const expectedArrival = isFresh ? (call.ExpectedArrivalTime ?? scheduledArrival) : scheduledArrival;
 
     return {
         lineRef: lineIdOf(journey.LineRef.value),
@@ -58,6 +62,9 @@ function toDeparture(visit: SiriVisit, now: Date): Departure | null {
         expectedTime: utcToParisIso(expected),
         delaySeconds: Math.round((Date.parse(expected) - Date.parse(scheduled)) / 1000),
         dataFreshness: isFresh ? "realtime" : "scheduled",
+        scheduledArrivalTime: scheduledArrival ? utcToParisIso(scheduledArrival) : undefined,
+        expectedArrivalTime: expectedArrival ? utcToParisIso(expectedArrival) : undefined,
+        platform: call.DeparturePlatformName?.value ?? call.ArrivalPlatformName?.value,
     };
 }
 

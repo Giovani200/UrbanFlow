@@ -39,6 +39,28 @@ describe("ExportUserDataUseCase", () => {
             carbonEntries: [
                 { mode: "tram", distanceKm: 4, carbonGrams: 17.76, savedVsCar: 550.24, createdAt: now },
             ],
+            routines: [
+                {
+                    name: "Travail",
+                    originLabel: "Henri Wallon",
+                    originLat: 48.5244,
+                    originLng: 2.6437,
+                    destLabel: "La Défense",
+                    destLat: 48.892,
+                    destLng: 2.238,
+                    arrivalTime: "09:00",
+                    usualDepartureTime: "07:41",
+                    weekdays: [1, 2, 3, 4, 5],
+                    lineIds: ["C00881", "C01731", "C01742"],
+                    createdAt: now,
+                    dayPlan: {
+                        serviceDay: "2026-07-18",
+                        planOrigin: "usual",
+                        itinerary: { legs: [], durationSeconds: 3600 },
+                        updatedAt: now,
+                    },
+                },
+            ],
         }));
         const prisma = { user: { findUnique } } as unknown as PrismaService;
 
@@ -51,6 +73,63 @@ describe("ExportUserDataUseCase", () => {
         expect(result.favoriteAddresses[0].isHome).toBe(true);
         expect(result.preferences?.lastDepartureWindowMinutes).toBe(120);
         expect(typeof result.exportedAt).toBe("string");
+        expect(result.routines[0]).toEqual({
+            name: "Travail",
+            origin: { label: "Henri Wallon", latitude: 48.5244, longitude: 2.6437 },
+            destination: { label: "La Défense", latitude: 48.892, longitude: 2.238 },
+            arrivalTime: "09:00",
+            usualDepartureTime: "07:41",
+            weekdays: [1, 2, 3, 4, 5],
+            lineIds: ["C00881", "C01731", "C01742"],
+            createdAt: now.toISOString(),
+            dayPlan: {
+                serviceDay: "2026-07-18",
+                planOrigin: "usual",
+                itinerary: { legs: [], durationSeconds: 3600 },
+                updatedAt: now.toISOString(),
+            },
+        });
+    });
+
+    it("exporte une liste vide pour un compte sans routine, et null pour une routine sans trajet du jour", async () => {
+        const accountWithoutRoutine = {
+            email: "user-1@test.fr",
+            name: null,
+            preferences: null,
+            favoriteAddresses: [],
+            trips: [],
+            carbonEntries: [],
+            routines: [],
+        };
+        const withoutRoutine = { user: { findUnique: async () => accountWithoutRoutine } } as unknown as PrismaService;
+
+        const emptyExport = await new ExportUserDataUseCase(withoutRoutine).execute(user, undefined);
+
+        expect(emptyExport.routines).toEqual([]);
+
+        const now = new Date("2026-07-18T10:00:00Z");
+        const routine = {
+            name: "Travail",
+            originLabel: "A",
+            originLat: 48.5,
+            originLng: 2.6,
+            destLabel: "B",
+            destLat: 48.9,
+            destLng: 2.2,
+            arrivalTime: "09:00",
+            usualDepartureTime: "07:41",
+            weekdays: [1],
+            lineIds: ["C00881"],
+            createdAt: now,
+            dayPlan: null,
+        };
+        const withRoutine = {
+            user: { findUnique: async () => ({ ...accountWithoutRoutine, routines: [routine] }) },
+        } as unknown as PrismaService;
+
+        const routineExport = await new ExportUserDataUseCase(withRoutine).execute(user, undefined);
+
+        expect(routineExport.routines[0].dayPlan).toBeNull();
     });
 
     it("user introuvable → NotFound", async () => {

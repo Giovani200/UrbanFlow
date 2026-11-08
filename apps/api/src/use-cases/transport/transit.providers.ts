@@ -29,8 +29,24 @@ export interface TransitLeg {
     dataFreshness?: DataFreshness;
     scheduledDepartureTime?: string;
     expectedDepartureTime?: string;
+    scheduledArrivalTime?: string;
+    expectedArrivalTime?: string;
+    /** La voie du train au départ, connue seulement par une lecture SIRI. */
+    platform?: string;
     departureStopPointRef?: string;
     arrivalStopPointRef?: string;
+    /** Identifiants Navitia, pour lire les prochains départs de cette direction. Internes à l'API. */
+    departureStopPointId?: string;
+    routeId?: string;
+}
+
+/** Message IDFM sur une ligne. Il informe : rien ne prouve qu'il explique un trajet absent. */
+export interface LineNotice {
+    lineId: string;
+    lineShortName: string;
+    text: string;
+    /** Heures ISO 8601 à l'heure de Paris. */
+    periods: { begin: string; end: string }[];
 }
 
 export interface TransitItinerary {
@@ -69,6 +85,29 @@ export interface TransitRoutingProvider {
         wheelchairAccess: boolean,
         departureFrom: string,
     ): Promise<TransitItinerary[]>;
+
+    /**
+     * Itinéraires qui arrivent au plus tard à `arrivalLimit`, limités aux lignes données. `[]` s'il n'y en a aucun.
+     * Un résultat peut ne pas utiliser toutes ces lignes : c'est à l'appelant de le vérifier.
+     */
+    getItinerariesOnLines(
+        origin: Coordinates,
+        destination: Coordinates,
+        wheelchairAccess: boolean,
+        arrivalLimit: string,
+        allowedLineIds: string[],
+    ): Promise<TransitItinerary[]>;
+
+    /** Itinéraires qui arrivent au plus tard à `arrivalLimit`, avec les messages IDFM de toutes les lignes. */
+    getItinerariesWithNotices(
+        origin: Coordinates,
+        destination: Coordinates,
+        wheelchairAccess: boolean,
+        arrivalLimit: string,
+    ): Promise<{ itineraries: TransitItinerary[]; notices: LineNotice[] }>;
+
+    /** Heures ISO des prochains départs prévus à un arrêt, dans une direction, à partir de `fromLocalMinute`. */
+    getScheduledDepartures(stopPointId: string, routeId: string, fromLocalMinute: string): Promise<string[]>;
 }
 
 export interface NearbyStopsProvider {
@@ -82,6 +121,10 @@ export interface Departure {
     expectedTime: string;
     delaySeconds: number;
     dataFreshness: DataFreshness;
+    scheduledArrivalTime?: string;
+    expectedArrivalTime?: string;
+    /** La voie du train ; les bus n'en ont pas. */
+    platform?: string;
 }
 
 export interface DeparturesProvider {

@@ -36,6 +36,24 @@ describe("mapJourney", () => {
         expect(busLeg?.expectedDepartureTime).toMatch(/\+02:00$/);
     });
 
+    it("donne l'heure d'arrivée prévue et estimée de chaque section", () => {
+        const transitLegs = mapJourney(busTrainRerJourney)?.legs.filter((leg) => leg.lineShortName) ?? [];
+        const [busLeg, trainLeg] = transitLegs;
+
+        expect(busLeg.scheduledArrivalTime).toBe("2026-10-14T11:37:00+02:00");
+        expect(busLeg.expectedArrivalTime).toBe("2026-10-14T11:37:00+02:00");
+        expect(trainLeg.scheduledArrivalTime).toBe("2026-10-14T12:17:00+02:00");
+        expect(trainLeg.expectedArrivalTime).toBe("2026-10-14T12:17:06+02:00");
+    });
+
+    it("donne l'arrêt Navitia et la route de chaque section, pour lire ses prochains départs", () => {
+        const transitLegs = mapJourney(busTrainRerJourney)?.legs.filter((leg) => leg.lineShortName) ?? [];
+
+        expect(transitLegs[0].departureStopPointId).toBe("stop_point:IDFM:31052");
+        expect(transitLegs[0].routeId).toBe("route:IDFM:TRANSDEV_MELUN:4284-RETOUR");
+        expect(transitLegs[1].departureStopPointId).toBe("stop_point:IDFM:monomodalStopPlace:47909");
+    });
+
     it("donne les heures de départ et d'arrivée du trajet à l'heure de Paris", () => {
         const itinerary = mapJourney(busTrainRerJourney);
 

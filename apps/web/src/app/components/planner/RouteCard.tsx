@@ -1,5 +1,5 @@
 import { FreshnessStamp } from "@/app/components/ui/FreshnessStamp";
-import { formatDistance, formatDuration } from "@/app/lib/format";
+import { formatDistance, formatDuration, formatParisClock } from "@/app/lib/format";
 import { isTransitSegment, segmentDepartureTimes } from "@/app/lib/trip-results";
 import type { TripRoute } from "@/app/services/trips.service";
 import { SegmentSummary } from "./SegmentSummary";
@@ -8,10 +8,12 @@ interface RouteCardProps {
   route: TripRoute;
   selected: boolean;
   onSelect: () => void;
+  /** Montre l'heure d'arrivée, quand c'est elle qui décide du choix. */
+  showArrival?: boolean;
 }
 
 /** Un itinéraire proposé : modes, durée, heure de départ du premier transport et fraîcheur de cette heure. */
-export function RouteCard({ route, selected, onSelect }: RouteCardProps) {
+export function RouteCard({ route, selected, onSelect, showArrival = false }: RouteCardProps) {
   const firstTransit = route.segments.find(isTransitSegment);
   const departure = firstTransit ? segmentDepartureTimes(firstTransit) : null;
 
@@ -20,7 +22,7 @@ export function RouteCard({ route, selected, onSelect }: RouteCardProps) {
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`uf-inset flex w-full flex-col gap-3 rounded-uf-inset p-4 text-left ${selected ? "outline-2 outline-uf-ink" : ""}`}
+      className={`uf-inset flex w-full cursor-pointer flex-col gap-3 rounded-uf-inset p-4 text-left ${selected ? "outline-2 outline-uf-ink" : ""}`}
     >
       <SegmentSummary segments={route.segments} />
       <span className="flex items-end justify-between gap-3">
@@ -33,6 +35,9 @@ export function RouteCard({ route, selected, onSelect }: RouteCardProps) {
         {departure && firstTransit && (
           <span className="flex flex-col items-end gap-0.5">
             <span className="[font:var(--uf-note)] tabular-nums">départ {departure.expected}</span>
+            {showArrival && route.arrivalTime && (
+              <span className="[font:var(--uf-note)] font-bold tabular-nums">arrivée {formatParisClock(route.arrivalTime)}</span>
+            )}
             <FreshnessStamp freshness={firstTransit.dataFreshness === "realtime" ? "realtime" : "scheduled"} />
           </span>
         )}

@@ -41,6 +41,26 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                     select: { mode: true, distanceKm: true, carbonGrams: true, savedVsCar: true, createdAt: true },
                     orderBy: { createdAt: "desc" },
                 },
+                routines: {
+                    select: {
+                        name: true,
+                        originLabel: true,
+                        originLat: true,
+                        originLng: true,
+                        destLabel: true,
+                        destLat: true,
+                        destLng: true,
+                        arrivalTime: true,
+                        usualDepartureTime: true,
+                        weekdays: true,
+                        lineIds: true,
+                        createdAt: true,
+                        dayPlan: {
+                            select: { serviceDay: true, planOrigin: true, itinerary: true, updatedAt: true },
+                        },
+                    },
+                    orderBy: { createdAt: "asc" },
+                },
             },
         });
 
@@ -75,6 +95,22 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                 carbonGrams: entry.carbonGrams,
                 savedVsCar: entry.savedVsCar,
                 createdAt: entry.createdAt.toISOString(),
+            })),
+            routines: user.routines.map((routine) => ({
+                name: routine.name,
+                origin: { label: routine.originLabel, latitude: routine.originLat, longitude: routine.originLng },
+                destination: { label: routine.destLabel, latitude: routine.destLat, longitude: routine.destLng },
+                arrivalTime: routine.arrivalTime,
+                usualDepartureTime: routine.usualDepartureTime,
+                weekdays: routine.weekdays,
+                lineIds: routine.lineIds,
+                createdAt: routine.createdAt.toISOString(),
+                dayPlan: routine.dayPlan && {
+                    serviceDay: routine.dayPlan.serviceDay,
+                    planOrigin: routine.dayPlan.planOrigin,
+                    itinerary: routine.dayPlan.itinerary,
+                    updatedAt: routine.dayPlan.updatedAt.toISOString(),
+                },
             })),
         };
     }

@@ -76,10 +76,35 @@ const SERVICE_DAY_END_HOUR = 4;
  */
 export function serviceDayArrivalLimit(now: Date): string {
     const localNow = toParisLocalMinute(now);
-    const [year, month, day] = localNow.slice(0, 10).split("-").map(Number);
     const hour = Number(localNow.slice(11, 13));
-    const limitDay = new Date(Date.UTC(year, month - 1, hour < SERVICE_DAY_END_HOUR ? day : day + 1));
-    return `${limitDay.toISOString().slice(0, 10)}T${twoDigits(SERVICE_DAY_END_HOUR)}:00`;
+    const limitDay = shiftDay(localNow.slice(0, 10), hour < SERVICE_DAY_END_HOUR ? 0 : 1);
+    return `${limitDay}T${twoDigits(SERVICE_DAY_END_HOUR)}:00`;
+}
+
+function shiftDay(day: string, days: number): string {
+    const [year, month, date] = day.split("-").map(Number);
+    return new Date(Date.UTC(year, month - 1, date + days)).toISOString().slice(0, 10);
+}
+
+/** Journée de service (« 2026-11-09 ») d'un instant : avant 04:00 à Paris, on est encore sur la veille. */
+export function parisServiceDay(instant: Date): string {
+    const localMinute = toParisLocalMinute(instant);
+    const hour = Number(localMinute.slice(11, 13));
+    return shiftDay(localMinute.slice(0, 10), hour < SERVICE_DAY_END_HOUR ? -1 : 0);
+}
+
+/** Jour ISO d'une journée (« 2026-11-09 ») : 1 = lundi, 7 = dimanche. */
+export function isoWeekdayOfDay(day: string): number {
+    const [year, month, date] = day.split("-").map(Number);
+    const weekday = new Date(Date.UTC(year, month - 1, date)).getUTCDay();
+    return weekday === 0 ? 7 : weekday;
+}
+
+/** Instant d'une heure (« 07:41 ») dans une journée de service : avant 04:00, elle tombe le lendemain à Paris. */
+export function parisInstant(serviceDay: string, clockTime: string): Date {
+    const hour = Number(clockTime.slice(0, 2));
+    const calendarDay = hour < SERVICE_DAY_END_HOUR ? shiftDay(serviceDay, 1) : serviceDay;
+    return new Date(navitiaLocalToParisIso(toNavitiaDateTime(`${calendarDay}T${clockTime}`)));
 }
 
 /** Jour courant à Paris (« 2026-10-14 »), pour remettre les quotas à zéro à minuit heure de Paris. */
