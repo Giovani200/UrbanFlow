@@ -5,10 +5,11 @@ import { TripsController } from "./trips.controller";
 import { TripPlanningUseCase } from "./use-cases/trip-planning.use-case";
 import { RecordTripUseCase } from "./use-cases/record-trip.use-case";
 import { ListTripsUseCase } from "./use-cases/list-trips.use-case";
+import { GetLastDepartureUseCase } from "./use-cases/get-last-departure.use-case";
 
 @Module({
     imports: [TransportModule, PassportModule],
     controllers: [TripsController],
-    providers: [TripPlanningUseCase, RecordTripUseCase, ListTripsUseCase],
+    providers: [TripPlanningUseCase, RecordTripUseCase, ListTripsUseCase, GetLastDepartureUseCase],
 })
 export class TripsModule {}
