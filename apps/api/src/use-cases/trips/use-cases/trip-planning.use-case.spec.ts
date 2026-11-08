@@ -32,7 +32,11 @@ function makeUseCase(
     getItineraries: TransitRoutingProvider["getItineraries"] = async () => [],
 ): TripPlanningUseCase {
     const orsRoutingAdapter = { getRoute } as unknown as OrsRoutingAdapter;
-    const transitRoutingProvider: TransitRoutingProvider = { getItineraries };
+    const transitRoutingProvider: TransitRoutingProvider = {
+        getItineraries,
+        getItinerariesArrivingBefore: async () => [],
+        getItinerariesDepartingFrom: async () => [],
+    };
     return new TripPlanningUseCase(orsRoutingAdapter, transitRoutingProvider);
 }
 

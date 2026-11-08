@@ -36,6 +36,19 @@ describe("mapJourney", () => {
         expect(busLeg?.expectedDepartureTime).toMatch(/\+02:00$/);
     });
 
+    it("donne les heures de départ et d'arrivée du trajet à l'heure de Paris", () => {
+        const itinerary = mapJourney(busTrainRerJourney);
+
+        expect(itinerary?.departureTime).toBe("2026-10-14T11:30:59+02:00");
+        expect(itinerary?.arrivalTime).toBe("2026-10-14T12:39:14+02:00");
+    });
+
+    it("identifie chaque ligne par son id IDFM, sans le préfixe Navitia", () => {
+        const transitLegs = mapJourney(busTrainRerJourney)?.legs.filter((leg) => leg.lineShortName) ?? [];
+
+        expect(transitLegs.map((leg) => leg.lineId)).toEqual(["C00881", "C01731", "C01742"]);
+    });
+
     it("garde la référence SIRI du point d'arrêt de départ du R", () => {
         const trainLeg = mapJourney(busTrainRerJourney)?.legs.find((leg) => leg.mode === "train");
 

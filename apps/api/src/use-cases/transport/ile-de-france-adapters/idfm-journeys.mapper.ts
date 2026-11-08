@@ -42,11 +42,14 @@ const NavitiaSectionSchema = zod.object({
         })
         .optional(),
     stop_date_times: zod.array(zod.object({ stop_point: NavitiaStopPointSchema })).optional(),
+    links: zod.array(zod.object({ type: zod.string(), id: zod.string().optional() })).optional(),
 });
 type NavitiaSection = zod.output<typeof NavitiaSectionSchema>;
 
 const NavitiaJourneySchema = zod.object({
     duration: zod.number(),
+    departure_date_time: zod.string().optional(),
+    arrival_date_time: zod.string().optional(),
     sections: zod.array(NavitiaSectionSchema),
 });
 export type NavitiaJourney = zod.output<typeof NavitiaJourneySchema>;
@@ -57,6 +60,7 @@ export const NavitiaJourneysResponseSchema = zod.object({
 export type NavitiaJourneysResponse = zod.output<typeof NavitiaJourneysResponseSchema>;
 
 const WALKING_SECTION_TYPES = new Set(["street_network", "transfer", "crow_fly"]);
+const NAVITIA_LINE_ID_PREFIX = "line:IDFM:";
 
 function geometryOf(section: NavitiaSection): GeoJsonLineString {
     return { type: "LineString", coordinates: section.geojson?.coordinates ?? [] };
@@ -76,6 +80,11 @@ function intermediateStopsOf(section: NavitiaSection): TransitStopPoint[] {
 
 function monitoringRefOf(stopPointId: string | undefined): string | undefined {
     return stopPointId ? (toSiriMonitoringRef(stopPointId) ?? undefined) : undefined;
+}
+
+function lineIdOf(section: NavitiaSection): string | undefined {
+    const lineId = section.links?.find((link) => link.type === "line")?.id;
+    return lineId?.startsWith(NAVITIA_LINE_ID_PREFIX) ? lineId.slice(NAVITIA_LINE_ID_PREFIX.length) : undefined;
 }
 
 function toLocalIso(navitiaDateTime: string | undefined): string | undefined {
@@ -105,6 +114,7 @@ function toTransitLeg(section: NavitiaSection): TransitLeg | null {
         departureStopName: section.from?.stop_point?.name,
         arrivalStopName: section.to?.stop_point?.name,
         lineShortName: display.code,
+        lineId: lineIdOf(section),
         lineColor: toHexColor(display.color),
         lineTextColor: toHexColor(display.text_color),
         intermediateStops: intermediateStopsOf(section),
@@ -135,5 +145,10 @@ export function mapJourney(journey: NavitiaJourney): TransitItinerary | null {
         legs.push(transitLeg);
     }
 
-    return { legs, durationSeconds: journey.duration };
+    return {
+        legs,
+        durationSeconds: journey.duration,
+        departureTime: toLocalIso(journey.departure_date_time),
+        arrivalTime: toLocalIso(journey.arrival_date_time),
+    };
 }

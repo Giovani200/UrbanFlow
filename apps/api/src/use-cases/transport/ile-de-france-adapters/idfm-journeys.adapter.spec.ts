@@ -72,6 +72,42 @@ describe("IdfmJourneysAdapter", () => {
         expect(parameters.get("datetime_represents")).toBe("arrival");
     });
 
+    it("cherche les trajets qui arrivent avant l'heure limite, sur 24 h, sans les lignes exclues", async () => {
+        const fetchMock = stubFetch(200, journeysFixture);
+
+        await makeAdapter().getItinerariesArrivingBefore(origin, destination, true, "2026-11-04T04:00", [
+            "C01415",
+            "C01633",
+        ]);
+        const parameters = requestedParameters(fetchMock);
+
+        expect(parameters.get("datetime")).toBe("20261104T040000");
+        expect(parameters.get("datetime_represents")).toBe("arrival");
+        expect(parameters.get("max_duration")).toBe("86400");
+        expect(parameters.getAll("forbidden_uris[]")).toEqual(["line:IDFM:C01415", "line:IDFM:C01633"]);
+        expect(parameters.get("wheelchair")).toBe("true");
+        expect(parameters.get("data_freshness")).toBe("realtime");
+    });
+
+    it("cherche les trajets qui partent à partir d'une heure donnée, bus de nuit compris", async () => {
+        const fetchMock = stubFetch(200, journeysFixture);
+
+        await makeAdapter().getItinerariesDepartingFrom(origin, destination, false, "2026-11-03T23:09");
+        const parameters = requestedParameters(fetchMock);
+
+        expect(parameters.get("datetime")).toBe("20261103T230900");
+        expect(parameters.get("datetime_represents")).toBe("departure");
+        expect(parameters.has("forbidden_uris[]")).toBe(false);
+    });
+
+    it("trajet tardif sans solution (404) : liste vide", async () => {
+        stubFetch(404, { error: { id: "no_solution" } });
+
+        await expect(
+            makeAdapter().getItinerariesArrivingBefore(origin, destination, false, "2026-11-04T04:00", []),
+        ).resolves.toEqual([]);
+    });
+
     it("renvoie une liste vide quand Navitia ne trouve aucune solution (404)", async () => {
         stubFetch(404, { error: { id: "no_solution" } });
 

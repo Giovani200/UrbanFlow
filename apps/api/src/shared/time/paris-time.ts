@@ -63,6 +63,25 @@ export function toNavitiaDateTime(localDateTime: string): string {
     return `${localDateTime.replace(/[-:]/g, "")}00`;
 }
 
+/** Heure locale de Paris à la minute (« 2026-10-14T08:05 »), le format attendu par les requêtes Navitia. */
+export function toParisLocalMinute(instant: Date): string {
+    return toParisIso(instant).slice(0, 16);
+}
+
+const SERVICE_DAY_END_HOUR = 4;
+
+/**
+ * Heure limite du retour du soir : 04:00 à Paris à la fin de la journée de service en cours.
+ * Avant 04:00, la soirée de la veille n'est pas finie : la limite est le jour même ; sinon c'est le lendemain.
+ */
+export function serviceDayArrivalLimit(now: Date): string {
+    const localNow = toParisLocalMinute(now);
+    const [year, month, day] = localNow.slice(0, 10).split("-").map(Number);
+    const hour = Number(localNow.slice(11, 13));
+    const limitDay = new Date(Date.UTC(year, month - 1, hour < SERVICE_DAY_END_HOUR ? day : day + 1));
+    return `${limitDay.toISOString().slice(0, 10)}T${twoDigits(SERVICE_DAY_END_HOUR)}:00`;
+}
+
 /** Jour courant à Paris (« 2026-10-14 »), pour remettre les quotas à zéro à minuit heure de Paris. */
 export function parisDayKey(instant: Date): string {
     return dayKeyFormatter.format(instant);

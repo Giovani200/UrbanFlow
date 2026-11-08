@@ -6,18 +6,13 @@ import {
     TripPlanningDtoOutSchema,
     TripMode,
     TripRoute,
-    TripSegment,
     TransitStatus,
 } from "@urbanflow/app-front-back-lib";
 import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
-import { CARBON_FACTORS } from "../../../shared/constants";
 import { isInIleDeFrance } from "../../../shared/geo/ile-de-france";
 import { OrsProfile, OrsRoutingAdapter } from "../../transport/openRouteService-routing.adapter";
-import {
-    TRANSIT_ROUTING_PROVIDER,
-    type TransitItinerary,
-    type TransitRoutingProvider,
-} from "../../transport/transit.providers";
+import { TRANSIT_ROUTING_PROVIDER, type TransitRoutingProvider } from "../../transport/transit.providers";
+import { hasTransitLeg, savedVersusCarGrams, segmentCarbonGrams, toTransitTripRoute } from "../trip-route.mapper";
 
 // Pondérations par défaut si l'utilisateur n'a pas de profil.
 const DEFAULT_WEIGHTS = { weightCarbon: 50, weightTime: 30};
@@ -67,8 +62,8 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
         dataIn: TripPlanningDtoIn,
     ): Promise<TripRoute> {
         const route = await this.orsRoutingAdapter.getRoute(orsProfile, dataIn.origin, dataIn.destination);
-        const carbonGrams = this.segmentCarbon(mode, route.distanceMeters);
-        const savedGrams = this.segmentSaved(carbonGrams, route.distanceMeters);
+        const carbonGrams = segmentCarbonGrams(mode, route.distanceMeters);
+        const savedGrams = savedVersusCarGrams(carbonGrams, route.distanceMeters);
 
         return {
             segments: [
@@ -102,8 +97,8 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
         );
 
         return itineraries
-            .filter((itinerary) => itinerary.legs.some((leg) => leg.mode !== "walk"))
-            .map((itinerary) => this.toTransitRoute(itinerary));
+            .filter(hasTransitLeg)
+            .map(toTransitTripRoute);
     }
 
     private transitStatusOf(settlement: PromiseSettledResult<unknown>["status"], routeCount: number): TransitStatus {
@@ -111,50 +106,6 @@ export class TripPlanningUseCase extends AbstractUseCase<TripPlanningDtoIn, Trip
             return "unavailable";
         }
         return routeCount > 0 ? "ok" : "no_result";
-    }
-
-    private toTransitRoute(itinerary: TransitItinerary): TripRoute {
-        const segments: TripSegment[] = itinerary.legs.map((leg) => {
-            const carbonGrams = this.segmentCarbon(leg.mode, leg.distanceMeters);
-            return {
-                mode: leg.mode,
-                geometry: leg.geometry,
-                durationSeconds: leg.durationSeconds,
-                distanceMeters: leg.distanceMeters,
-                carbonGrams,
-                savedGrams: this.segmentSaved(carbonGrams, leg.distanceMeters),
-                departureStopName: leg.departureStopName,
-                arrivalStopName: leg.arrivalStopName,
-                lineShortName: leg.lineShortName,
-                lineColor: leg.lineColor,
-                lineTextColor: leg.lineTextColor,
-                intermediateStops: leg.intermediateStops,
-                dataFreshness: leg.dataFreshness,
-                scheduledDepartureTime: leg.scheduledDepartureTime,
-                expectedDepartureTime: leg.expectedDepartureTime,
-                departureStopPointRef: leg.departureStopPointRef,
-                arrivalStopPointRef: leg.arrivalStopPointRef,
-            };
-        });
-
-        return {
-            segments,
-            totalDurationSeconds: itinerary.durationSeconds,
-            totalDistanceMeters: segments.reduce((total, segment) => total + segment.distanceMeters, 0),
-            totalCarbonGrams: segments.reduce((total, segment) => total + segment.carbonGrams, 0),
-            totalSavedGrams: segments.reduce((total, segment) => total + segment.savedGrams, 0),
-            score: 0,
-        };
-    }
-
-    private segmentCarbon(mode: TripMode, distanceMeters: number): number {
-        return (distanceMeters / 1000) * CARBON_FACTORS[mode];
-    }
-
-    // CO₂ évité par rapport au même segment parcouru en voiture solo.
-    private segmentSaved(carbonGrams: number, distanceMeters: number): number {
-        const carReferenceGrams = (distanceMeters / 1000) * CARBON_FACTORS.car;
-        return Math.max(0, carReferenceGrams - carbonGrams);
     }
 
     private rankRoutes(routes: TripRoute[], dataIn: TripPlanningDtoIn): TripRoute[] {
