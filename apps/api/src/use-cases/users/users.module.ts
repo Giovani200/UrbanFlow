@@ -11,6 +11,7 @@ import { ExportUserDataUseCase } from "./use-cases/export-user-data.use-case";
 import { CreateFavoriteAddressUseCase } from "./use-cases/create-favorite-address.use-case";
 import { ListFavoriteAddressesUseCase } from "./use-cases/list-favorite-addresses.use-case";
 import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-address.use-case";
+import { SetHomeAddressUseCase } from "./use-cases/set-home-address.use-case";
 
 @Module({
     imports: [PassportModule],
@@ -26,6 +27,7 @@ import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-addres
         CreateFavoriteAddressUseCase,
         ListFavoriteAddressesUseCase,
         DeleteFavoriteAddressUseCase,
+        SetHomeAddressUseCase,
     ],
 })
 export class UsersModule {}

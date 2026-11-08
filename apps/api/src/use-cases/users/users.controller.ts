@@ -9,6 +9,7 @@ import {
     ExportUserDataDtoOut,
     GetUserProfileDtoOut,
     ListFavoriteAddressesDtoOut,
+    SetHomeAddressDtoOut,
     UpdateAccountDtoOut,
     UpdatePreferencesDtoOut,
 } from "@urbanflow/app-front-back-lib";
@@ -22,6 +23,7 @@ import { ExportUserDataUseCase } from "./use-cases/export-user-data.use-case";
 import { CreateFavoriteAddressUseCase } from "./use-cases/create-favorite-address.use-case";
 import { ListFavoriteAddressesUseCase } from "./use-cases/list-favorite-addresses.use-case";
 import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-address.use-case";
+import { SetHomeAddressUseCase } from "./use-cases/set-home-address.use-case";
 import { JwtAuthGuard } from "../../shared/auth/jwt-auth.guard";
 import { CurrentUser } from "../../shared/auth/current-user.decorator";
 import type { AuthenticatedUser } from "../../shared/auth/jwt.strategy";
@@ -39,6 +41,7 @@ export class UsersController {
         private readonly createFavoriteAddressUseCase: CreateFavoriteAddressUseCase,
         private readonly listFavoriteAddressesUseCase: ListFavoriteAddressesUseCase,
         private readonly deleteFavoriteAddressUseCase: DeleteFavoriteAddressUseCase,
+        private readonly setHomeAddressUseCase: SetHomeAddressUseCase,
     ) {}
 
     @Post("register")
@@ -111,5 +114,14 @@ export class UsersController {
         @Param("id") id: string,
     ): Promise<DeleteFavoriteAddressDtoOut> {
         return this.deleteFavoriteAddressUseCase.execute(user, { id });
+    }
+
+    @Put("me/addresses/:id/home")
+    @UseGuards(JwtAuthGuard)
+    async setHomeAddress(
+        @CurrentUser() user: AuthenticatedUser,
+        @Param("id") id: string,
+    ): Promise<SetHomeAddressDtoOut> {
+        return this.setHomeAddressUseCase.execute(user, { id });
     }
 }
