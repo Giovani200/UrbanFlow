@@ -11,15 +11,18 @@ import { MapViewDynamic } from "@/app/components/map/MapViewDynamic";
 import { ArrivalPanel } from "@/app/components/planner/ArrivalPanel";
 import { DetailPanel } from "@/app/components/planner/DetailPanel";
 import { HomePanel } from "@/app/components/planner/HomePanel";
+import { LastDepartureCard } from "@/app/components/planner/LastDepartureCard";
 import { NavigationPanel } from "@/app/components/planner/NavigationPanel";
 import { ResultsPanel } from "@/app/components/planner/ResultsPanel";
 import { SearchPanel } from "@/app/components/planner/SearchPanel";
 import { SettingsPanel } from "@/app/components/settings/SettingsPanel";
 import { BottomSheet } from "@/app/components/ui/BottomSheet";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
+import { useLastDeparture } from "@/app/hooks/useLastDeparture";
 import { useRoutingProfile } from "@/app/hooks/useRoutingProfile";
 import { useTripPlanner, type PlannerView } from "@/app/hooks/useTripPlanner";
 import { useUserLocation } from "@/app/hooks/useUserLocation";
+import { dismissTonight, isDismissedTonight, isShownStatus } from "@/app/lib/last-departure";
 import type { SheetPosition } from "@/app/lib/sheet-position";
 import type { TransitStop } from "@/app/services/transport.service";
 import type { TripRoute } from "@/app/services/trips.service";
@@ -56,8 +59,14 @@ export default function PlannerPage() {
   const [nearbyStops, setNearbyStops] = useState<TransitStop[]>([]);
   const positionBeforeSettingsRef = useRef<SheetPosition>("half");
 
+  const [lastDepartureDismissed, setLastDepartureDismissed] = useState(() => isDismissedTonight(Date.now()));
+
   const position = location.state === "located" ? location.position : null;
   const { view, selectedRoute } = planner;
+  const lastDeparture = useLastDeparture({
+    enabled: authStatus === "authenticated" && view === "home" && !lastDepartureDismissed,
+    position,
+  });
 
   useEffect(() => {
     if (!position) return;
@@ -104,6 +113,19 @@ export default function PlannerPage() {
     setSheetPosition(SHEET_POSITION_BY_VIEW.home);
   }
 
+  function goLastDeparture(route: TripRoute) {
+    if (!position || !lastDeparture?.home) return;
+    planner.startRoute(route, { label: "Ma position", ...position }, lastDeparture.home);
+    showRoute(route);
+    mapRef.current?.startFollow();
+    setSheetPosition(SHEET_POSITION_BY_VIEW.navigation);
+  }
+
+  function dismissLastDeparture() {
+    dismissTonight(Date.now());
+    setLastDepartureDismissed(true);
+  }
+
   function openSettings() {
     positionBeforeSettingsRef.current = sheetPosition;
     setShowSettings(true);
@@ -145,6 +167,11 @@ export default function PlannerPage() {
 
         {onHome && !showSettings && (
           <HomePanel
+            header={
+              lastDeparture && isShownStatus(lastDeparture.status) ? (
+                <LastDepartureCard result={lastDeparture} onGo={goLastDeparture} onDismiss={dismissLastDeparture} />
+              ) : null
+            }
             location={location}
             onPlanTrip={() => goTo("search")}
             onRequestPosition={locate}

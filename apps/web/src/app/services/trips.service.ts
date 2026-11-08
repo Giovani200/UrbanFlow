@@ -1,4 +1,6 @@
 import type {
+  LastDepartureDtoIn,
+  LastDepartureDtoOut,
   RecordTripDtoIn,
   RecordTripDtoOut,
   TripPlanningDtoIn,
@@ -10,7 +12,7 @@ import type {
 } from "@urbanflow/app-front-back-lib";
 import { handleResponse } from "@/app/services/lib/http";
 
-export type { TripRoute, TripSegment, ListTripsDtoOut, TripHistoryPeriod };
+export type { TripRoute, TripSegment, ListTripsDtoOut, TripHistoryPeriod, LastDepartureDtoOut };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -44,5 +46,15 @@ export const tripsService = {
       credentials: "include",
     });
     return handleResponse<ListTripsDtoOut>(response);
+  },
+
+  async getLastDeparture(input: LastDepartureDtoIn) {
+    const response = await fetch(`${API_URL}/trips/last-departure`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(input),
+    });
+    return handleResponse<LastDepartureDtoOut>(response);
   },
 };

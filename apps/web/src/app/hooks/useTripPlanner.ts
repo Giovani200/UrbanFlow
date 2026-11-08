@@ -61,6 +61,18 @@ export function useTripPlanner({ profile, isAuthenticated }: { profile?: Routing
     else addLocalTrip(toTripRecord(input));
   }
 
+  /** Ouvre la navigation sur un itinéraire déjà calculé (le dernier départ), sans passer par la recherche. */
+  function startRoute(route: TripRoute, from: Place, to: Place) {
+    setOrigin(from);
+    setDestination(to);
+    setRoutes([route]);
+    setSelectedIndex(0);
+    setNotice(null);
+    setFailed(false);
+    recordedRef.current = false;
+    setView("navigation");
+  }
+
   function reset() {
     setRoutes([]);
     setNotice(null);
@@ -82,6 +94,7 @@ export function useTripPlanner({ profile, isAuthenticated }: { profile?: Routing
     destination,
     search,
     recordTrip,
+    startRoute,
     reset,
   };
 }

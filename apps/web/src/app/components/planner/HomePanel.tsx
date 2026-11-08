@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/app/components/ui/Button";
 import { LinePlate } from "@/app/components/ui/LinePlate";
 import type { UserLocation } from "@/app/hooks/useUserLocation";
@@ -10,14 +10,16 @@ import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 import { transportService, type TransitStop } from "@/app/services/transport.service";
 
 interface HomePanelProps {
+  /** Bloc affiché en tête quand il a quelque chose d'utile à dire (le dernier départ du soir). */
+  header?: ReactNode;
   location: UserLocation;
   onPlanTrip: () => void;
   onRequestPosition: () => void;
   onStopsLoaded: (stops: TransitStop[]) => void;
 }
 
-/** Accueil : la recherche, puis les arrêts autour de soi avec leurs lignes. */
-export function HomePanel({ location, onPlanTrip, onRequestPosition, onStopsLoaded }: HomePanelProps) {
+/** Accueil : le dernier départ s'il est utile, la recherche, puis les arrêts autour de soi avec leurs lignes. */
+export function HomePanel({ header, location, onPlanTrip, onRequestPosition, onStopsLoaded }: HomePanelProps) {
   const position = location.state === "located" ? location.position : null;
   const [stops, setStops] = useState<TransitStop[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,7 @@ export function HomePanel({ location, onPlanTrip, onRequestPosition, onStopsLoad
 
   return (
     <div className="flex flex-col gap-5">
+      {header}
       <button type="button" onClick={onPlanTrip} className="uf-inset flex min-h-[60px] items-center gap-3 rounded-uf-panel px-5 text-left">
         <Search size={20} strokeWidth={2.2} aria-hidden="true" />
         <span className="flex flex-col">
