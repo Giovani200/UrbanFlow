@@ -81,7 +81,7 @@ export function serviceDayArrivalLimit(now: Date): string {
     return `${limitDay}T${twoDigits(SERVICE_DAY_END_HOUR)}:00`;
 }
 
-function shiftDay(day: string, days: number): string {
+export function shiftDay(day: string, days: number): string {
     const [year, month, date] = day.split("-").map(Number);
     return new Date(Date.UTC(year, month - 1, date + days)).toISOString().slice(0, 10);
 }

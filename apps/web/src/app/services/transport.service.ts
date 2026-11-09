@@ -1,4 +1,4 @@
-import type { NearbyTransportDtoOut, TransitStop } from "@urbanflow/app-front-back-lib";
+import type { Coordinates, NearbyTransportDtoOut, StopDeparturesDtoOut, TransitStop } from "@urbanflow/app-front-back-lib";
 import { handleResponse } from "@/app/services/lib/http";
 
 export type { NearbyTransportDtoOut, TransitStop };
@@ -23,5 +23,11 @@ export const transportService = {
 
     const response = await fetch(`${API_URL}/transport/nearby?${query.toString()}`);
     return handleResponse<NearbyTransportDtoOut>(response);
+  },
+
+  async getStopDepartures(stopId: string, { latitude, longitude }: Coordinates) {
+    const query = new URLSearchParams({ latitude: String(latitude), longitude: String(longitude) });
+    const response = await fetch(`${API_URL}/transport/stops/${encodeURIComponent(stopId)}/departures?${query.toString()}`);
+    return handleResponse<StopDeparturesDtoOut>(response);
   },
 };

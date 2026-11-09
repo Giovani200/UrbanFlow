@@ -15,6 +15,7 @@ import {
     findArrivalPassage,
     findDeparturePassage,
     frequentHeadwayMinutes,
+    hasScheduledTime,
     judgeConnection,
 } from "./connection-verdict";
 
@@ -98,11 +99,11 @@ function isExpectedSoon(scheduledIso: string, now: Date): boolean {
 }
 
 /**
- * Un véhicule absent n'est un signal que si sa ligne publie d'autres passages à cet arrêt. Sinon on ne peut simplement
- * pas le suivre : SIRI ne donne aucune heure prévue pour le métro, donc aucun passage n'y est exploitable.
+ * Un véhicule absent n'est un signal que si sa ligne publie d'autres passages avec une heure prévue à cet arrêt. Sinon
+ * on ne peut simplement pas le suivre : SIRI ne donne aucune heure prévue pour le métro.
  */
 function linePublishesPassages(passages: Departure[] | undefined, lineId: string | undefined): boolean {
-    return passages?.some((passage) => passage.lineRef === lineId) ?? false;
+    return passages?.some((passage) => passage.lineRef === lineId && hasScheduledTime(passage)) ?? false;
 }
 
 /**

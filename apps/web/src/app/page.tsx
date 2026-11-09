@@ -13,6 +13,7 @@ import { DetailPanel } from "@/app/components/planner/DetailPanel";
 import { HomePanel } from "@/app/components/planner/HomePanel";
 import { LastDepartureCard } from "@/app/components/planner/LastDepartureCard";
 import { NavigationPanel } from "@/app/components/planner/NavigationPanel";
+import { NothingInProgress } from "@/app/components/planner/NothingInProgress";
 import { ResultsPanel } from "@/app/components/planner/ResultsPanel";
 import { RoutineCard } from "@/app/components/planner/RoutineCard";
 import { SearchPanel } from "@/app/components/planner/SearchPanel";
@@ -186,6 +187,8 @@ export default function PlannerPage() {
                 <RoutineCard today={routineToday} position={position} onDismiss={dismissTodayRoutine} onChanged={refreshRoutineToday} />
               ) : homeBlock === "last_departure" && lastDeparture ? (
                 <LastDepartureCard result={lastDeparture} onGo={goLastDeparture} onDismiss={dismissLastDeparture} />
+              ) : routineToday?.nextRoutine ? (
+                <NothingInProgress nextRoutine={routineToday.nextRoutine} />
               ) : null
             }
             location={location}

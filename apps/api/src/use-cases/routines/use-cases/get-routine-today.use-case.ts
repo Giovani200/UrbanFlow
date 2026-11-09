@@ -11,14 +11,14 @@ import { z as zod } from "zod";
 import type { AuthenticatedUser } from "../../../shared/auth/jwt.strategy";
 import { AbstractAuthenticatedUseCase } from "../../../shared/core/abstract.authenticated.use-case";
 import { PrismaService } from "../../../shared/database/prisma.service";
-import { parisInstant, parisServiceDay, toParisLocalMinute } from "../../../shared/time/paris-time";
+import { parisInstant, parisServiceDay, toParisLocalMinute, utcToParisIso } from "../../../shared/time/paris-time";
 import { TRANSIT_ROUTING_PROVIDER, type TransitRoutingProvider } from "../../transport/transit.providers";
 import { datedTransitItineraries, toTransitTripRoute, type DatedItinerary } from "../../trips/trip-route.mapper";
 import { judgeConnection } from "../connection-verdict";
 import { RoutineConnectionsService } from "../routine-connections.service";
 import type { DayPlan } from "../routine-day-plan.schema";
 import { RoutineDayPlanner } from "../routine-day-planner.service";
-import { chooseActiveRoutine, isRoutineDay, isWithinWindow } from "../routine-window";
+import { chooseActiveRoutine, isRoutineDay, isWithinWindow, nextRoutineOccurrence } from "../routine-window";
 
 const MAX_ALTERNATIVES = 2;
 /** Laisse le temps à un trajet en retard de se finir : l'heure exacte de fin est jugée après la lecture de SIRI. */
@@ -40,6 +40,7 @@ const SILENCE: RoutineTodayDtoOut = {
     realtimeStatus: null,
     planOrigin: null,
     arrivesLate: false,
+    nextRoutine: null,
 };
 
 interface StoredRoutine {
@@ -126,12 +127,21 @@ export class GetRoutineTodayUseCase extends AbstractAuthenticatedUseCase<void, R
             where: { userId },
             include: { dayPlan: true },
         });
+        const next = nextRoutineOccurrence(routines, now);
+        const silence: RoutineTodayDtoOut = {
+            ...SILENCE,
+            nextRoutine: next && {
+                name: next.routine.name,
+                departureTime: utcToParisIso(next.departure.toISOString()),
+            },
+        };
+
         let candidates = routines
             .filter((routine) => isRoutineDay(routine.weekdays, serviceDay))
             .map((routine) => toCandidate(routine, serviceDay, now))
             .filter((candidate) => candidate.isOpen);
         if (candidates.length === 0) {
-            return SILENCE;
+            return silence;
         }
 
         const preferences = await this.prisma.preferences.findUnique({
@@ -150,7 +160,7 @@ export class GetRoutineTodayUseCase extends AbstractAuthenticatedUseCase<void, R
             candidates = candidates.filter((candidate) => candidate !== finished);
             active = chooseActiveRoutine(candidates, now);
         }
-        return SILENCE;
+        return silence;
     }
 
     /** `null` si le trajet de cette routine est déjà terminé : la routine suivante peut alors s'afficher. */

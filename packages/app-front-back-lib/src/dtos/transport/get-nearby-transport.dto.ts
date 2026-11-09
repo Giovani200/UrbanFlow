@@ -5,6 +5,8 @@ export const TransitStopModeSchema = zod.enum(["tram", "bus", "metro", "rer", "t
 export type TransitStopMode = zod.output<typeof TransitStopModeSchema>;
 
 export const TransitLineSchema = zod.object({
+    /** Identifiant IDFM de la ligne (`C00881`), qui relie une plaque aux passages SIRI. */
+    lineId: zod.string().optional(),
     code: zod.string(),
     mode: TransitStopModeSchema,
     color: zod.string().optional(),
@@ -40,7 +42,10 @@ export const NearbyTransportDtoInSchema = zod.object({
 export type NearbyTransportDtoIn = zod.output<typeof NearbyTransportDtoInSchema>;
 
 export const NearbyTransportDtoOutSchema = zod.object({
+    /** Tous les arrêts proches, pour la carte. */
     transitStops: zod.array(TransitStopSchema),
+    /** Ceux à lister, du plus proche au plus loin : chaque ligne et chaque sens y apparaissent une seule fois. */
+    listedStopIds: zod.array(zod.string()),
     sharedVehicles: zod.array(SharedVehicleSchema),
 });
 export type NearbyTransportDtoOut = zod.output<typeof NearbyTransportDtoOutSchema>;

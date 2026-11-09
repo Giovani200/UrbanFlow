@@ -16,6 +16,7 @@ import {
 } from "./transit.providers";
 import { TransportController } from "./transport.controller";
 import { GetNearbyTransportUseCase } from "./use-cases/get-nearby-transport.use-case";
+import { GetStopDeparturesUseCase } from "./use-cases/get-stop-departures.use-case";
 
 @Module({
     controllers: [TransportController],
@@ -29,6 +30,7 @@ import { GetNearbyTransportUseCase } from "./use-cases/get-nearby-transport.use-
         { provide: DEPARTURES_PROVIDER, useClass: PrimDeparturesAdapter },
         { provide: NIGHT_LINES_PROVIDER, useClass: IdfmNightLinesAdapter },
         GetNearbyTransportUseCase,
+        GetStopDeparturesUseCase,
     ],
     exports: [OrsRoutingAdapter, CACHE_STORE, TRANSIT_ROUTING_PROVIDER, DEPARTURES_PROVIDER, NIGHT_LINES_PROVIDER],
 })

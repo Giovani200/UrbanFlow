@@ -2,12 +2,18 @@
 
 import { MapPin, Search } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import type { Coordinates } from "@urbanflow/app-front-back-lib";
 import { Button } from "@/app/components/ui/Button";
 import { LinePlate } from "@/app/components/ui/LinePlate";
 import type { UserLocation } from "@/app/hooks/useUserLocation";
 import { formatDistance } from "@/app/lib/format";
+import { walkingMinutes } from "@/app/lib/home";
 import { MODE_FALLBACK, MODE_META } from "@/app/lib/mode-meta";
 import { transportService, type TransitStop } from "@/app/services/transport.service";
+import { StopDepartures } from "./StopDepartures";
+
+/** Chaque arrêt avec horaires coûte des appels SIRI tant que l'app est visible : dans un centre-ville, on plafonne. */
+const MAX_STOPS_WITH_DEPARTURES = 4;
 
 interface HomePanelProps {
   /** Bloc affiché en tête quand il a quelque chose d'utile à dire (le dernier départ du soir). */
@@ -18,7 +24,7 @@ interface HomePanelProps {
   onStopsLoaded: (stops: TransitStop[]) => void;
 }
 
-/** Accueil : le dernier départ s'il est utile, la recherche, puis les arrêts autour de soi avec leurs lignes. */
+/** Accueil : le bloc utile du moment, la recherche, puis les arrêts autour de soi : chaque ligne et chaque sens, une seule fois. */
 export function HomePanel({ header, location, onPlanTrip, onRequestPosition, onStopsLoaded }: HomePanelProps) {
   const position = location.state === "located" ? location.position : null;
   const [stops, setStops] = useState<TransitStop[]>([]);
@@ -38,8 +44,9 @@ export function HomePanel({ header, location, onPlanTrip, onRequestPosition, onS
         return;
       }
       setError(null);
-      setStops(result.data.transitStops);
-      onStopsLoaded(result.data.transitStops);
+      const { transitStops, listedStopIds } = result.data;
+      setStops(listedStopIds.flatMap((stopId) => transitStops.filter((stop) => stop.id === stopId)));
+      onStopsLoaded(transitStops);
     });
     return () => {
       active = false;
@@ -82,22 +89,34 @@ export function HomePanel({ header, location, onPlanTrip, onRequestPosition, onS
         )}
 
         <ul className="flex flex-col gap-2">
-          {stops.map((stop) => (
-            <li key={stop.id} className="uf-inset flex items-center justify-between gap-3 rounded-uf-inset px-4 py-3">
-              <span className="flex min-w-0 flex-col gap-1.5">
-                <span className="truncate [font:var(--uf-body)] font-bold">{stop.name}</span>
-                <span className="flex flex-wrap gap-1.5">
-                  {stop.lines.map((line) => {
-                    const meta = MODE_META[line.mode] ?? MODE_FALLBACK;
-                    return <LinePlate key={line.code} code={line.code} color={line.color ?? meta.color} label={`${meta.label} ${line.code}`} size="s" />;
-                  })}
-                </span>
-              </span>
-              <span className="shrink-0 [font:var(--uf-note)] tabular-nums text-uf-ink-2">{formatDistance(stop.distanceMeters)}</span>
-            </li>
+          {stops.map((stop, index) => (
+            <NearbyStopCard key={stop.id} stop={stop} departuresFrom={index < MAX_STOPS_WITH_DEPARTURES ? position : null} />
           ))}
         </ul>
       </section>
     </div>
+  );
+}
+
+/** Un arrêt proche et ses lignes. Avec `departuresFrom`, il donne aussi son temps de marche et ses horaires. */
+function NearbyStopCard({ stop, departuresFrom }: { stop: TransitStop; departuresFrom: Coordinates | null }) {
+  return (
+    <li className="uf-inset flex flex-col gap-3 rounded-uf-inset px-4 py-3">
+      <span className="flex items-center justify-between gap-3">
+        <span className="flex min-w-0 flex-col gap-1.5">
+          <span className="truncate [font:var(--uf-body)] font-bold">{stop.name}</span>
+          <span className="flex flex-wrap gap-1.5">
+            {stop.lines.map((line) => {
+              const meta = MODE_META[line.mode] ?? MODE_FALLBACK;
+              return <LinePlate key={line.lineId ?? line.code} code={line.code} color={line.color ?? meta.color} label={`${meta.label} ${line.code}`} size="s" />;
+            })}
+          </span>
+        </span>
+        <span className="shrink-0 [font:var(--uf-note)] tabular-nums text-uf-ink-2">
+          {departuresFrom ? `à ${walkingMinutes(stop.distanceMeters)} min à pied` : formatDistance(stop.distanceMeters)}
+        </span>
+      </span>
+      {departuresFrom && <StopDepartures stopId={stop.id} position={departuresFrom} />}
+    </li>
   );
 }

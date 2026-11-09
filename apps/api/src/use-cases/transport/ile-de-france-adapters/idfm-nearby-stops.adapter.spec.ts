@@ -44,6 +44,47 @@ function callsTo(fetchMock: ReturnType<typeof vi.fn>, fragment: string): number 
     return fetchMock.mock.calls.filter(([url]) => decodeURIComponent(String(url)).includes(fragment)).length;
 }
 
+describe("IdfmNearbyStopsAdapter : quais d'un arrêt", () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    function stubQuays(): ReturnType<typeof vi.fn> {
+        const fetchMock = vi.fn(async () =>
+            respond(200, {
+                stop_points: [
+                    { id: "stop_point:IDFM:31051", coord: { lat: "48.5244", lon: "2.6437" } },
+                    { id: "stop_point:IDFM:monomodalStopPlace:47909", coord: { lat: "48.53", lon: "2.65" } },
+                    { id: "stop_point:AUTRE:1", coord: { lat: "48.5", lon: "2.6" } },
+                ],
+            }),
+        );
+        vi.stubGlobal("fetch", fetchMock);
+        return fetchMock;
+    }
+
+    it("traduit les quais en références SIRI, et écarte ceux qui ne peuvent pas l'être", async () => {
+        stubQuays();
+
+        const quays = await makeAdapter().getStopQuays(HENRI_WALLON);
+
+        expect(quays).toEqual([
+            { monitoringRef: "STIF:StopPoint:Q:31051:", isRail: false, location: { latitude: 48.5244, longitude: 2.6437 } },
+            { monitoringRef: "STIF:StopArea:SP:47909:", isRail: true, location: { latitude: 48.53, longitude: 2.65 } },
+        ]);
+    });
+
+    it("ne rappelle pas PRIM pour un arrêt déjà lu", async () => {
+        const fetchMock = stubQuays();
+        const adapter = makeAdapter();
+
+        await adapter.getStopQuays(HENRI_WALLON);
+        await adapter.getStopQuays(HENRI_WALLON);
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+});
+
 describe("IdfmNearbyStopsAdapter", () => {
     beforeEach(() => {
         vi.spyOn(Logger.prototype, "warn").mockImplementation(() => undefined);

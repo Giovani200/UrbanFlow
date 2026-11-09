@@ -19,6 +19,10 @@ export interface ConnectionTimes {
     walkSeconds: number;
 }
 
+export function hasScheduledTime(departure: Departure): departure is Departure & { scheduledTime: string } {
+    return departure.scheduledTime !== null;
+}
+
 /** Temps restant une fois arrivé et une fois la marche faite. Négatif si le suivant part avant. */
 export function marginSeconds(arrivalIso: string, departureIso: string, walkSeconds: number): number {
     return (Date.parse(departureIso) - Date.parse(arrivalIso)) / MILLISECONDS_PER_SECOND - walkSeconds;
@@ -41,7 +45,10 @@ export function judgeConnection({ arrival, departure, walkSeconds }: ConnectionT
     return { kind: margin >= HOLDS_FROM_SECONDS ? "holds" : "tight", marginMinutes, basis };
 }
 
-/** Le passage de cette ligne dont l'heure prévue est la plus proche, à 60 s près : deux trains peuvent se suivre à 2 s. */
+/**
+ * Le passage de cette ligne dont l'heure prévue est la plus proche, à 60 s près : deux trains peuvent se suivre à 2 s.
+ * Un passage sans heure prévue, comme celui d'un métro, ne peut jamais être retenu.
+ */
 function closestPassage(
     departures: Departure[],
     lineId: string,
@@ -52,7 +59,7 @@ function closestPassage(
     let closest: Departure | null = null;
     let closestGap = PASSAGE_TOLERANCE_MILLISECONDS;
 
-    for (const departure of departures) {
+    for (const departure of departures.filter(hasScheduledTime)) {
         const gap = Math.abs(Date.parse(scheduledTimeOf(departure)) - scheduled);
         if (departure.lineRef === lineId && gap <= closestGap) {
             closest = departure;
@@ -63,7 +70,7 @@ function closestPassage(
 }
 
 export function findDeparturePassage(departures: Departure[], lineId: string, scheduledIso: string): Departure | null {
-    return closestPassage(departures, lineId, scheduledIso, (departure) => departure.scheduledTime);
+    return closestPassage(departures, lineId, scheduledIso, (departure) => departure.scheduledTime ?? "");
 }
 
 /** Compare l'heure d'arrivée prévue : un train peut arriver à 20:14 et repartir à 20:15. */
@@ -72,7 +79,7 @@ export function findArrivalPassage(departures: Departure[], lineId: string, sche
         departures,
         lineId,
         scheduledIso,
-        (departure) => departure.scheduledArrivalTime ?? departure.scheduledTime,
+        (departure) => departure.scheduledArrivalTime ?? departure.scheduledTime ?? "",
     );
 }
 

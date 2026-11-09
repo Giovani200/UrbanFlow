@@ -15,6 +15,7 @@ export * from "./dtos/trips/last-departure.dto";
 export * from "./dtos/routines/routine.dto";
 export * from "./dtos/routines/routine-today.dto";
 export * from "./dtos/transport/get-nearby-transport.dto";
+export * from "./dtos/transport/stop-departures.dto";
 export * from "./dtos/carbon/calculate-carbon.dto";
 export * from "./dtos/carbon/carbon-summary.dto";
 export * from "./carbon/aggregate-carbon";

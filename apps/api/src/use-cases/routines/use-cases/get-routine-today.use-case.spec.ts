@@ -180,6 +180,7 @@ describe("GetRoutineTodayUseCase", () => {
         const today = await useCase.execute(user, undefined);
 
         expect(today.status).toBe("none");
+        expect(today.nextRoutine).toEqual({ name: "Travail", departureTime: "2026-11-09T07:41:00+01:00" });
         expect(getItinerariesOnLines).not.toHaveBeenCalled();
         expect(getNextDepartures).not.toHaveBeenCalled();
     });

@@ -75,6 +75,55 @@ describe("mapStopMonitoring", () => {
         );
     });
 
+    describe("métro, sans heure prévue dans SIRI", () => {
+        function metroResponse(recordedAt: string): SiriStopMonitoringResponse {
+            return {
+                Siri: {
+                    ServiceDelivery: {
+                        StopMonitoringDelivery: [
+                            {
+                                MonitoredStopVisit: [
+                                    {
+                                        RecordedAtTime: recordedAt,
+                                        MonitoredVehicleJourney: {
+                                            LineRef: { value: "STIF:Line::C01374:" },
+                                            DestinationName: [{ value: "Porte de Clignancourt" }],
+                                            MonitoredCall: {
+                                                ExpectedArrivalTime: "2026-11-09T07:25:45.000Z",
+                                                ExpectedDepartureTime: "2026-11-09T07:25:45.000Z",
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            };
+        }
+        const now = new Date("2026-11-09T07:20:00.000Z");
+
+        it("garde un passage frais, sans heure prévue et sans retard inventé", () => {
+            const [departure] = mapStopMonitoring(metroResponse("2026-11-09T07:19:30.000Z"), now);
+
+            expect(departure).toMatchObject({
+                lineRef: "C01374",
+                destinationName: "Porte de Clignancourt",
+                scheduledTime: null,
+                expectedTime: "2026-11-09T08:25:45+01:00",
+                delaySeconds: 0,
+                dataFreshness: "realtime",
+            });
+        });
+
+        it("garde l'estimation d'un passage ancien, mais comme un horaire prévu", () => {
+            const [departure] = mapStopMonitoring(metroResponse("2026-11-09T07:10:45.000Z"), now);
+
+            expect(departure.expectedTime).toBe("2026-11-09T08:25:45+01:00");
+            expect(departure.dataFreshness).toBe("scheduled");
+        });
+    });
+
     it("traite comme prévue une estimation chargée dans la nuit", () => {
         const now = Date.parse("2026-10-14T09:28:48.282Z");
         const nightlyLoaded = departureAt(railResponse, now, "2026-10-14T11:39:40+02:00");

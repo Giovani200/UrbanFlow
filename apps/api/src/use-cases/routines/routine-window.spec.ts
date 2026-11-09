@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parisInstant, parisServiceDay } from "../../shared/time/paris-time";
-import { chooseActiveRoutine, isRoutineDay, isWithinWindow } from "./routine-window";
+import { chooseActiveRoutine, isRoutineDay, isWithinWindow, nextRoutineOccurrence } from "./routine-window";
 
 const WEEKDAYS = [1, 2, 3, 4, 5];
 const MONDAY = "2026-11-09";
@@ -61,6 +61,56 @@ describe("isWithinWindow", () => {
         const close = parisInstant("2026-11-06", "00:30");
 
         expect(isWithinWindow(departure, close, new Date("2026-11-06T23:15:00Z"))).toBe(true);
+    });
+});
+
+describe("nextRoutineOccurrence", () => {
+    const work = { name: "Travail", weekdays: WEEKDAYS, usualDepartureTime: "07:41" };
+
+    it("prend le jour même si le créneau n'est pas encore ouvert", () => {
+        const next = nextRoutineOccurrence([work], new Date("2026-11-09T05:00:00Z"));
+
+        expect(next?.departure.toISOString()).toBe("2026-11-09T06:41:00.000Z");
+    });
+
+    it("passe au lendemain quand le créneau du jour est déjà ouvert", () => {
+        const next = nextRoutineOccurrence([work], new Date("2026-11-09T05:41:01Z"));
+
+        expect(next?.departure.toISOString()).toBe("2026-11-10T06:41:00.000Z");
+    });
+
+    it("le vendredi après le départ, annonce le lundi", () => {
+        const next = nextRoutineOccurrence([work], new Date("2026-11-13T09:00:00Z"));
+
+        expect(next?.departure.toISOString()).toBe("2026-11-16T06:41:00.000Z");
+    });
+
+    it("garde la routine dont le créneau s'ouvre le plus tôt", () => {
+        const sport = { name: "Sport", weekdays: WEEKDAYS, usualDepartureTime: "18:00" };
+
+        const next = nextRoutineOccurrence([sport, work], new Date("2026-11-09T05:00:00Z"));
+
+        expect(next?.routine).toBe(work);
+    });
+
+    it("rattache une routine de nuit à sa soirée : vendredi 00:30 tombe le samedi au calendrier", () => {
+        const night = { name: "Retour", weekdays: [5], usualDepartureTime: "00:30" };
+
+        const next = nextRoutineOccurrence([night], new Date("2026-11-06T21:00:00Z"));
+
+        expect(next?.departure.toISOString()).toBe("2026-11-06T23:30:00.000Z");
+    });
+
+    it("reste juste au changement d'heure", () => {
+        const sunday = { name: "Dimanche", weekdays: [7], usualDepartureTime: "07:41" };
+
+        const next = nextRoutineOccurrence([sunday], new Date("2026-10-24T12:00:00Z"));
+
+        expect(next?.departure.toISOString()).toBe("2026-10-25T06:41:00.000Z");
+    });
+
+    it("ne renvoie rien sans routine", () => {
+        expect(nextRoutineOccurrence([], new Date("2026-11-09T05:00:00Z"))).toBeNull();
     });
 });
 

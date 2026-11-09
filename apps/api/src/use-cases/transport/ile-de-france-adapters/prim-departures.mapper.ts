@@ -43,24 +43,24 @@ function lineIdOf(lineRef: string): string {
 function toDeparture(visit: SiriVisit, now: Date): Departure | null {
     const journey = visit.MonitoredVehicleJourney;
     const call = journey.MonitoredCall;
-    const scheduled = call.AimedDepartureTime ?? call.AimedArrivalTime;
-    if (!scheduled) {
+    const scheduled = call.AimedDepartureTime ?? call.AimedArrivalTime ?? null;
+    const estimated = call.ExpectedDepartureTime ?? call.ExpectedArrivalTime ?? scheduled;
+    if (!estimated) {
         return null;
     }
 
     const recordedAt = visit.RecordedAtTime ? Date.parse(visit.RecordedAtTime) : Number.NaN;
     const isFresh = Number.isFinite(recordedAt) && now.getTime() - recordedAt <= STALE_AFTER_MILLISECONDS;
-    const estimated = call.ExpectedDepartureTime ?? call.ExpectedArrivalTime ?? scheduled;
-    const expected = isFresh ? estimated : scheduled;
+    const expected = isFresh || !scheduled ? estimated : scheduled;
     const scheduledArrival = call.AimedArrivalTime;
     const expectedArrival = isFresh ? (call.ExpectedArrivalTime ?? scheduledArrival) : scheduledArrival;
 
     return {
         lineRef: lineIdOf(journey.LineRef.value),
         destinationName: journey.DestinationName?.[0]?.value ?? call.DestinationDisplay?.[0]?.value ?? "",
-        scheduledTime: utcToParisIso(scheduled),
+        scheduledTime: scheduled ? utcToParisIso(scheduled) : null,
         expectedTime: utcToParisIso(expected),
-        delaySeconds: Math.round((Date.parse(expected) - Date.parse(scheduled)) / 1000),
+        delaySeconds: scheduled ? Math.round((Date.parse(expected) - Date.parse(scheduled)) / 1000) : 0,
         dataFreshness: isFresh ? "realtime" : "scheduled",
         scheduledArrivalTime: scheduledArrival ? utcToParisIso(scheduledArrival) : undefined,
         expectedArrivalTime: expectedArrival ? utcToParisIso(expectedArrival) : undefined,

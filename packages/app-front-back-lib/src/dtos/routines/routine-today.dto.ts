@@ -71,6 +71,8 @@ export const RoutineTodayDtoOutSchema = zod.object({
     realtimeStatus: TransitStatusSchema.nullable(),
     planOrigin: RoutinePlanOriginSchema.nullable(),
     arrivesLate: zod.boolean(),
+    /** La prochaine routine à venir, renseignée avec le statut `none` : l'accueil l'annonce quand rien n'est en cours. */
+    nextRoutine: zod.object({ name: zod.string(), departureTime: zod.string() }).nullable(),
 });
 export type RoutineTodayDtoOut = zod.output<typeof RoutineTodayDtoOutSchema>;
 

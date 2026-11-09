@@ -21,6 +21,7 @@ const silentToday = {
     realtimeStatus: null,
     planOrigin: null,
     arrivesLate: false,
+    nextRoutine: null,
 };
 
 describe("ConnectionVerdictSchema", () => {

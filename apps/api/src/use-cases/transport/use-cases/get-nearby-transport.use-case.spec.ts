@@ -1,19 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import type { TransitStop } from "@urbanflow/app-front-back-lib";
 import { GetNearbyTransportUseCase } from "./get-nearby-transport.use-case";
-import type { NearbyStopsProvider } from "../transit.providers";
+import type { NearbyStop, NearbyStopsProvider } from "../transit.providers";
 
 function makeUseCase(getNearbyStops: NearbyStopsProvider["getNearbyStops"]): GetNearbyTransportUseCase {
-    return new GetNearbyTransportUseCase({ getNearbyStops });
+    return new GetNearbyTransportUseCase({ getNearbyStops, getStopQuays: async () => [], getStopLines: async () => [] });
 }
 
-const stop: TransitStop = {
+const transitStop: TransitStop = {
     id: "stop_area:IDFM:61901",
     name: "Henri Wallon",
     location: { latitude: 48.524418, longitude: 2.643742 },
     distanceMeters: 3,
     lines: [{ code: "3601", mode: "bus", color: "#FF5A00", textColor: "#000000" }],
 };
+const stop: NearbyStop = { ...transitStop, routeIds: ["route:3601-melun"] };
 const henriWallon = { latitude: 48.5244, longitude: 2.6437 };
 
 describe("GetNearbyTransportUseCase", () => {
@@ -22,7 +23,8 @@ describe("GetNearbyTransportUseCase", () => {
 
         const result = await makeUseCase(getNearbyStops).execute({ ...henriWallon, radiusMeters: 300 });
 
-        expect(result.transitStops).toEqual([stop]);
+        expect(result.transitStops).toEqual([transitStop]);
+        expect(result.listedStopIds).toEqual([transitStop.id]);
         expect(result.sharedVehicles).toEqual([]);
         expect(getNearbyStops).toHaveBeenCalledWith(henriWallon, 300);
     });

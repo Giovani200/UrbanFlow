@@ -6,6 +6,7 @@ import {
     NearbyTransportDtoOutSchema,
 } from "@urbanflow/app-front-back-lib";
 import { AbstractUseCase } from "../../../shared/core/abstract.use-case";
+import { stopsServingNewDirections } from "../nearby-stops-selection";
 import { NEARBY_STOPS_PROVIDER, type NearbyStopsProvider } from "../transit.providers";
 
 @Injectable()
@@ -20,8 +21,11 @@ export class GetNearbyTransportUseCase extends AbstractUseCase<NearbyTransportDt
             this.nearbyStopsProvider.getNearbyStops(origin, dataIn.radiusMeters),
         ]);
 
+        const transitStops = stopsResult.status === "fulfilled" ? stopsResult.value : [];
+
         return {
-            transitStops: stopsResult.status === "fulfilled" ? stopsResult.value : [],
+            transitStops,
+            listedStopIds: stopsServingNewDirections(transitStops),
             sharedVehicles: [],
         };
     }

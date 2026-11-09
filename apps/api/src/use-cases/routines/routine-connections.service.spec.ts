@@ -256,6 +256,22 @@ describe("RoutineConnectionsService.judge", () => {
         });
     });
 
+    it("un passage de métro sans heure prévue ne ramène pas « inconnue » : la marge reste prévue", async () => {
+        const metro: Departure = {
+            lineRef: "C01731",
+            destinationName: "",
+            scheduledTime: null,
+            expectedTime: "2026-11-09T07:55:30+01:00",
+            delaySeconds: 0,
+            dataFreshness: "realtime",
+        };
+        const { service } = makeService({ passages: { [BUS_ARRIVAL_REF]: [], [MELUN_REF]: [metro] } });
+
+        const { connections } = await service.judge(fullTrip, new Date("2026-11-09T06:26:30Z"));
+
+        expect(connections[0].verdict).toEqual({ kind: "holds", marginMinutes: 5, basis: "scheduled" });
+    });
+
     describe("ligne fréquente", () => {
         const headways = { "route:A": FREQUENT_DEPARTURES };
 

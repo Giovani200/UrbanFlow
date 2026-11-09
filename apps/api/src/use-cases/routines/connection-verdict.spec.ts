@@ -127,6 +127,23 @@ describe("findDeparturePassage", () => {
     });
 });
 
+describe("passage de métro, sans heure prévue", () => {
+    const metro: Departure = {
+        lineRef: "C01374",
+        destinationName: "",
+        scheduledTime: null,
+        expectedTime: "2026-11-09T21:01:01+01:00",
+        delaySeconds: 0,
+        dataFreshness: "realtime",
+        expectedArrivalTime: "2026-11-09T21:01:01+01:00",
+    };
+
+    it("n'est jamais retenu pour juger un départ ni une arrivée", () => {
+        expect(findDeparturePassage([metro], "C01374", "2026-11-09T21:01:01+01:00")).toBeNull();
+        expect(findArrivalPassage([metro], "C01374", "2026-11-09T21:01:01+01:00")).toBeNull();
+    });
+});
+
 describe("findArrivalPassage", () => {
     it("compare l'heure d'arrivée prévue, pas celle du départ : un R arrive à 20:14 et repart à 20:15", () => {
         const passages = [passage("C01731", "2026-11-09T20:15:00+01:00", "2026-11-09T20:14:00+01:00")];

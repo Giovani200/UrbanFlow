@@ -3,6 +3,7 @@ import type {
     DataFreshness,
     GeoJsonLineString,
     PlannedTime,
+    TransitLine,
     TransitStop,
     TransitStopPoint,
     TripMode,
@@ -110,14 +111,32 @@ export interface TransitRoutingProvider {
     getScheduledDepartures(stopPointId: string, routeId: string, fromLocalMinute: string): Promise<string[]>;
 }
 
+/** Un quai d'un arrêt : SIRI lit des quais, alors qu'un arrêt proche est une zone. */
+export interface StopQuay {
+    monitoringRef: string;
+    /** Une référence ferrée couvre tous les trains d'une gare, là où un quai de bus ne couvre qu'une ligne ou deux. */
+    isRail: boolean;
+    location: Coordinates;
+}
+
+/** Un arrêt proche, avec les directions qu'il dessert (ligne et sens). Vide si elles sont inconnues. Interne à l'API. */
+export interface NearbyStop extends TransitStop {
+    routeIds: string[];
+}
+
 export interface NearbyStopsProvider {
-    getNearbyStops(origin: Coordinates, radiusMeters: number): Promise<TransitStop[]>;
+    getNearbyStops(origin: Coordinates, radiusMeters: number): Promise<NearbyStop[]>;
+
+    getStopQuays(stopAreaId: string): Promise<StopQuay[]>;
+
+    getStopLines(stopAreaId: string): Promise<TransitLine[]>;
 }
 
 export interface Departure {
     lineRef: string;
     destinationName: string;
-    scheduledTime: string;
+    /** `null` pour le métro : SIRI n'y donne que des heures estimées, donc on ne peut pas y suivre un véhicule précis. */
+    scheduledTime: string | null;
     expectedTime: string;
     delaySeconds: number;
     dataFreshness: DataFreshness;
