@@ -12,7 +12,7 @@ export function savedVersusCarGrams(carbonGrams: number, distanceMeters: number)
     return Math.max(0, carReferenceGrams - carbonGrams);
 }
 
-/** Itinéraire de transport en commun vers le contrat client, carbone compris. Le score reste à 0 (non classé). */
+/** Itinéraire de transport en commun vers le contrat client, carbone compris. */
 export function toTransitTripRoute(itinerary: TransitItinerary): TripRoute {
     const segments: TripSegment[] = itinerary.legs.map((leg) => {
         const carbonGrams = segmentCarbonGrams(leg.mode, leg.distanceMeters);
@@ -47,7 +47,6 @@ export function toTransitTripRoute(itinerary: TransitItinerary): TripRoute {
         totalDistanceMeters: segments.reduce((total, segment) => total + segment.distanceMeters, 0),
         totalCarbonGrams: segments.reduce((total, segment) => total + segment.carbonGrams, 0),
         totalSavedGrams: segments.reduce((total, segment) => total + segment.savedGrams, 0),
-        score: 0,
         departureTime: itinerary.departureTime,
         arrivalTime: itinerary.arrivalTime,
     };

@@ -136,7 +136,6 @@ model Trip {
   durationSeconds Int
   distanceMeters  Int
   carbonGrams     Float
-  score           Float
 
   modes     String[]
   steps     Json

@@ -73,7 +73,6 @@ export const TripRouteSchema = zod.object({
     totalDistanceMeters: zod.number(),
     totalCarbonGrams: zod.number(),
     totalSavedGrams: zod.number(),
-    score: zod.number(),
     departureTime: zod.string().optional(),
     arrivalTime: zod.string().optional(),
 });

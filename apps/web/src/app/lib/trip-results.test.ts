@@ -3,7 +3,7 @@ import type { TripPlanningDtoOut, TripRoute } from "@urbanflow/app-front-back-li
 import { orderedRoutes, segmentDepartureTimes, transitMessage } from "./trip-results";
 
 function route(totalDurationSeconds: number): TripRoute {
-  return { segments: [], totalDurationSeconds, totalDistanceMeters: 0, totalCarbonGrams: 0, totalSavedGrams: 0, score: 0 };
+  return { segments: [], totalDurationSeconds, totalDistanceMeters: 0, totalCarbonGrams: 0, totalSavedGrams: 0 };
 }
 
 describe("orderedRoutes", () => {

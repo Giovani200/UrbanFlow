@@ -5,14 +5,18 @@ interface TimeCellProps {
     expectedTime?: string;
     delayMinutes?: number;
     cancelled?: boolean;
+    isRealtime: boolean;
 }
 
 function formatDelay(delayMinutes: number): string {
     return delayMinutes > 0 ? `+${delayMinutes} min` : `−${Math.abs(delayMinutes)} min`;
 }
 
-/** Une heure de passage. En retard ou en avance, l'heure prévue reste visible, barrée, au-dessus de l'heure estimée. */
-export function TimeCell({ scheduledTime, expectedTime, delayMinutes = 0, cancelled = false }: TimeCellProps) {
+/**
+ * Une heure de passage. En retard ou en avance, l'heure prévue reste visible, barrée, au-dessus de l'heure estimée.
+ * « à l'heure » n'est écrit qu'en temps réel : sur un horaire prévu, l'app ne sait rien de la ponctualité.
+ */
+export function TimeCell({ scheduledTime, expectedTime, delayMinutes = 0, cancelled = false, isRealtime }: TimeCellProps) {
     if (cancelled) {
         return (
             <span className="flex flex-col gap-0.5 text-uf-ink">
@@ -31,7 +35,7 @@ export function TimeCell({ scheduledTime, expectedTime, delayMinutes = 0, cancel
         return (
             <span className="flex flex-col gap-0.5 text-uf-ink">
                 <span className="[font:var(--uf-time)] tabular-nums">{expectedTime ?? scheduledTime}</span>
-                <span className="[font:var(--uf-note)]">à l&apos;heure</span>
+                {isRealtime && <span className="[font:var(--uf-note)]">à l&apos;heure</span>}
             </span>
         );
     }

@@ -159,7 +159,6 @@ describe("connectionLostCause", () => {
       totalDistanceMeters: 0,
       totalCarbonGrams: 0,
       totalSavedGrams: 0,
-      score: 0,
     };
   }
 

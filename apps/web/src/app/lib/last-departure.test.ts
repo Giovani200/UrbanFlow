@@ -43,7 +43,6 @@ const route: TripRoute = {
   totalDistanceMeters: 50_000,
   totalCarbonGrams: 0,
   totalSavedGrams: 0,
-  score: 0,
   departureTime: "2026-11-03T23:33:00+01:00",
   arrivalTime: "2026-11-04T00:52:00+01:00",
 };

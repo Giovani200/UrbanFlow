@@ -1,9 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import { FreshnessStamp } from "./FreshnessStamp";
 import { RouteTrace } from "./RouteTrace";
 import { StopNode } from "./StopNode";
 import { TimeCell } from "./TimeCell";
+
+afterEach(cleanup);
 
 describe("RouteTrace", () => {
     it("n'anime que le tracé en temps réel", () => {
@@ -48,14 +50,20 @@ describe("StopNode", () => {
 });
 
 describe("TimeCell", () => {
-    it("affiche « à l'heure » sans écart", () => {
-        render(<TimeCell scheduledTime="08:12" />);
+    it("affiche « à l'heure » sans écart, en temps réel", () => {
+        render(<TimeCell scheduledTime="08:12" isRealtime />);
         expect(screen.getByText("08:12")).toBeTruthy();
         expect(screen.getByText("à l'heure")).toBeTruthy();
     });
 
+    it("n'affirme rien sur la ponctualité d'un horaire prévu", () => {
+        render(<TimeCell scheduledTime="08:05" isRealtime={false} />);
+        expect(screen.getByText("08:05")).toBeTruthy();
+        expect(screen.queryByText("à l'heure")).toBeNull();
+    });
+
     it("en retard, garde l'heure prévue barrée au-dessus de l'heure estimée", () => {
-        const { container } = render(<TimeCell scheduledTime="07:41" expectedTime="07:45" delayMinutes={4} />);
+        const { container } = render(<TimeCell scheduledTime="07:41" expectedTime="07:45" delayMinutes={4} isRealtime />);
 
         expect(container.querySelector("s")?.textContent).toBe("prévu 07:41");
         expect(screen.getByText("07:45")).toBeTruthy();
@@ -63,12 +71,12 @@ describe("TimeCell", () => {
     });
 
     it("en avance, écrit l'écart avec un vrai signe moins", () => {
-        render(<TimeCell scheduledTime="08:30" expectedTime="08:28" delayMinutes={-2} />);
+        render(<TimeCell scheduledTime="08:30" expectedTime="08:28" delayMinutes={-2} isRealtime />);
         expect(screen.getByText("−2 min")).toBeTruthy();
     });
 
     it("barre une heure supprimée et l'écrit", () => {
-        const { container } = render(<TimeCell scheduledTime="08:42" cancelled />);
+        const { container } = render(<TimeCell scheduledTime="08:42" cancelled isRealtime />);
         expect(container.querySelector("s")?.textContent).toBe("08:42");
         expect(screen.getByText("supprimé")).toBeTruthy();
     });

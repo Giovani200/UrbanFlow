@@ -40,7 +40,6 @@ function makeInput(): RecordTripDtoIn {
             totalDistanceMeters: 4400,
             totalCarbonGrams: 17.76,
             totalSavedGrams: 607.04,
-            score: 0,
         },
     };
 }

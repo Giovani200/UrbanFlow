@@ -30,7 +30,6 @@ const input: RecordTripDtoIn = {
         totalDistanceMeters: 4000,
         totalCarbonGrams: 16,
         totalSavedGrams: 552,
-        score: 0.82,
     },
 };
 

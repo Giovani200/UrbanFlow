@@ -56,7 +56,6 @@ describe("toRoutineFields", () => {
       totalDistanceMeters: 0,
       totalCarbonGrams: 0,
       totalSavedGrams: 0,
-      score: 0,
       departureTime: "2026-11-09T07:41:30+01:00",
     };
   }

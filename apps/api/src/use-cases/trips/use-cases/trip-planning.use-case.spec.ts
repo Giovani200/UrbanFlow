@@ -133,54 +133,23 @@ describe("TripPlanningUseCase", () => {
         expect(getItineraries).toHaveBeenCalledWith(origin, destination, true, undefined);
     });
 
-    it("classe les options transit par score décroissant", async () => {
-        const fast: TransitItinerary = {
-            durationSeconds: 900,
-            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("tram", 4000, 700, "B")],
-        };
-        const slow: TransitItinerary = {
+    it("garde l'ordre du fournisseur, même si le premier trajet est plus long et plus émetteur", async () => {
+        const arrivesFirstButSlower: TransitItinerary = {
             durationSeconds: 2400,
-            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("bus", 6000, 2200, "C1")],
+            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("bus", 6000, 2200, "3601")],
+        };
+        const arrivesLaterButFaster: TransitItinerary = {
+            durationSeconds: 900,
+            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("tram", 4000, 700, "T1")],
         };
         const useCase = makeUseCase(
             async () => makeOrsRoute(2500, 1800),
-            async () => [slow, fast],
+            async () => [arrivesFirstButSlower, arrivesLaterButFaster],
         );
 
         const result = await useCase.execute({ origin, destination });
 
-        expect(result.transit).toHaveLength(2);
-        expect(result.transit[0].score).toBeGreaterThanOrEqual(result.transit[1].score);
-        // l'option tram (rapide + plus propre) doit ressortir en tête
-        expect(result.transit[0].segments.some((segment) => segment.mode === "tram")).toBe(true);
-    });
-
-    it("preferredModes booste le score de l'itinéraire du mode préféré", async () => {
-        const tram: TransitItinerary = {
-            durationSeconds: 900,
-            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("tram", 4000, 700, "B")],
-        };
-        const bus: TransitItinerary = {
-            durationSeconds: 2400,
-            legs: [makeTransitLeg("walk", 100, 90), makeTransitLeg("bus", 6000, 2200, "C1")],
-        };
-        const useCase = makeUseCase(
-            async () => makeOrsRoute(2500, 1800),
-            async () => [tram, bus],
-        );
-
-        const sans = await useCase.execute({ origin, destination });
-        const avec = await useCase.execute({
-            origin,
-            destination,
-            profile: { weightCarbon: 50, weightTime: 30, wheelchairAccess: false, preferredModes: ["bus"] },
-        });
-
-        const busSans = sans.transit.find((route) => route.segments.some((segment) => segment.mode === "bus"));
-        const busAvec = avec.transit.find((route) => route.segments.some((segment) => segment.mode === "bus"));
-        expect(busSans).toBeDefined();
-        expect(busAvec).toBeDefined();
-        expect(busAvec!.score).toBeGreaterThan(busSans!.score);
+        expect(result.transit.map((route) => route.segments[1].lineShortName)).toEqual(["3601", "T1"]);
     });
 
     it("recopie les arrêts intermédiaires du leg transit sur le segment", async () => {

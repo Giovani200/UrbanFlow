@@ -36,7 +36,6 @@ export class RecordTripUseCase extends AbstractAuthenticatedUseCase<RecordTripDt
                 durationSeconds: Math.round(route.totalDurationSeconds),
                 distanceMeters: Math.round(route.totalDistanceMeters),
                 carbonGrams: route.totalCarbonGrams,
-                score: route.score,
                 modes,
                 steps: route.segments as unknown as Prisma.InputJsonValue,
                 status: "COMPLETED",

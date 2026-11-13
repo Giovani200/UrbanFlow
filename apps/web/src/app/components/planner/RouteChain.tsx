@@ -30,7 +30,14 @@ function TransitStep({ segment, isFirst }: { segment: TripSegment; isFirst: bool
             </span>
             {segment.dataFreshness && <FreshnessStamp freshness={segment.dataFreshness} />}
           </div>
-          {times && <TimeCell scheduledTime={times.scheduled} expectedTime={times.expected} delayMinutes={times.delayMinutes} />}
+          {times && (
+            <TimeCell
+              scheduledTime={times.scheduled}
+              expectedTime={times.expected}
+              delayMinutes={times.delayMinutes}
+              isRealtime={segment.dataFreshness === "realtime"}
+            />
+          )}
         </div>
       </div>
       <div className={`${RAIL} min-h-14`}>

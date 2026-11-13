@@ -25,7 +25,7 @@ function TransitRow({ segment, isApproximate }: { segment: TripSegment; isApprox
             {times.expected}
           </>
         ) : times && isRealtime && times.delayMinutes !== 0 ? (
-          <TimeCell scheduledTime={times.scheduled} expectedTime={times.expected} delayMinutes={times.delayMinutes} />
+          <TimeCell scheduledTime={times.scheduled} expectedTime={times.expected} delayMinutes={times.delayMinutes} isRealtime />
         ) : (
           times?.expected
         )}

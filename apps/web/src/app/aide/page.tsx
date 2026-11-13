@@ -16,7 +16,7 @@ const SECTIONS: InfoSection[] = [
   {
     title: "Comparer les itinéraires",
     paragraphs: [
-      "Les trajets en transport en commun sont classés selon un score qui pèse le temps et le carbone. Avec un compte, ce classement suit vos préférences.",
+      "Les trajets en transport en commun s'affichent dans l'ordre proposé par le calculateur d'Île-de-France Mobilités. Le CO₂ de chaque trajet est indiqué, sans changer cet ordre.",
     ],
   },
   {
