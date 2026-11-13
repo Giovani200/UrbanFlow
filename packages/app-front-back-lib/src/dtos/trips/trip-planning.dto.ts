@@ -79,10 +79,7 @@ export const TripRouteSchema = zod.object({
 export type TripRoute = zod.output<typeof TripRouteSchema>;
 
 export const RoutingProfileSchema = zod.object({
-    weightCarbon: zod.number().min(0).max(100),
-    weightTime: zod.number().min(0).max(100),
     wheelchairAccess: zod.boolean(),
-    preferredModes: zod.array(TripModeSchema).optional(),
 });
 export type RoutingProfile = zod.output<typeof RoutingProfileSchema>;
 

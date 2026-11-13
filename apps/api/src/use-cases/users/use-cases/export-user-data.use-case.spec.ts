@@ -12,12 +12,7 @@ describe("ExportUserDataUseCase", () => {
             email: "user-1@test.fr",
             name: "Thomas",
             preferences: {
-                weightCarbon: 50,
-                weightTime: 30,
-                weightCost: 20,
                 wheelchairAccess: false,
-                avoidStairs: false,
-                preferredModes: ["bike"],
                 monthlyGoalKg: null,
                 lastDepartureDistanceMeters: 1000,
                 lastDepartureWindowMinutes: 120,

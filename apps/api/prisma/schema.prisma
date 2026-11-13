@@ -37,12 +37,7 @@ model Preferences {
   id     String @id @default(cuid())
   userId String @unique
 
-  weightCarbon     Int      @default(50)
-  weightTime       Int      @default(30)
-  weightCost       Int      @default(20)
-  wheelchairAccess Boolean  @default(false)
-  avoidStairs      Boolean  @default(false)
-  preferredModes   String[]
+  wheelchairAccess Boolean @default(false)
   monthlyGoalKg    Int?
 
   lastDepartureDistanceMeters Int @default(1000)

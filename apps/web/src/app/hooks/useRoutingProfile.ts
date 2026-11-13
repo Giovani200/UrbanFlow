@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { RoutingProfile, TripMode } from "@urbanflow/app-front-back-lib";
+import type { RoutingProfile } from "@urbanflow/app-front-back-lib";
 import { useAuth } from "@/app/components/auth/AuthProvider";
 import { usersService } from "@/app/services/users.service";
 
@@ -15,8 +15,7 @@ export function useRoutingProfile(): RoutingProfile | undefined {
     let active = true;
     void usersService.getProfile().then((result) => {
       if (!active || !result.isOk || !result.data.preferences) return;
-      const { weightCarbon, weightTime, wheelchairAccess, preferredModes } = result.data.preferences;
-      setProfile({ weightCarbon, weightTime, wheelchairAccess, preferredModes: preferredModes as TripMode[] });
+      setProfile({ wheelchairAccess: result.data.preferences.wheelchairAccess });
     });
     return () => {
       active = false;

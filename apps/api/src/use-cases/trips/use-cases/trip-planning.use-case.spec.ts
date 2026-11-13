@@ -124,7 +124,7 @@ describe("TripPlanningUseCase", () => {
         await useCase.execute({
             origin,
             destination,
-            profile: { weightCarbon: 50, weightTime: 30, wheelchairAccess: true },
+            profile: { wheelchairAccess: true },
         });
 
         const orsProfiles = getRoute.mock.calls.map((call) => call[0]);

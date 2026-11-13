@@ -2,12 +2,7 @@ import type { Prisma } from "@prisma/client";
 
 /** Champs des préférences exposés au client : profil, mise à jour et export RGPD. */
 export const STORED_PREFERENCES_SELECT = {
-    weightCarbon: true,
-    weightTime: true,
-    weightCost: true,
     wheelchairAccess: true,
-    avoidStairs: true,
-    preferredModes: true,
     monthlyGoalKg: true,
     lastDepartureDistanceMeters: true,
     lastDepartureWindowMinutes: true,
