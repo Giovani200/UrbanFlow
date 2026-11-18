@@ -18,10 +18,14 @@ import { ResultsPanel } from "@/app/components/planner/ResultsPanel";
 import { RoutineCard } from "@/app/components/planner/RoutineCard";
 import { SearchPanel } from "@/app/components/planner/SearchPanel";
 import { SettingsPanel } from "@/app/components/settings/SettingsPanel";
+import { ActiveShareBanner } from "@/app/components/sharing/ActiveShareBanner";
+import { ShareTripButton } from "@/app/components/sharing/ShareTripButton";
 import { BottomSheet } from "@/app/components/ui/BottomSheet";
 import type { GeocodingResult } from "@/app/hooks/useGeocoding";
 import { useLastDeparture } from "@/app/hooks/useLastDeparture";
+import { useActiveShare } from "@/app/hooks/useActiveShare";
 import { useRoutineToday } from "@/app/hooks/useRoutineToday";
+import { useSharePosition } from "@/app/hooks/useSharePosition";
 import { useRoutingProfile } from "@/app/hooks/useRoutingProfile";
 import { useTripPlanner, type PlannerView } from "@/app/hooks/useTripPlanner";
 import { useUserLocation } from "@/app/hooks/useUserLocation";
@@ -77,6 +81,11 @@ export default function PlannerPage() {
     dismiss: dismissTodayRoutine,
     refresh: refreshRoutineToday,
   } = useRoutineToday({ enabled: authStatus === "authenticated" && view === "home" });
+  const isAuthenticated = authStatus === "authenticated";
+  const activeShare = useActiveShare({ enabled: isAuthenticated });
+  useSharePosition({ isSharing: activeShare.share !== null, position });
+  const refreshActiveShare = () => void activeShare.refresh();
+
   const homeBlock = chooseHomeBlock({
     routine: routineToday,
     routineDismissed,
@@ -183,13 +192,36 @@ export default function PlannerPage() {
         {onHome && !showSettings && (
           <HomePanel
             header={
-              homeBlock === "routine" && routineToday ? (
-                <RoutineCard today={routineToday} position={position} onDismiss={dismissTodayRoutine} onChanged={refreshRoutineToday} />
-              ) : homeBlock === "last_departure" && lastDeparture ? (
-                <LastDepartureCard result={lastDeparture} onGo={goLastDeparture} onDismiss={dismissLastDeparture} />
-              ) : routineToday?.nextRoutine ? (
-                <NothingInProgress nextRoutine={routineToday.nextRoutine} />
-              ) : null
+              <>
+                {activeShare.share && (
+                  <ActiveShareBanner
+                    share={activeShare.share}
+                    onConfirmArrival={activeShare.confirmArrival}
+                    onStop={activeShare.stop}
+                  />
+                )}
+                {homeBlock === "routine" && routineToday ? (
+                  <RoutineCard
+                    today={routineToday}
+                    position={position}
+                    onDismiss={dismissTodayRoutine}
+                    onChanged={refreshRoutineToday}
+                    shareAction={
+                      isAuthenticated && routineToday.routine && routineToday.route ? (
+                        <ShareTripButton
+                          source={{ kind: "routine", routineId: routineToday.routine.id }}
+                          destinationLabel={routineToday.routine.destinationLabel}
+                          onShared={refreshActiveShare}
+                        />
+                      ) : null
+                    }
+                  />
+                ) : homeBlock === "last_departure" && lastDeparture ? (
+                  <LastDepartureCard result={lastDeparture} onGo={goLastDeparture} onDismiss={dismissLastDeparture} />
+                ) : routineToday?.nextRoutine ? (
+                  <NothingInProgress nextRoutine={routineToday.nextRoutine} />
+                ) : null}
+              </>
             }
             location={location}
             onPlanTrip={() => goTo("search")}
@@ -220,6 +252,19 @@ export default function PlannerPage() {
             route={selectedRoute}
             destinationLabel={planner.destination?.label ?? "Arrivée"}
             onBack={() => goTo("results")}
+            shareAction={
+              isAuthenticated && selectedRoute.departureTime ? (
+                <ShareTripButton
+                  source={{
+                    kind: "itinerary",
+                    itinerary: selectedRoute,
+                    destinationLabel: planner.destination?.label ?? "Arrivée",
+                  }}
+                  destinationLabel={planner.destination?.label ?? "Arrivée"}
+                  onShared={refreshActiveShare}
+                />
+              ) : null
+            }
             onStart={() => {
               mapRef.current?.startFollow();
               goTo("navigation");
@@ -240,7 +285,16 @@ export default function PlannerPage() {
         )}
 
         {view === "arrival" && selectedRoute && (
-          <ArrivalPanel route={selectedRoute} destinationLabel={planner.destination?.label ?? "destination"} onDone={backToHome} />
+          <ArrivalPanel
+            route={selectedRoute}
+            destinationLabel={planner.destination?.label ?? "destination"}
+            onDone={backToHome}
+            shareAction={
+              activeShare.share ? (
+                <ActiveShareBanner share={activeShare.share} onConfirmArrival={activeShare.confirmArrival} onStop={activeShare.stop} />
+              ) : null
+            }
+          />
         )}
       </BottomSheet>
 

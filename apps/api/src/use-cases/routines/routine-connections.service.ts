@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import type { ConnectionVerdict, RoutineConnection, TransitStatus } from "@urbanflow/app-front-back-lib";
+import type { ConnectionVerdict, DataFreshness, RoutineConnection, TransitStatus } from "@urbanflow/app-front-back-lib";
 import { CACHE_STORE, type CacheStore } from "../../shared/cache/cache-store";
 import { toParisLocalMinute, utcToParisIso } from "../../shared/time/paris-time";
 import {
@@ -28,6 +28,7 @@ const HEADWAY_CACHE_TTL_MILLISECONDS = 24 * 60 * MILLISECONDS_PER_MINUTE;
 export interface JudgedItinerary {
     /** Le trajet avec les heures estimées. L'heure de départ reste celle du plan : un retard peut se rattraper. */
     itinerary: DatedItinerary;
+    arrivalFreshness: DataFreshness;
     connections: RoutineConnection[];
     realtimeStatus: TransitStatus;
     firstMissed: RoutineConnection | null;
@@ -142,8 +143,10 @@ export class RoutineConnectionsService {
         const lastLegAnswered = connections.length > 0 || (await this.readPassages(this.lastStopOf(legs), passages));
         const realtimeStatus: TransitStatus = stopsAnswered && lastLegAnswered ? "ok" : "unavailable";
 
+        const arrival = this.estimatedArrival(plan.arrivalTime, legs, passages);
         return {
-            itinerary: { ...plan, legs, arrivalTime: this.estimatedArrival(plan.arrivalTime, legs, passages) },
+            itinerary: { ...plan, legs, arrivalTime: arrival.time },
+            arrivalFreshness: arrival.freshness,
             connections,
             realtimeStatus,
             firstMissed: connections.find((connection) => connection.verdict.kind === "missed") ?? null,
@@ -245,10 +248,15 @@ export class RoutineConnectionsService {
     }
 
     /** L'arrivée finale décalée du retard mesuré au dernier arrêt, s'il a été lu et que la donnée est fraîche. */
-    private estimatedArrival(plannedArrival: string, legs: TransitLeg[], passages: PassagesByStop): string {
+    private estimatedArrival(
+        plannedArrival: string,
+        legs: TransitLeg[],
+        passages: PassagesByStop,
+    ): { time: string; freshness: DataFreshness } {
+        const planned = { time: plannedArrival, freshness: "scheduled" as const };
         const lastLeg = legs.filter(isTransit).at(-1);
         if (!lastLeg?.arrivalStopPointRef || !lastLeg.lineId || !lastLeg.scheduledArrivalTime) {
-            return plannedArrival;
+            return planned;
         }
         const passage = findArrivalPassage(
             passages.get(lastLeg.arrivalStopPointRef) ?? [],
@@ -256,9 +264,9 @@ export class RoutineConnectionsService {
             lastLeg.scheduledArrivalTime,
         );
         if (passage?.dataFreshness !== "realtime" || !passage.expectedArrivalTime) {
-            return plannedArrival;
+            return planned;
         }
         const delay = Date.parse(passage.expectedArrivalTime) - Date.parse(lastLeg.scheduledArrivalTime);
-        return utcToParisIso(new Date(Date.parse(plannedArrival) + delay).toISOString());
+        return { time: utcToParisIso(new Date(Date.parse(plannedArrival) + delay).toISOString()), freshness: "realtime" };
     }
 }

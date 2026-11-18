@@ -18,7 +18,7 @@ import type {
   DeleteAccountDtoOut,
   ExportUserDataDtoOut,
 } from "@urbanflow/app-front-back-lib";
-import { handleResponse } from "@/app/services/lib/http";
+import { handleEmptyResponse, handleResponse } from "@/app/services/lib/http";
 
 export type {
   CreateUserDtoIn,
@@ -120,5 +120,10 @@ export const usersService = {
   async exportData() {
     const res = await fetch(`${API_URL}/users/me/export`, { credentials: "include" });
     return handleResponse<ExportUserDataDtoOut>(res);
+  },
+
+  async recordShareConsent() {
+    const res = await fetch(`${API_URL}/users/me/share-consent`, { method: "POST", credentials: "include" });
+    return handleEmptyResponse(res);
   },
 };

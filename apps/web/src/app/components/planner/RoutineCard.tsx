@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Coordinates, RoutineAlternative, RoutineConnection, RoutineTodayDtoOut, TripRoute } from "@urbanflow/app-front-back-lib";
 import { Button } from "@/app/components/ui/Button";
 import { useNow } from "@/app/hooks/useNow";
@@ -189,10 +189,11 @@ interface RoutineCardProps {
   position: Coordinates | null;
   onDismiss: () => void;
   onChanged: () => Promise<void>;
+  shareAction?: ReactNode;
 }
 
 /** En tête de l'accueil, les jours de routine : quand partir, si les correspondances tiennent, et quoi faire sinon. */
-export function RoutineCard({ today, position, onDismiss, onChanged }: RoutineCardProps) {
+export function RoutineCard({ today, position, onDismiss, onChanged, shareAction }: RoutineCardProps) {
   const now = useNow();
   const [isBusy, setIsBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -293,6 +294,8 @@ export function RoutineCard({ today, position, onDismiss, onChanged }: RoutineCa
       {!hasDeparted && <PlanB today={today} route={route} destinationLabel={routine.destinationLabel} />}
 
       {actionError && <p role="alert" className={`${BODY} font-bold`}>{actionError}</p>}
+
+      {shareAction}
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {notTakenButton}

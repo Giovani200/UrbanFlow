@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/suivi",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      },
     ];
   },
 };

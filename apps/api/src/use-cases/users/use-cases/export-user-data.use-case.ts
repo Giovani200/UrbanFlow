@@ -61,6 +61,20 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                     },
                     orderBy: { createdAt: "asc" },
                 },
+                shares: {
+                    orderBy: { startedAt: "desc" },
+                    select: {
+                        startedAt: true,
+                        endedAt: true,
+                        endReason: true,
+                        destinationLabel: true,
+                        estimatedArrivalAt: true,
+                        itinerary: true,
+                        lastLatitude: true,
+                        lastLongitude: true,
+                        lastPositionAt: true,
+                    },
+                },
             },
         });
 
@@ -111,6 +125,18 @@ export class ExportUserDataUseCase extends AbstractAuthenticatedUseCase<void, Ex
                     itinerary: routine.dayPlan.itinerary,
                     updatedAt: routine.dayPlan.updatedAt.toISOString(),
                 },
+            })),
+            shares: user.shares.map((share) => ({
+                startedAt: share.startedAt.toISOString(),
+                endedAt: share.endedAt?.toISOString() ?? null,
+                endReason: share.endReason,
+                destinationLabel: share.destinationLabel,
+                estimatedArrivalAt: share.estimatedArrivalAt?.toISOString() ?? null,
+                itinerary: share.itinerary,
+                lastPosition:
+                    share.lastLatitude !== null && share.lastLongitude !== null && share.lastPositionAt
+                        ? { latitude: share.lastLatitude, longitude: share.lastLongitude, at: share.lastPositionAt.toISOString() }
+                        : null,
             })),
         };
     }

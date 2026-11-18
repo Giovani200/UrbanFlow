@@ -7,7 +7,7 @@ const SECTIONS: InfoSection[] = [
     title: "En bref",
     paragraphs: [
       "UrbanFlow Mobility traite certaines de vos données pour vous fournir ses services de mobilité. Cette politique explique lesquelles, pourquoi, combien de temps elles sont conservées et quels sont vos droits.",
-      "Les fonctions cœur (planification, empreinte carbone, transports à proximité) s'utilisent sans compte. Dernière mise à jour : octobre 2026.",
+      "Les fonctions cœur (planification, empreinte carbone, transports à proximité) s'utilisent sans compte. Dernière mise à jour : novembre 2026.",
     ],
   },
   {
@@ -20,10 +20,11 @@ const SECTIONS: InfoSection[] = [
     title: "Données collectées",
     items: [
       "Compte : adresse email, nom, et soit un mot de passe stocké uniquement sous forme hachée, soit un identifiant de connexion Google.",
-      "Préférences de mobilité : pondérations carbone, temps et coût, besoin d'accessibilité, modes préférés, objectif carbone mensuel.",
+      "Préférences de mobilité : besoin d'accessibilité en fauteuil roulant, objectif carbone mensuel, réglages du dernier départ.",
       "Adresses favorites que vous enregistrez.",
       "Trajets suivis et leur empreinte carbone, lorsqu'ils sont enregistrés depuis un compte.",
       "Position géographique, uniquement après votre consentement, pour vous localiser et calculer des itinéraires.",
+      "Trajet partagé, seulement si vous lancez un partage : l'itinéraire et votre dernière position, envoyée au plus une fois par minute quand l'application est ouverte.",
     ],
   },
   {
@@ -31,6 +32,7 @@ const SECTIONS: InfoSection[] = [
     items: [
       "Calculer les itinéraires, gérer votre compte et vos préférences : exécution du service que vous demandez.",
       "Vous géolocaliser et afficher votre position : votre consentement, recueilli avant tout accès à la position.",
+      "Partager l'avancement d'un trajet avec un proche : votre consentement, recueilli au premier partage.",
       "Estimer et suivre votre empreinte carbone : exécution du service, à partir des trajets que vous enregistrez.",
       "Sécuriser les comptes et prévenir les abus : notre intérêt légitime.",
     ],
@@ -44,7 +46,7 @@ const SECTIONS: InfoSection[] = [
   {
     title: "Destinataires",
     paragraphs: [
-      "Vos données ne sont ni vendues ni louées. Pour calculer les itinéraires, les coordonnées de départ et d'arrivée sont transmises à nos prestataires techniques, strictement pour ce calcul. L'hébergement de l'application et de la base de données est également assuré par des sous-traitants.",
+      "Vos données ne sont ni vendues ni louées. Pour calculer les itinéraires, les coordonnées de départ et d'arrivée sont transmises à nos prestataires techniques, strictement pour ce calcul. L'hébergement de l'application et de la base de données est également assuré par des sous-traitants. Quand vous partagez un trajet, toute personne qui possède le lien voit son avancement et l'arrêt le plus proche de vous, jamais vos coordonnées exactes.",
     ],
     links: [
       { label: "MapTiler (carte et géocodage)", href: "https://www.maptiler.com/privacy-policy/" },
@@ -63,7 +65,8 @@ const SECTIONS: InfoSection[] = [
     items: [
       "Compte et préférences : conservés tant que le compte existe, supprimés à sa clôture.",
       "Trajets et empreinte carbone : liés au compte, supprimés avec lui.",
-      "Position : traitée en temps réel, non conservée durablement.",
+      "Position : utilisée pour le calcul, puis conservée seulement dans trois cas. Comme point de départ d'un trajet que vous enregistrez, supprimé avec le compte. Comme point de départ d'une routine recalculée depuis votre position, remplacé le lendemain. Pendant un trajet partagé, où seule la dernière position est gardée, puis effacée à la fin du partage.",
+      "Trajet partagé : itinéraire et position effacés à la fin du partage. Seuls son état final et son heure restent 12 heures, pour que le proche sache comment il s'est terminé.",
       "Cookie de session : expire à la déconnexion ou après quelques jours d'inactivité.",
     ],
   },

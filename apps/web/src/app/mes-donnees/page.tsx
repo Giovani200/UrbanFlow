@@ -71,7 +71,7 @@ export default function MesDonneesPage() {
           <Download size={22} aria-hidden="true" className="mt-0.5 shrink-0" />
           <div className="flex flex-col gap-0.5">
             <h2 id="telecharger" className="[font:var(--uf-time)]">Télécharger mes données</h2>
-            <p className="[font:var(--uf-note)] text-uf-ink-2">Compte, préférences, adresses, trajets et empreinte, au format JSON.</p>
+            <p className="[font:var(--uf-note)] text-uf-ink-2">Compte, préférences, adresses, trajets, empreinte, routines et partage en cours, au format JSON.</p>
           </div>
         </div>
         {exportError && (

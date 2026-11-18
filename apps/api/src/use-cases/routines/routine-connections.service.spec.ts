@@ -401,17 +401,19 @@ describe("RoutineConnectionsService.judge", () => {
             });
             const { service } = makeService({ passages: { [LA_DEFENSE_REF]: [rerLate] } });
 
-            const { itinerary } = await service.judge(fullTrip, AT_0840);
+            const { itinerary, arrivalFreshness } = await service.judge(fullTrip, AT_0840);
 
             expect(itinerary.arrivalTime).toBe("2026-11-09T08:51:29+01:00");
+            expect(arrivalFreshness).toBe("realtime");
         });
 
         it("garde l'arrivée du plan sans donnée fraîche au dernier arrêt", async () => {
             const { service } = makeService();
 
-            const { itinerary } = await service.judge(fullTrip, AT_0840);
+            const { itinerary, arrivalFreshness } = await service.judge(fullTrip, AT_0840);
 
             expect(itinerary.arrivalTime).toBe(fullTrip.arrivalTime);
+            expect(arrivalFreshness).toBe("scheduled");
         });
 
         it("ne lit pas le dernier arrêt tant qu'il reste une correspondance", async () => {

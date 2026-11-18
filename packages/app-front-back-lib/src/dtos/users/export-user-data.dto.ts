@@ -59,5 +59,19 @@ export const ExportUserDataDtoOutSchema = zod.object({
                 .nullable(),
         }),
     ),
+    /** Partage en cours et partages terminés depuis moins de 12 h. L'empreinte du jeton n'est pas exportée. */
+    shares: zod.array(
+        zod.object({
+            startedAt: zod.string(),
+            endedAt: zod.string().nullable(),
+            endReason: zod.string().nullable(),
+            destinationLabel: zod.string().nullable(),
+            estimatedArrivalAt: zod.string().nullable(),
+            itinerary: zod.unknown(),
+            lastPosition: zod
+                .object({ latitude: zod.number(), longitude: zod.number(), at: zod.string() })
+                .nullable(),
+        }),
+    ),
 });
 export type ExportUserDataDtoOut = zod.output<typeof ExportUserDataDtoOutSchema>;

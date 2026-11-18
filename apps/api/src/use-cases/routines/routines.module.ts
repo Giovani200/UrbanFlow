@@ -26,5 +26,6 @@ import { UpdateRoutineUseCase } from "./use-cases/update-routine.use-case";
         MarkNotTakenUseCase,
         ChooseAlternativeUseCase,
     ],
+    exports: [RoutineDayPlanner, RoutineConnectionsService],
 })
 export class RoutinesModule {}

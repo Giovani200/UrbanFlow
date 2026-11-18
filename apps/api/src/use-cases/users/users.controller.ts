@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import {
     ChangePasswordDtoOut,
@@ -24,6 +24,7 @@ import { CreateFavoriteAddressUseCase } from "./use-cases/create-favorite-addres
 import { ListFavoriteAddressesUseCase } from "./use-cases/list-favorite-addresses.use-case";
 import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-address.use-case";
 import { SetHomeAddressUseCase } from "./use-cases/set-home-address.use-case";
+import { RecordShareConsentUseCase } from "./use-cases/record-share-consent.use-case";
 import { JwtAuthGuard } from "../../shared/auth/jwt-auth.guard";
 import { CurrentUser } from "../../shared/auth/current-user.decorator";
 import type { AuthenticatedUser } from "../../shared/auth/jwt.strategy";
@@ -42,6 +43,7 @@ export class UsersController {
         private readonly listFavoriteAddressesUseCase: ListFavoriteAddressesUseCase,
         private readonly deleteFavoriteAddressUseCase: DeleteFavoriteAddressUseCase,
         private readonly setHomeAddressUseCase: SetHomeAddressUseCase,
+        private readonly recordShareConsentUseCase: RecordShareConsentUseCase,
     ) {}
 
     @Post("register")
@@ -81,6 +83,13 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async exportData(@CurrentUser() user: AuthenticatedUser): Promise<ExportUserDataDtoOut> {
         return this.exportUserDataUseCase.execute(user, undefined);
+    }
+
+    @Post("me/share-consent")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @UseGuards(JwtAuthGuard)
+    async recordShareConsent(@CurrentUser() user: AuthenticatedUser): Promise<void> {
+        await this.recordShareConsentUseCase.execute(user, undefined);
     }
 
     @Put("me/preferences")

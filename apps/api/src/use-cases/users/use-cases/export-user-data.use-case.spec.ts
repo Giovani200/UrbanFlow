@@ -56,6 +56,7 @@ describe("ExportUserDataUseCase", () => {
                     },
                 },
             ],
+            shares: [],
         }));
         const prisma = { user: { findUnique } } as unknown as PrismaService;
 
@@ -95,6 +96,7 @@ describe("ExportUserDataUseCase", () => {
             trips: [],
             carbonEntries: [],
             routines: [],
+            shares: [],
         };
         const withoutRoutine = { user: { findUnique: async () => accountWithoutRoutine } } as unknown as PrismaService;
 
@@ -125,6 +127,50 @@ describe("ExportUserDataUseCase", () => {
         const routineExport = await new ExportUserDataUseCase(withRoutine).execute(user, undefined);
 
         expect(routineExport.routines[0].dayPlan).toBeNull();
+        expect(routineExport.shares).toEqual([]);
+    });
+
+    it("exporte les partages avec leur dernière position, sans jamais lire l'empreinte du jeton", async () => {
+        const startedAt = new Date("2026-11-13T23:38:00Z");
+        const lastPositionAt = new Date("2026-11-13T23:52:00Z");
+        const findUnique = vi.fn(async (_arg: { select: { shares: { select: Record<string, boolean> } } }) => ({
+            email: "user-1@test.fr",
+            name: "Léa",
+            preferences: null,
+            favoriteAddresses: [],
+            trips: [],
+            carbonEntries: [],
+            routines: [],
+            shares: [
+                {
+                    startedAt,
+                    endedAt: null,
+                    endReason: null,
+                    destinationLabel: "Chez moi",
+                    estimatedArrivalAt: new Date("2026-11-14T00:50:00Z"),
+                    itinerary: { segments: [] },
+                    lastLatitude: 48.8443,
+                    lastLongitude: 2.3735,
+                    lastPositionAt,
+                },
+            ],
+        }));
+        const prisma = { user: { findUnique } } as unknown as PrismaService;
+
+        const result = await new ExportUserDataUseCase(prisma).execute(user, undefined);
+
+        expect(findUnique.mock.calls[0][0].select.shares.select).not.toHaveProperty("tokenHash");
+        expect(result.shares).toEqual([
+            {
+                startedAt: startedAt.toISOString(),
+                endedAt: null,
+                endReason: null,
+                destinationLabel: "Chez moi",
+                estimatedArrivalAt: "2026-11-14T00:50:00.000Z",
+                itinerary: { segments: [] },
+                lastPosition: { latitude: 48.8443, longitude: 2.3735, at: lastPositionAt.toISOString() },
+            },
+        ]);
     });
 
     it("user introuvable → NotFound", async () => {

@@ -12,23 +12,25 @@ datasource db {
 // ─── MODULE USERS ───────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String?
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  name                  String?
+  passwordHash          String?
   sessionsInvalidatedAt DateTime?
-  emailVerified DateTime?
-  image         String?
-  googleId        String?   @unique
-  acceptedTermsAt DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  emailVerified         DateTime?
+  image                 String?
+  googleId              String?   @unique
+  acceptedTermsAt       DateTime?
+  shareConsentAt        DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  preferences   Preferences?
-  trips           Trip[]
-  carbonEntries   CarbonEntry[]
+  preferences       Preferences?
+  trips             Trip[]
+  carbonEntries     CarbonEntry[]
   favoriteAddresses FavoriteAddress[]
-  routines        Routine[]
+  routines          Routine[]
+  shares            Share[]
 
   @@map("users")
 }
@@ -90,6 +92,7 @@ model Routine {
 
   user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   dayPlan RoutineDayPlan?
+  shares  Share[]
 
   @@index([userId])
   @@map("routines")
@@ -113,6 +116,42 @@ model RoutineDayPlan {
   routine Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
 
   @@map("routine_day_plans")
+}
+
+// ─── MODULE PARTAGE ─────────────────────────────────────────
+
+/// Un trajet partagé par lien. Le jeton n'est jamais stocké, seulement son empreinte SHA-256.
+/// À la fin du partage, itinéraire et position sont vidés : seuls l'état final et son heure restent 12 h.
+/// Un seul partage actif par compte, règle tenue par le code : les partages terminés restent lisibles à côté.
+model Share {
+  id        String  @id @default(cuid())
+  userId    String
+  tokenHash String  @unique
+  routineId String?
+
+  itinerary          Json?
+  destinationLabel   String?
+  estimatedArrivalAt DateTime?
+
+  lastLatitude   Float?
+  lastLongitude  Float?
+  lastPositionAt DateTime?
+
+  startedAt DateTime        @default(now())
+  endedAt   DateTime?
+  endReason ShareEndReason?
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routine Routine? @relation(fields: [routineId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("shares")
+}
+
+enum ShareEndReason {
+  ARRIVED
+  STOPPED
+  EXPIRED
 }
 
 // ─── MODULE TRIPS ───────────────────────────────────────────

@@ -12,6 +12,7 @@ import { CreateFavoriteAddressUseCase } from "./use-cases/create-favorite-addres
 import { ListFavoriteAddressesUseCase } from "./use-cases/list-favorite-addresses.use-case";
 import { DeleteFavoriteAddressUseCase } from "./use-cases/delete-favorite-address.use-case";
 import { SetHomeAddressUseCase } from "./use-cases/set-home-address.use-case";
+import { RecordShareConsentUseCase } from "./use-cases/record-share-consent.use-case";
 
 @Module({
     imports: [PassportModule],
@@ -28,6 +29,7 @@ import { SetHomeAddressUseCase } from "./use-cases/set-home-address.use-case";
         ListFavoriteAddressesUseCase,
         DeleteFavoriteAddressUseCase,
         SetHomeAddressUseCase,
+        RecordShareConsentUseCase,
     ],
 })
 export class UsersModule {}

@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "@/app/components/ui/Button";
 import { formatDistance, formatDuration } from "@/app/lib/format";
 import type { TripRoute } from "@/app/services/trips.service";
@@ -9,10 +10,11 @@ interface DetailPanelProps {
   destinationLabel: string;
   onStart: () => void;
   onBack: () => void;
+  shareAction?: ReactNode;
 }
 
 /** Le détail d'un itinéraire, étape par étape, avant de partir. */
-export function DetailPanel({ route, destinationLabel, onStart, onBack }: DetailPanelProps) {
+export function DetailPanel({ route, destinationLabel, onStart, onBack, shareAction }: DetailPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -29,9 +31,18 @@ export function DetailPanel({ route, destinationLabel, onStart, onBack }: Detail
 
       <RouteChain segments={route.segments} destinationLabel={destinationLabel} />
 
-      <Button variant="primary" onClick={onStart}>
-        Partir
-      </Button>
+      {shareAction ? (
+        <div className="ml-auto inline-grid auto-cols-fr grid-flow-col items-start gap-2">
+          <Button variant="primary" size="compact" onClick={onStart} className="w-full">
+            Partir
+          </Button>
+          {shareAction}
+        </div>
+      ) : (
+        <Button variant="primary" onClick={onStart}>
+          Partir
+        </Button>
+      )}
     </div>
   );
 }

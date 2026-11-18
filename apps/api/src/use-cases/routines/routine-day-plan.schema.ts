@@ -65,9 +65,14 @@ export interface DayPlan {
 }
 
 /**
- * Relit un plan du jour stocké en JSON. `null` s'il n'a plus le format attendu : la base n'est pas plus digne de
- * confiance qu'une réponse externe, et ce format peut évoluer d'une version à l'autre.
+ * Relisent un itinéraire ou un plan du jour stocké en JSON. `null` s'il n'a plus le format attendu : la base n'est pas
+ * plus digne de confiance qu'une réponse externe, et ce format peut évoluer d'une version à l'autre.
  */
+export function parseStoredItinerary(stored: unknown): DatedItinerary | null {
+    const parsed = StoredItinerarySchema.safeParse(stored);
+    return parsed.success ? parsed.data : null;
+}
+
 export function parseStoredDayPlan(stored: unknown): DayPlan | null {
     const parsed = StoredDayPlanSchema.safeParse(stored);
     if (!parsed.success) {
